@@ -1,19 +1,27 @@
-import { useState } from "react"
+import { useState, Suspense } from "react";
 
-import { queryData } from "../../app/api/musiconn"
-import PerformanceSearchForm from "./PerformanceSearchForm"
-import PerformanceSearchResults from "./PerformanceSearchResults"
+import { queryData } from "../../app/api/musiconn";
+import PerformanceSearchForm from "./PerformanceSearchForm";
+import PerformanceSearchResults from "./PerformanceSearchResults";
+
+function PerformanceSearchWrapper(props) {
+  const [coordinates, setCoordinates] = useState({});
+  
+  return (
+    <PerformanceSearchResults
+      {...props}
+      coordinates={coordinates}
+      setCoordinates={setCoordinates}
+    />
+  );
+}
 
 export default function PerformanceSearch() {
-  const [results, setResults] = useState([])
+  const [results, setResults] = useState([]);
 
   async function handleSearch(searchTerm) {
-    try {
-      const data = await queryData(searchTerm)
-      setResults([data])
-    } catch (error) {
-      console.error(error)
-    }
+    const data = await queryData(searchTerm);
+    setResults([data]);
   }
 
   return (
@@ -22,8 +30,10 @@ export default function PerformanceSearch() {
         <PerformanceSearchForm onSubmit={handleSearch} />
       </div>
       <div className="">
-        <PerformanceSearchResults results={results} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <PerformanceSearchWrapper results={results} />
+        </Suspense>
       </div>
     </div>
-  )
+  );
 }

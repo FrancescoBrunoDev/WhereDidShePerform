@@ -1,11 +1,14 @@
-import { Suspense } from "react"
+import { Suspense, useEffect } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardFooter, CardHeader } from "@/components/ui/card"
+import { GetCoordinates } from "@/app/api/musiconn"
 
-import { GetCoordinates } from "../../app/api/musiconn"
-
-export default function PerformanceSearchResults({ results }) {
+export default function PerformanceSearchResults({
+  results,
+  coordinates,
+  setCoordinates,
+}) {
   console.log(results)
   if (!results || results.length === 0 || !results[0].location) {
     return <p>No results found.</p>
@@ -49,10 +52,21 @@ export default function PerformanceSearchResults({ results }) {
         }
       })
 
-      const uids = Object.keys(results[0].location).map(
-        (locationId) => results[0].location[locationId].uid
-      )
-      console.log(uids)
+    useEffect(() => {
+      const fetchCoordinates = async () => {
+        const locationUids = results.map((result) => result.location.uid)
+        await Promise.all(
+          locationUids.map(() =>
+            GetCoordinates({
+              uid: location.uid,
+              setCoordinates: setCoordinates,
+            })
+          )
+        )
+      }
+
+      fetchCoordinates()
+    }, [results])
 
     return (
       <Card key={location.uid}>
@@ -60,10 +74,13 @@ export default function PerformanceSearchResults({ results }) {
         <CardFooter>
           {badges}
           <Badge variant="secondary">{location.uid}</Badge>
-          <Suspense>
-            <GetCoordinates uid={uids}>
-              <Badge variant="secondary">Coordinates</Badge>
-            </GetCoordinates>
+          <Suspense fallback={<div>Loading...</div>}>
+            {coordinates[location.uid] && (
+              <Badge variant="secondary">
+                Coordinates: {coordinates[location.uid].lat},{" "}
+                {coordinates[location.uid].lng}
+              </Badge>
+            )}
           </Suspense>
         </CardFooter>
       </Card>
