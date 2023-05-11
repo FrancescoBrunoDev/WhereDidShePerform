@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react"
+import { Suspense } from "react"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardFooter, CardHeader } from "@/components/ui/card"

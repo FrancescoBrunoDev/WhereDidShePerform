@@ -1,5 +1,5 @@
 async function queryData(query) {
-  const url = `https://performance.musiconn.de/api?action=query&person=${query}&entity=location&format=json`
+  const url = `https://performance.musiconn.de/api?action=query&entity=person&person=${query}&sort=1&format=json`
   const res = await fetch(url)
 
   if (!res.ok) {
@@ -12,46 +12,59 @@ async function queryData(query) {
 
 export { queryData }
 
+async function queryData2(query) {
+  const url = `https://performance.musiconn.de/api?action=query&location=${query}&sort=1&format=json`
+  const res = await fetch(url)
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+
+  const { records } = await res.json()
+  return records
+}
+
+export { queryData2 }
+
 async function GetCoordinates(locationUid) {
   const url = `https://performance.musiconn.de/api?action=get&location=${locationUid}&format=json`
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error("Failed to fetch data")
   }
-  return res.json();
+  return res.json()
 }
 
 export { GetCoordinates }
 
+async function GetLocations(eventIud) {
+
+  const url = `https://performance.musiconn.de/api?action=get&event=${eventIud}&props=locations&format=json`
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+  
+  return res.json()
+}
+/* const data = await GetLocations(eventUid)
+const event = data.event[eventUid].locations */
 
 
-async function* getAllData(query) {
-  let page = 1
-  let allRecords = []
+export { GetLocations }
 
-  while (true) {
-    const url = `https://performance.musiconn.de/api?action=query&person=${query}&page=${page}&entity=event&format=json`
-    const res = await fetch(url)
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch data")
-    }
-
-    const { records } = await res.json()
-    allRecords = allRecords.concat(records)
-
-    if (records.length === 0) {
-      // No more records on this page, we're done
-      break
-    }
-
-    page++
+async function GetInfoPerson(PersonUid) {
+  const url = `https://performance.musiconn.de/api?action=get&person=${PersonUid}&format=json`
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
   }
 
-  yield allRecords
+  const { person } = await res.json()
+  return person
 }
 
-export { getAllData }
+export { GetInfoPerson }
 
 async function autocomplete(query) {
   const url = `https://performance.musiconn.de/api?action=autocomplete&person=${query}&format=json`

@@ -2,7 +2,7 @@ import { useState, Suspense } from "react";
 
 import { queryData } from "../../app/api/musiconn";
 import PerformanceSearchForm from "./PerformanceSearchForm";
-import PerformanceSearchResults from "./PerformanceSearchResults";
+import PerformanceSearchResults from "./PerformanceSearchResultsPerson";
 
 export default function PerformanceSearch() {
   const [results, setResults] = useState([]);
