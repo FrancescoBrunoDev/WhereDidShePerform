@@ -4,18 +4,6 @@ import { queryData } from "../../app/api/musiconn";
 import PerformanceSearchForm from "./PerformanceSearchForm";
 import PerformanceSearchResults from "./PerformanceSearchResults";
 
-function PerformanceSearchWrapper(props) {
-  const [coordinates, setCoordinates] = useState({});
-  
-  return (
-    <PerformanceSearchResults
-      {...props}
-      coordinates={coordinates}
-      setCoordinates={setCoordinates}
-    />
-  );
-}
-
 export default function PerformanceSearch() {
   const [results, setResults] = useState([]);
 
@@ -31,7 +19,7 @@ export default function PerformanceSearch() {
       </div>
       <div className="">
         <Suspense fallback={<div>Loading...</div>}>
-          <PerformanceSearchWrapper results={results} />
+          <PerformanceSearchResults results={results} />
         </Suspense>
       </div>
     </div>

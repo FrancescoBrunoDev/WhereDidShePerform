@@ -12,29 +12,17 @@ async function queryData(query) {
 
 export { queryData }
 
-async function GetCoordinates({uid, setCoordinates}) {
-  const url = `https://performance.musiconn.de/api?action=get&location=${uid}&format=json`
-  
+async function GetCoordinates(locationUid) {
+  const url = `https://performance.musiconn.de/api?action=get&location=${locationUid}&format=json`
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error("Failed to fetch data")
   }
-
-  const data = await res.json()
-  const { geometries } = data.location[uid]
-  if (geometries && geometries.length > 0) {
-    const [lat, lng] = geometries[0].geo
-    console.log(`Latitude: ${lat}, Longitude: ${lng}`)
-    setCoordinates(prevState => ({...prevState, [uid]: { lat, lng }}))
-    return { lat, lng }
-  } else {
-    console.log("No coordinates found")
-    setCoordinates(prevState => ({...prevState, [uid]: null}))
-    return null
-  }
+  return res.json();
 }
 
 export { GetCoordinates }
+
 
 
 async function* getAllData(query) {

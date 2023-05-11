@@ -4,11 +4,27 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardFooter, CardHeader } from "@/components/ui/card"
 import { GetCoordinates } from "@/app/api/musiconn"
 
-export default function PerformanceSearchResults({
-  results,
-  coordinates,
-  setCoordinates,
-}) {
+async function Coordinates({ locationUid }) {
+  // Wait for the the locationUid
+  const data = await GetCoordinates(locationUid)
+  const geometries = data.location[locationUid].geometries
+  let content = null
+
+  if (geometries && geometries.length > 0) {
+    const [lat, lng] = geometries[0].geo
+    content = (
+      <Badge variant="secondary">
+        Coordinates: {lat}, {lng}
+      </Badge>
+    )
+  } else {
+    content = <Badge variant="destructive">no coordinates found</Badge>
+  }
+
+  return <div>{content}</div>
+}
+
+export default function PerformanceSearchResults({ results }) {
   console.log(results)
   if (!results || results.length === 0 || !results[0].location) {
     return <p>No results found.</p>
@@ -24,7 +40,18 @@ export default function PerformanceSearchResults({
 
         if (categoryLabel === 5) {
           return (
-            <Badge key={parents.location.uid}>{parents.location.title}</Badge>
+            <div>
+              <Badge key={parents.location.uid}>{parents.location.title}</Badge>
+              <Suspense
+                fallback={
+                  <Badge key={`loading-${parents.location.uid}`} variant={"secondary"}>
+                    loading coordinates...
+                  </Badge>
+                }
+              >
+                <Coordinates locationUid={parents.location.uid}></Coordinates>
+              </Suspense>
+            </div>
           )
         } else if (categoryLabel === 4) {
           return (
@@ -43,7 +70,7 @@ export default function PerformanceSearchResults({
           if (match) {
             return (
               <Badge key={location.uid} variant="secondary">
-                {match[1]}
+                extracted {match[1]}
               </Badge>
             )
           } else {
@@ -52,36 +79,12 @@ export default function PerformanceSearchResults({
         }
       })
 
-    useEffect(() => {
-      const fetchCoordinates = async () => {
-        const locationUids = results.map((result) => result.location.uid)
-        await Promise.all(
-          locationUids.map(() =>
-            GetCoordinates({
-              uid: location.uid,
-              setCoordinates: setCoordinates,
-            })
-          )
-        )
-      }
-
-      fetchCoordinates()
-    }, [results])
-
     return (
       <Card key={location.uid}>
         <CardHeader>{location.title}</CardHeader>
         <CardFooter>
           {badges}
           <Badge variant="secondary">{location.uid}</Badge>
-          <Suspense fallback={<div>Loading...</div>}>
-            {coordinates[location.uid] && (
-              <Badge variant="secondary">
-                Coordinates: {coordinates[location.uid].lat},{" "}
-                {coordinates[location.uid].lng}
-              </Badge>
-            )}
-          </Suspense>
         </CardFooter>
       </Card>
     )
