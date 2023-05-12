@@ -12,16 +12,17 @@ export default function PerformanceSearchForm({ onSubmit }) {
   }
 
   return (
-    <div className="">
-      <form onSubmit={handleSubmit} className="flex items-center space-x-2">
-        <Input
-          type="text"
-          value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
-          placeholder="composer"
-        ></Input>
-        <Button type="submit">Search</Button>
-      </form>
-    </div>
+    <form
+      onSubmit={handleSubmit}
+      className="flex content-center space-x-2 w-96"
+    >
+      <Input
+        type="text"
+        value={searchTerm}
+        onChange={(event) => setSearchTerm(event.target.value)}
+        placeholder="Search for a performer"
+      ></Input>
+      <Button type="submit">Search</Button>
+    </form>
   )
 }

@@ -47,9 +47,6 @@ async function GetLocations(eventIud) {
   
   return res.json()
 }
-/* const data = await GetLocations(eventUid)
-const event = data.event[eventUid].locations */
-
 
 export { GetLocations }
 
