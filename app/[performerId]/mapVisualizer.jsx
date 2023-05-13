@@ -1,6 +1,6 @@
 "user client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import {
   ComposableMap,
   Geographies,
@@ -9,9 +9,18 @@ import {
   ZoomableGroup,
 } from "react-simple-maps"
 
-import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
-import { GetLocationsWithEventCount } from "@/components/maps/getMergedLocations"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  GetLocationsWithEventCount,
+  GetTitleEvents,
+} from "@/components/maps/getMergedLocations"
 
 const geoUrl =
   "https://raw.githubusercontent.com/leakyMirror/map-of-europe/27a335110674ae5b01a84d3501b227e661beea2b/TopoJSON/europe.topojson"
@@ -39,34 +48,65 @@ export default function MapChart({ id }) {
     fetchData()
   }, [id])
 
+  async function EventListAccordion(countId) {
+    const events = await GetTitleEvents(countId)
+    console.log(events, "data title")
+
+    return Object.entries(events).map(([eventId, eventData]) => (
+      <p key={eventId}>{eventData.title} </p>
+    ))
+  }
+
   return (
-    <section>
+    <section className="">
       <div className="absolute top-52 left-10">
         <h4 className="mb-4 text-lg font-black leading-none">Locations</h4>
-        <ScrollArea className="h-[40rem] w-96">
+        <ScrollArea className="h-[35rem] w-96 pr-2">
           <div className="">
-            {locationsWithCount.map(
-              ({ locationId, title, coordinates, count }) => (
-                <div className="flex content-center space-x-2">
-                  {" "}
-                  <Badge className="h-5">{locationId}</Badge>
-                  <p key={locationId}>
-                   {title} for {count} times
-                  </p>
-                </div>
-              )
-            )}
+            <Accordion>
+              {locationsWithCount.map(
+                ({ locationId, title, coordinates, count, eventIds }) => (
+                  <AccordionItem
+                    className="border-0 justify-normal"
+                    value={locationId}
+                  >
+                    <AccordionTrigger
+                      id={locationId}
+                      className="flex justify-normal space-x-2 py-1"
+                    >
+                      {" "}
+                      <div className="h-5 flex justify-center mt-1 w-14">
+                        <Badge className="w-14 flex justify-center">
+                          {locationId}
+                        </Badge>
+                      </div>
+                      <p
+                        className="text-left flex justify-self-start"
+                        key={locationId}
+                      >
+                        {title} for {count} times
+                      </p>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <Suspense>
+                        <EventListAccordion countId={eventIds} />
+                      </Suspense>
+                    </AccordionContent>
+                  </AccordionItem>
+                )
+              )}
+            </Accordion>
           </div>
         </ScrollArea>
       </div>
-      <div className="absolute top-60 left-10 w-96 font-semibold text-sm mb-10 space-y-1"></div>
-      <section className="flex content-center w-full justify-center 2xl:px-72 xl:px-52 lg:px-10 md:px-10">
+      <section className="flex content-center w-full justify-center overflow-hidden">
         <ComposableMap
+          className="h-[85vh] w-screen"
           projection="geoAzimuthalEquidistant"
           projectionConfig={{
             rotate: [-10.0, -52.0, 0],
-            center: [5, 0],
-            scale: 800,
+            center: [-3, 0],
+            scale: 850,
           }}
         >
           <Geographies geography={geoUrl}>
@@ -83,8 +123,12 @@ export default function MapChart({ id }) {
             }
           </Geographies>
           {locationsWithCount.map(
-            ({ locationId, title, coordinates, count }) => (
-              <Marker coordinates={coordinates} key={locationId}>
+            ({ locationId, title, coordinates, count, eventIds }) => (
+              <Marker
+                id={locationId}
+                coordinates={coordinates}
+                key={locationId}
+              >
                 <circle r={scaleRadius(count)} fill="white" />
               </Marker>
             )

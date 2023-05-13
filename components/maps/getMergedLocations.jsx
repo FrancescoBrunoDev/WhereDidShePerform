@@ -1,4 +1,4 @@
-import { GetCoordinates, GetLocations } from "@/app/api/musiconn"
+import { GetCoordinates, GetLocations, GetTitle } from "@/app/api/musiconn"
 
 export async function GetMergedLocations(id) {
   const eventsNumbers = [...new Set(id.events.map((event) => event.event))]
@@ -108,8 +108,15 @@ export async function GetLocationsWithEventCount(id) {
     return {
       ...location,
       count: location.eventIds.length,
+      eventIds: location.eventIds,
     }
   })
-  console.log(locationsWithCount, "locationsWithCount")
+
   return locationsWithCount
+}
+
+export async function GetTitleEvents(eventIds) {
+  const eventsJoin = eventIds.countId.join("|")
+  const mergedEvents = await GetTitle(eventsJoin)
+  return mergedEvents
 }

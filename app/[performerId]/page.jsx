@@ -15,10 +15,10 @@ export default async function Composer({ params }) {
   const id = data[performerId]
 
   return (
-    <section className="relative">
+    <section className="relative container">
       <Tabs defaultValue="map">
         <div className="w-full flex justify-center sticky top-16">
-          <h1 className="absolute top-16 left-10 w-96 font-black text-4xl mb-10">
+          <h1 className="absolute top-16 left-0 w-96 font-black text-4xl mb-10">
             {id.title}
           </h1>
           <TabsList>

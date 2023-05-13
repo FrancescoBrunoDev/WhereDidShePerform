@@ -50,6 +50,19 @@ async function GetLocations(eventIud) {
 
 export { GetLocations }
 
+async function GetTitle(eventIud) {
+
+  const url = `https://performance.musiconn.de/api?action=get&event=${eventIud}&props=dates|title&format=json`
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+  const { event } = await res.json()
+  return event
+}
+
+export { GetTitle }
+
 async function GetInfoPerson(PersonUid) {
   const url = `https://performance.musiconn.de/api?action=get&person=${PersonUid}&format=json`
   const res = await fetch(url)
