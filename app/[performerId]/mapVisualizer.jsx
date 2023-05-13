@@ -53,7 +53,16 @@ export default function MapChart({ id }) {
     console.log(events, "data title")
 
     return Object.entries(events).map(([eventId, eventData]) => (
-      <p key={eventId}>{eventData.title} </p>
+      <div key={eventId} className="flex border-0 justify-normal ml-6">
+        <div className="flex justify-normal py-1 items-center">
+          <Badge variant={"secondary"} className="w-14 flex justify-center">
+            {eventId}
+          </Badge>
+        </div>
+        <div className="flex items-center ml-2">
+          <p>{eventData.dates[0].date}</p>
+        </div>
+      </div>
     ))
   }
 
