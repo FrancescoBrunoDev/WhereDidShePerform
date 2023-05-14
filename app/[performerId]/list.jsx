@@ -1,30 +1,41 @@
-import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardHeader } from "@/components/ui/card"
-import { GetMergedLocations } from "@/components/maps/getMergedLocations"
 
-export async function List({ id }) {
-  const mergedLocations = await GetMergedLocations(id)
+export async function List({ locationsData }) {
+  console.log(locationsData)
   return (
     <section>
-      <div className="container mx-auto xl:px-44 lg:px-20 grid lg:grid-cols-4 md:grid-cols-3 grid-flow-row gap-4 mt-32">
-        {mergedLocations.map((location) => (
-          <Card key={`${location.eventId}-${location.locationId}`}>
-            <CardHeader>
-              <Badge variant="secondary">eventId: {location.eventId}</Badge>
-              <Badge variant="secondary">
-                title: {location.title}, locationId: {location.locationId}
+      <div className="container mx-auto xl:px-44 lg:px-20  mt-32">
+        {locationsData.map((location) => (
+          <div key={location.locationId}>
+            <div className="flex mt-7 mb-5 space-x-2">
+              <h1 className="text-2xl font-black leading-none">
+                {location.title}
+              </h1>{" "}
+              <Badge className="w-14 flex justify-center">
+                {location.locationId}
               </Badge>
-              <Badge
-                variant={location.coordinates ? "secondary" : "destructive"}
-              >
-                coordinates:{" "}
-                {location.coordinates
-                  ? `${location.coordinates[0]}, ${location.coordinates[1]}`
-                  : "null"}
-              </Badge>
-            </CardHeader>
-          </Card>
+            </div>
+            <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-flow-row gap-4">
+              {location.eventInfo.map(
+                (event) => (
+                  console.log(event),
+                  (
+                    <Card key={event.eventId}>
+                      <CardHeader>
+                        <Badge variant="secondary">
+                          eventId: {event.eventId}
+                        </Badge>
+                        <Badge variant="secondary">
+                          date: {event.date}
+                        </Badge>
+                      </CardHeader>
+                    </Card>
+                  )
+                )
+              )}
+            </div>
+          </div>
         ))}
       </div>
     </section>

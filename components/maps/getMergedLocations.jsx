@@ -1,7 +1,9 @@
 import { GetCoordinates, GetLocations, GetTitle } from "@/app/api/musiconn"
 
-export async function GetMergedLocations(id) {
-  const eventsNumbers = [...new Set(id.events.map((event) => event.event))]
+export async function GetLocationsWithEventsAndTitle(performerId) {
+  const eventsNumbers = [
+    ...new Set(performerId.events.map((event) => event.event)),
+  ]
   const eventsJoin = eventsNumbers.join("|")
   const { event } = await GetLocations(eventsJoin)
 
@@ -21,6 +23,7 @@ export async function GetMergedLocations(id) {
   const eventLocations = []
   Object.keys(event).forEach((eventId) => {
     const locations = event[eventId].locations
+    const date = event[eventId].dates[0].date
     if (locations && locations.length > 0) {
       locations
         .filter(
@@ -30,12 +33,14 @@ export async function GetMergedLocations(id) {
           eventLocations.push({
             eventId: parseInt(eventId),
             locationId: locationObj.location,
+            date: date,
           })
         })
     } else {
       eventLocations.push({
         eventId: parseInt(eventId),
         locationId: 0,
+        date: date,
       })
     }
   })
@@ -43,21 +48,9 @@ export async function GetMergedLocations(id) {
   // GET COORDINATES
   const data = await GetCoordinates(locationUid)
 
-  const nameLocations = Object.keys(data.location).map((locationId) => {
-    const location = data.location[locationId]
-    const title = location.title
-    const coordinates = location.geometries?.[0]?.geo || null
-
-    return {
-      [locationId]: {
-        locationId,
-        title,
-        coordinates,
-      },
-    }
-  })
-
-  const mergedLocations = eventLocations.map((eventLocation) => {
+  // Create a map to store location data with associated event IDs and dates
+  const locationMap = {}
+  for (const eventLocation of eventLocations) {
     const locationId = eventLocation.locationId
     const locationInfo = data.location[locationId]
     const title = locationInfo ? locationInfo.title : null
@@ -69,54 +62,38 @@ export async function GetMergedLocations(id) {
         ? locationInfo.geometries[0].geo
         : null
     const eventId = eventLocation.eventId
+    const date = eventLocation.date
 
-    return {
-      locationId,
-      title,
-      coordinates,
-      eventId,
-    }
-  })
-
-  return mergedLocations
-}
-
-export async function GetLocationsWithEventCount(id) {
-  const mergedLocations = await GetMergedLocations(id)
-
-  // Create a map to store location data with associated event IDs
-  const locationMap = {}
-  for (const location of mergedLocations) {
-    const { locationId, title, coordinates, eventId } = location
     if (title && coordinates) {
       if (!locationMap[locationId]) {
         locationMap[locationId] = {
           locationId,
           title,
           coordinates: [coordinates[1], coordinates[0]],
-          eventIds: [],
+          eventInfo: [],
         }
       }
       if (eventId) {
-        locationMap[locationId].eventIds.push(eventId)
+        locationMap[locationId].eventInfo.push({
+          eventId,
+          date,
+        })
+      } else {
+        locationMap[locationId].eventInfo.push({
+          eventId: null,
+          date,
+        })
       }
     }
   }
 
-  // Convert the map to an array of locations with event counts
+  // Convert the map to an array of locations with event counts and dates
   const locationsWithCount = Object.values(locationMap).map((location) => {
     return {
       ...location,
-      count: location.eventIds.length,
-      eventIds: location.eventIds,
+      count: location.eventInfo.length,
     }
   })
 
   return locationsWithCount
-}
-
-export async function GetTitleEvents(eventIds) {
-  const eventsJoin = eventIds.countId.join("|")
-  const mergedEvents = await GetTitle(eventsJoin)
-  return mergedEvents
 }

@@ -39,7 +39,7 @@ export { GetCoordinates }
 
 async function GetLocations(eventIud) {
 
-  const url = `https://performance.musiconn.de/api?action=get&event=${eventIud}&props=locations&format=json`
+  const url = `https://performance.musiconn.de/api?action=get&event=${eventIud}&props=locations|dates&format=json`
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error("Failed to fetch data")
