@@ -68,9 +68,9 @@ export default function MapChart({ id }) {
 
   return (
     <section className="">
-      <div className="absolute top-52 left-10">
+      <div className="absolute top-52 bottom-10 left-10">
         <h4 className="mb-4 text-lg font-black leading-none">Locations</h4>
-        <ScrollArea className="h-[35rem] w-96 pr-2">
+        <ScrollArea className="h-full w-96 pr-2">
           <div className="">
             <Accordion>
               {locationsWithCount.map(
