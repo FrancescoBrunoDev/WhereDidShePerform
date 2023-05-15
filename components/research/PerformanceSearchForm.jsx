@@ -14,7 +14,7 @@ export default function PerformanceSearchForm({ onSubmit }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex content-center space-x-2 w-96"
+      className="flex content-center space-x-2 md:w-96"
     >
       <Input
         type="text"

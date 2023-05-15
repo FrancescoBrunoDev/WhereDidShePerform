@@ -14,11 +14,11 @@ export default function PerformanceSearch() {
 
   return (
     <section className="">
-      <div className="sticky top-40">
-        <h1 className="text-8xl font-black pb-5">Who's the player?</h1>
+      <div className="sticky top-[-5rem] pt-32 pb-5 bg-background">
+        <h1 className="md:text-8xl text-6xl font-black pb-5">Who's the player?</h1>
         <PerformanceSearchForm onSubmit={handleSearch} />
       </div>
-      <div className="mt-60">
+      <div className="mt-55">
         <Suspense fallback={<div>Loading...</div>}>
           <PerformanceSearchResults results={results} />
         </Suspense>

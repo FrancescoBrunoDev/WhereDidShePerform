@@ -71,7 +71,7 @@ export default function MapChart({ locationsData }) {
                     selectedLocationId === locationId
                       ? "scale(1.5)"
                       : "scale(1)",
-                  zIndex: selectedLocationId === locationId ? 40 : 1, // set z-index to 40 if selected
+                  zIndex: selectedLocationId === locationId ? 100 : 1, // set z-index to 40 if selected
                 }}
                 onMouseEnter={() => setSelectedLocationId(locationId)}
                 onMouseLeave={() => setSelectedLocationId(null)}
