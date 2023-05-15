@@ -1,4 +1,4 @@
-import { GetCoordinates, GetLocations, GetTitle } from "@/app/api/musiconn"
+import { GetCoordinates, GetLocations } from "@/app/api/musiconn"
 
 export async function GetLocationsWithEventsAndTitle(performerId) {
   const eventsNumbers = [
