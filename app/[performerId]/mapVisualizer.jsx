@@ -14,9 +14,19 @@ import ScrollAreaMap from "@/components/maps/scrollAreaMap"
 const geoUrl =
   "https://raw.githubusercontent.com/leakyMirror/map-of-europe/27a335110674ae5b01a84d3501b227e661beea2b/TopoJSON/europe.topojson"
 
-export default function MapChart({ locationsData }) {
-  const [selectedLocationId, setSelectedLocationId] = useState(null)
+  const worldUrl =
+  "https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json"
 
+
+export default function MapVisualizer({
+  locationsData,
+  lowestYear,
+  highestYear,
+  filterLowestYear,
+  updateFilterLowestYear,
+}) {
+  const [selectedLocationId, setSelectedLocationId] = useState(null)
+  const [isHover, setIsHover] = useState(false)
   const sigmoid = (x) => {
     return 1 / (1 + Math.exp(-x))
   }
@@ -30,11 +40,18 @@ export default function MapChart({ locationsData }) {
     return radius
   }
 
+  console.log(isHover, "isHover")
+
   return (
     <section className="">
       <ScrollAreaMap
         locationsData={locationsData}
         onLocationHover={(locationId) => setSelectedLocationId(locationId)}
+        lowestYear={lowestYear}
+        highestYear={highestYear}
+        filterLowestYear={filterLowestYear}
+        updateFilterLowestYear={updateFilterLowestYear}
+        setIsHover={setIsHover}
       />
       <section className="flex w-full content-center justify-center overflow-hidden">
         <ComposableMap
@@ -59,24 +76,43 @@ export default function MapChart({ locationsData }) {
               ))
             }
           </Geographies>
-          {locationsData.map(({ locationId, coordinates, count }) => (
-            <Marker id={locationId} coordinates={coordinates} key={locationId}>
-              <circle
-                r={scaleRadius(count)}
-                fill={selectedLocationId === locationId ? "red" : "white"}
-                style={{
-                  transition: "transform 0.2s", // add a transition for a smoother effect
-                  transform:
-                    selectedLocationId === locationId
-                      ? "scale(1.5)"
-                      : "scale(1)",
-                  zIndex: selectedLocationId === locationId ? 100 : 1, // set z-index to 40 if selected
-                }}
-                onMouseEnter={() => setSelectedLocationId(locationId)}
-                onMouseLeave={() => setSelectedLocationId(null)}
-              />
-            </Marker>
-          ))}
+
+          {locationsData.map(({ locationId, coordinates, count }) => {
+            const transitionDuration =
+              Math.floor(Math.random() * 900 + 100) / 1000 // Generate a random value between 0.1 and 1
+
+            return (
+              <Marker
+                id={locationId}
+                coordinates={coordinates}
+                key={locationId}
+              >
+                <circle
+                  r={scaleRadius(count)}
+                  fill={selectedLocationId === locationId ? "red" : "white"}
+                  style={{
+                    transition: `transform ${transitionDuration}s`,
+                    zIndex: selectedLocationId === locationId ? 100 : 1,
+                    transform:
+                      isHover && selectedLocationId === locationId
+                        ? "scale(1.5)"
+                        : isHover
+                        ? "scale(0.2)"
+                        : "scale(1)",
+                        animation: isHover && selectedLocationId !== locationId ? "circling 2s infinite" : "none",
+                  }}
+                  onMouseEnter={() => {
+                    setSelectedLocationId(locationId)
+                    setIsHover(true)
+                  }}
+                  onMouseLeave={() => {
+                    setSelectedLocationId(null)
+                    setIsHover(false)
+                  }}
+                />
+              </Marker>
+            )
+          })}
         </ComposableMap>
       </section>
     </section>

@@ -1,7 +1,9 @@
+import { Suspense } from "react"
 import Link from "next/link"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardFooter, CardHeader } from "@/components/ui/card"
+import { Loading } from "@/components/loading"
 
 export default function PerformanceSearchResults({ results }) {
   console.log(results)
@@ -14,21 +16,23 @@ export default function PerformanceSearchResults({ results }) {
     const event = results[0].person[personId].events.count
 
     return (
-      <Link key={person.uid} href={`/${person.uid}/`}>
-        <Card key={person.uid}>
-          <CardHeader>{person.title}</CardHeader>
-          <CardFooter>
-            <Badge>Events {event}</Badge>
-            <Badge variant="secondary">{person.uid}</Badge>
-          </CardFooter>
-        </Card>
-      </Link>
+      <Suspense fallback={<Loading />}>
+        <Link key={person.uid} href={`/${person.uid}/`}>
+          <Card key={person.uid}>
+            <CardHeader>{person.title}</CardHeader>
+            <CardFooter>
+              <Badge>Events {event}</Badge>
+              <Badge variant="secondary">{person.uid}</Badge>
+            </CardFooter>
+          </Card>
+        </Link>
+      </Suspense>
     )
   })
 
   return (
     <div className="grid grid-flow-row place-content-stretch gap-4 md:grid-cols-3 lg:grid-cols-4">
-      {content}
+      <Suspense fallback={<Loading />}>{content}</Suspense>
     </div>
   )
 }

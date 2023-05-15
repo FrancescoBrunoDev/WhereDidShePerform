@@ -1,3 +1,4 @@
+
 async function queryData(query) {
   const url = `https://performance.musiconn.de/api?action=query&entity=person&person=${query}&sort=1&format=json`
   const res = await fetch(url)
@@ -50,14 +51,14 @@ async function GetInfoPerson(PersonUid) {
 export { GetInfoPerson }
 
 async function autocomplete(query) {
-  const url = `https://performance.musiconn.de/api?action=autocomplete&person=${query}&format=json`
+  const url = `https://performance.musiconn.de/api?action=autocomplete&title=${query}&entities=person&format=json`
   const res = await fetch(url)
 
   if (!res.ok) {
     throw new Error("Failed to fetch data")
   }
 
-  const { autocomplete } = await res.json()
+  const autocomplete = await res.json()
   return autocomplete
 }
 

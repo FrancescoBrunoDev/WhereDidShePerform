@@ -1,4 +1,5 @@
-import { Suspense, useCallback } from "react"
+import { Suspense, useCallback, useEffect, useState } from "react"
+
 
 import {
   Accordion,
@@ -8,17 +9,46 @@ import {
 } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Slider } from "@/components/ui/slider"
 
-export default function ScrollAreaMap({ locationsData, onLocationHover }) {
+export default function ScrollAreaMap({
+  locationsData,
+  onLocationHover,
+  lowestYear,
+  highestYear,
+  filterLowestYear,
+  updateFilterLowestYear,
+  setIsHover
+}) {
+
+
   const handleAccordionHover = useCallback(
     (locationId) => {
-      onLocationHover(locationId)
+      onLocationHover(locationId);
     },
     [onLocationHover]
-  )
+  );
+ 
+
   return (
-    <div className="absolute bottom-10 left-10 top-52">
-      <h4 className="mb-4 text-lg font-black leading-none">Locations</h4>
+    <div className="absolute bottom-36 left-10 top-52">
+      <h4 className="mb-4 text-2xl font-black leading-none">Time</h4>
+      <div className="mt-5 flex justify-normal space-x-2 py-1 pb-5">
+        <p>{lowestYear}</p>
+        <Slider
+          defaultValue={[lowestYear]}
+          min={lowestYear}
+          max={highestYear}
+          step={1}
+          filterLowestYear={[filterLowestYear]}
+          onValueChange={(newValue) => {
+            updateFilterLowestYear(newValue[0]);
+          }}
+        />
+        <p>{highestYear}</p>
+      </div>
+      <h4 className="mb-4 text-2xl font-black leading-none">Locations</h4>
+
       <ScrollArea className="h-full w-96 pr-2">
         <div className="">
           <Accordion>
@@ -32,8 +62,14 @@ export default function ScrollAreaMap({ locationsData, onLocationHover }) {
                 <AccordionTrigger
                   id={locationId}
                   className="flex justify-normal space-x-2 py-1"
-                  onMouseEnter={() => handleAccordionHover(locationId)}
-                  onMouseLeave={() => handleAccordionHover(null)}
+                  onMouseEnter={() => {
+                    handleAccordionHover(locationId);
+                    setIsHover(true);
+                  }}
+                  onMouseLeave={() => {
+                    handleAccordionHover(null);
+                    setIsHover(false);
+                  }}
                 >
                   {" "}
                   <div className="mt-1 flex h-5 w-14 justify-center">

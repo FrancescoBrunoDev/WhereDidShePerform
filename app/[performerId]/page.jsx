@@ -18,7 +18,6 @@ export default function Composer({ params }) {
     async function fetchData() {
       const data = await GetLocationsWithEventsAndTitle(id)
       setLocationsData(data)
-      console.log(locationsData)
     }
     if (id) fetchData()
   }, [id])
@@ -30,7 +29,46 @@ export default function Composer({ params }) {
     }
     getData()
   }, [performerId])
-  console.log(id)
+
+  let highestYear = null
+  let lowestYear = null
+
+  locationsData.map(({ eventInfo }) => {
+    eventInfo.map(({ date }) => {
+      const year = Number(date.substr(0, 4)) // Estrae l'anno dai primi 4 caratteri della stringa
+
+      if (highestYear === null || year > highestYear) {
+        highestYear = year
+      }
+
+      if (lowestYear === null || year < lowestYear) {
+        lowestYear = year
+      }
+    })
+  })
+
+  let filterHighestYear = highestYear
+
+  const [filterLowestYear, setFilterLowestYear] = useState([lowestYear])
+
+  const updateFilterLowestYear = (newValue) => {
+    setFilterLowestYear(newValue);
+  };
+
+  const filteredLocationsData = locationsData
+    .map((location) => {
+      const filteredEventInfo = location.eventInfo.filter(({ date }) => {
+        const year = Number(date.substr(0, 4))
+        return year >= filterLowestYear && year <= filterHighestYear
+      })
+
+      return {
+        ...location,
+        eventInfo: filteredEventInfo,
+      }
+    })
+    .filter((location) => location.eventInfo.length > 0)
+
   return (
     <section className="container relative">
       <Tabs defaultValue="map">
@@ -49,13 +87,19 @@ export default function Composer({ params }) {
         <TabsContent value="map">
           {locationsData && (
             <Suspense>
-              <MapVisualizer locationsData={locationsData} />
+              <MapVisualizer
+                locationsData={filteredLocationsData}
+                lowestYear={lowestYear}
+                highestYear={highestYear}
+                filterLowestYear={filterLowestYear}
+                updateFilterLowestYear={updateFilterLowestYear}
+              />
             </Suspense>
           )}
         </TabsContent>
         <TabsContent value="list">
           <Suspense>
-            <List locationsData={locationsData}></List>
+            <List locationsData={filteredLocationsData}></List>
           </Suspense>
         </TabsContent>
       </Tabs>
