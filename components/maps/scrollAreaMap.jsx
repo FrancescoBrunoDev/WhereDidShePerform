@@ -1,5 +1,4 @@
-import { Suspense } from "react"
-import { useCallback } from "react";
+import { Suspense, useCallback } from "react"
 
 import {
   Accordion,
@@ -11,18 +10,21 @@ import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default function ScrollAreaMap({ locationsData, onLocationHover }) {
-    const handleAccordionHover = useCallback((locationId) => {
-      onLocationHover(locationId);
-    }, [onLocationHover]);
+  const handleAccordionHover = useCallback(
+    (locationId) => {
+      onLocationHover(locationId)
+    },
+    [onLocationHover]
+  )
   return (
-    <div className="absolute top-52 bottom-10 left-10">
+    <div className="absolute bottom-10 left-10 top-52">
       <h4 className="mb-4 text-lg font-black leading-none">Locations</h4>
       <ScrollArea className="h-full w-96 pr-2">
         <div className="">
           <Accordion>
             {locationsData.map(({ locationId, title, count, eventInfo }) => (
               <AccordionItem
-                className="border-0 justify-normal"
+                className="justify-normal border-0"
                 value={locationId}
                 key={locationId}
                 id={locationId}
@@ -34,13 +36,13 @@ export default function ScrollAreaMap({ locationsData, onLocationHover }) {
                   onMouseLeave={() => handleAccordionHover(null)}
                 >
                   {" "}
-                  <div className="h-5 flex justify-center mt-1 w-14">
-                    <Badge className="w-14 flex justify-center">
+                  <div className="mt-1 flex h-5 w-14 justify-center">
+                    <Badge className="flex w-14 justify-center">
                       {locationId}
                     </Badge>
                   </div>
                   <p
-                    className="text-left flex justify-self-start"
+                    className="flex justify-self-start text-left"
                     key={locationId}
                   >
                     {title} for {count} times
@@ -51,17 +53,17 @@ export default function ScrollAreaMap({ locationsData, onLocationHover }) {
                     {eventInfo.map(({ eventId, date }) => (
                       <div
                         key={eventId}
-                        className="flex border-0 justify-normal ml-6"
+                        className="ml-6 flex justify-normal border-0"
                       >
-                        <div className="flex justify-normal py-1 items-center">
+                        <div className="flex items-center justify-normal py-1">
                           <Badge
                             variant={"secondary"}
-                            className="w-14 flex justify-center"
+                            className="flex w-14 justify-center"
                           >
                             {eventId}
                           </Badge>
                         </div>
-                        <div className="flex items-center ml-2">
+                        <div className="ml-2 flex items-center">
                           <p>{date}</p>
                         </div>
                       </div>

@@ -32,10 +32,14 @@ export default function Composer({ params }) {
   }, [performerId])
   console.log(id)
   return (
-    <section className="relative container">
+    <section className="container relative">
       <Tabs defaultValue="map">
-        <div className="w-full flex justify-center sticky top-16">
-        { id && <h1 className="absolute top-16 left-0 w-96 font-black text-4xl mb-10">{id.title}</h1> }
+        <div className="sticky top-16 flex w-full justify-center">
+          {id && (
+            <h1 className="absolute left-0 top-16 mb-10 w-96 text-4xl font-black">
+              {id.title}
+            </h1>
+          )}
           <TabsList>
             <TabsTrigger value="map">map</TabsTrigger>
             <TabsTrigger value="list">list</TabsTrigger>

@@ -1,3 +1,4 @@
+ 
 async function queryData(query) {
   const url = `https://performance.musiconn.de/api?action=query&entity=person&person=${query}&sort=1&format=json`
   const res = await fetch(url)
@@ -11,20 +12,6 @@ async function queryData(query) {
 }
 
 export { queryData }
-
-async function queryData2(query) {
-  const url = `https://performance.musiconn.de/api?action=query&location=${query}&sort=1&format=json`
-  const res = await fetch(url)
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
-  }
-
-  const { records } = await res.json()
-  return records
-}
-
-export { queryData2 }
 
 async function GetCoordinates(locationUid) {
   const url = `https://performance.musiconn.de/api?action=get&location=${locationUid}&format=json`

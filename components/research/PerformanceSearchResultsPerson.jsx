@@ -27,7 +27,7 @@ export default function PerformanceSearchResults({ results }) {
   })
 
   return (
-    <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-flow-row gap-4">
+    <div className="grid grid-flow-row place-content-stretch gap-4 md:grid-cols-3 lg:grid-cols-4">
       {content}
     </div>
   )

@@ -4,7 +4,7 @@ import PerformanceSearch from "@/components/research/research"
 
 export default function IndexPage() {
   return (
-    <section className="container mx-auto xl:px-44 lg:px-20">
+    <section className="container mx-auto lg:px-20 xl:px-44">
       <PerformanceSearch />
     </section>
   )

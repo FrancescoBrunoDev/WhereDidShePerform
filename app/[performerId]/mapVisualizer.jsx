@@ -29,7 +29,6 @@ export default function MapChart({ locationsData }) {
     const radius = sigmoid(x) * (maxRadius - minRadius) + minRadius
     return radius
   }
-  
 
   return (
     <section className="">
@@ -37,7 +36,7 @@ export default function MapChart({ locationsData }) {
         locationsData={locationsData}
         onLocationHover={(locationId) => setSelectedLocationId(locationId)}
       />
-      <section className="flex content-center w-full justify-center overflow-hidden">
+      <section className="flex w-full content-center justify-center overflow-hidden">
         <ComposableMap
           className="h-[85vh] w-screen"
           projection="geoAzimuthalEquidistant"

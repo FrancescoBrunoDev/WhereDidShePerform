@@ -36,13 +36,13 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <head />
         <body
           className={cn(
-            "static antialiased text-foreground bg-background",
+            "static bg-background text-foreground antialiased",
             fontSans.variable
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <SiteHeader />
-             <div>{children}</div>
+            <div>{children}</div>
             <TailwindIndicator />
           </ThemeProvider>
         </body>
