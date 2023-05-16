@@ -47,12 +47,12 @@ export default function Composer({ params }) {
     })
   })
 
-  let filterHighestYear = highestYear
+  let filterLowestYear = lowestYear
 
-  const [filterLowestYear, setFilterLowestYear] = useState([lowestYear])
+  const [filterHighestYear, setFilterHighestYear] = useState([highestYear])
 
-  const updateFilterLowestYear = (newValue) => {
-    setFilterLowestYear(newValue);
+  const updateFilterHighestYear = (newValue) => {
+    setFilterHighestYear(newValue);
   };
 
   const filteredLocationsData = locationsData
@@ -91,8 +91,8 @@ export default function Composer({ params }) {
                 locationsData={filteredLocationsData}
                 lowestYear={lowestYear}
                 highestYear={highestYear}
-                filterLowestYear={filterLowestYear}
-                updateFilterLowestYear={updateFilterLowestYear}
+                filterHighestYear={filterHighestYear}
+                updateFilterHighestYear={updateFilterHighestYear}
               />
             </Suspense>
           )}

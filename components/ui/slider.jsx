@@ -6,8 +6,8 @@ import * as SliderPrimitive from "@radix-ui/react-slider";
 import { cn } from "@/lib/utils";
 
 const Slider = React.forwardRef(
-  ({ className, filterLowestYear, onValueChange, ...props }, ref) => {
-    const value = filterLowestYear?.value ?? filterLowestYear?.defaultValue ?? [];
+  ({ className, filterHighestYear, onValueChange, ...props }, ref) => {
+    const value = filterHighestYear?.value ?? filterHighestYear?.defaultValue ?? [];
 
     const handleValueChange = (newValue) => {
       onValueChange(newValue);

@@ -17,7 +17,7 @@ export default function ScrollAreaMap({
   lowestYear,
   highestYear,
   filterLowestYear,
-  updateFilterLowestYear,
+  updateFilterHighestYear,
   setIsHover
 }) {
 
@@ -32,7 +32,7 @@ export default function ScrollAreaMap({
 
   return (
     <div className="absolute bottom-36 left-10 top-52">
-      <h4 className="mb-4 text-2xl font-black leading-none">Time</h4>
+      <h4 className="mb-4 text-2xl font-black leading-none">Career Limeline</h4>
       <div className="mt-5 flex justify-normal space-x-2 py-1 pb-5">
         <p>{lowestYear}</p>
         <Slider
@@ -42,7 +42,7 @@ export default function ScrollAreaMap({
           step={1}
           filterLowestYear={[filterLowestYear]}
           onValueChange={(newValue) => {
-            updateFilterLowestYear(newValue[0]);
+            updateFilterHighestYear(newValue[0]);
           }}
         />
         <p>{highestYear}</p>

@@ -23,7 +23,7 @@ export default function MapVisualizer({
   lowestYear,
   highestYear,
   filterLowestYear,
-  updateFilterLowestYear,
+  updateFilterHighestYear,
 }) {
   const [selectedLocationId, setSelectedLocationId] = useState(null)
   const [isHover, setIsHover] = useState(false)
@@ -40,8 +40,6 @@ export default function MapVisualizer({
     return radius
   }
 
-  console.log(isHover, "isHover")
-
   return (
     <section className="">
       <ScrollAreaMap
@@ -50,7 +48,7 @@ export default function MapVisualizer({
         lowestYear={lowestYear}
         highestYear={highestYear}
         filterLowestYear={filterLowestYear}
-        updateFilterLowestYear={updateFilterLowestYear}
+        updateFilterHighestYear={updateFilterHighestYear}
         setIsHover={setIsHover}
       />
       <section className="flex w-full content-center justify-center overflow-hidden">
