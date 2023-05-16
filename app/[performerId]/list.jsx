@@ -2,7 +2,6 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardHeader } from "@/components/ui/card"
 
 export async function List({ locationsData }) {
-  console.log(locationsData)
   return (
     <section>
       <div className="container mx-auto mt-32 lg:px-20 xl:px-44">
@@ -19,7 +18,6 @@ export async function List({ locationsData }) {
             <div className="grid grid-flow-row gap-4 md:grid-cols-3 lg:grid-cols-4">
               {location.eventInfo.map(
                 (event) => (
-                  console.log(event),
                   (
                     <Card key={event.eventId}>
                       <CardHeader>

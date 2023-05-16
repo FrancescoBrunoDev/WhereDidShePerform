@@ -14,15 +14,14 @@ import ScrollAreaMap from "@/components/maps/scrollAreaMap"
 const geoUrl =
   "https://raw.githubusercontent.com/leakyMirror/map-of-europe/27a335110674ae5b01a84d3501b227e661beea2b/TopoJSON/europe.topojson"
 
-  const worldUrl =
+const worldUrl =
   "https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json"
-
 
 export default function MapVisualizer({
   locationsData,
   lowestYear,
   highestYear,
-  filterLowestYear,
+  filterHighestYear,
   updateFilterHighestYear,
 }) {
   const [selectedLocationId, setSelectedLocationId] = useState(null)
@@ -47,7 +46,7 @@ export default function MapVisualizer({
         onLocationHover={(locationId) => setSelectedLocationId(locationId)}
         lowestYear={lowestYear}
         highestYear={highestYear}
-        filterLowestYear={filterLowestYear}
+        filterHighestYear={filterHighestYear}
         updateFilterHighestYear={updateFilterHighestYear}
         setIsHover={setIsHover}
       />
@@ -87,7 +86,7 @@ export default function MapVisualizer({
               >
                 <circle
                   r={scaleRadius(count)}
-                  fill={selectedLocationId === locationId ? "red" : "white"}
+                  fill={selectedLocationId === locationId ? "white" : "white"}
                   style={{
                     transition: `transform ${transitionDuration}s`,
                     zIndex: selectedLocationId === locationId ? 100 : 1,
@@ -97,7 +96,10 @@ export default function MapVisualizer({
                         : isHover
                         ? "scale(0.2)"
                         : "scale(1)",
-                        animation: isHover && selectedLocationId !== locationId ? "circling 2s infinite" : "none",
+                    animation:
+                      isHover && selectedLocationId !== locationId
+                        ? "circling 2s infinite"
+                        : "none",
                   }}
                   onMouseEnter={() => {
                     setSelectedLocationId(locationId)

@@ -52,8 +52,8 @@ export default function Composer({ params }) {
   const [filterHighestYear, setFilterHighestYear] = useState([highestYear])
 
   const updateFilterHighestYear = (newValue) => {
-    setFilterHighestYear(newValue);
-  };
+    setFilterHighestYear(newValue)
+  }
 
   const filteredLocationsData = locationsData
     .map((location) => {
@@ -65,9 +65,19 @@ export default function Composer({ params }) {
       return {
         ...location,
         eventInfo: filteredEventInfo,
+        count: filteredEventInfo.length, // Count of filteredEventInfo items
       }
     })
-    .filter((location) => location.eventInfo.length > 0)
+    .filter((location) => {
+      const eventInfoLength = location.eventInfo.length
+      return eventInfoLength > 0
+    })
+
+  // Calculate the count of all filteredEventInfo items across all locations
+  const totalCount = filteredLocationsData.reduce(
+    (sum, location) => sum + location.count,
+    0
+  )
 
   return (
     <section className="container relative">

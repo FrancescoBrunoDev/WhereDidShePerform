@@ -30,6 +30,7 @@ export default function PerformanceSearchForm({ onSubmit }) {
   function handleInputChange(event) {
     const newSearchTerm = event.target.value
     setSearchTerm(newSearchTerm)
+    setIsScrollAreaVisible(true)
   }
 
   function handleSuggestionClick(suggestion) {
@@ -49,7 +50,7 @@ export default function PerformanceSearchForm({ onSubmit }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex content-center space-x-2"
+      className="absolute flex w-full content-center space-x-2  pb-5"
     >
       <div className="realtive w-full md:w-96">
         <Input
@@ -60,10 +61,11 @@ export default function PerformanceSearchForm({ onSubmit }) {
           placeholder="Search for a performer"
         />
         {isScrollAreaVisible && suggestions.length > 0 && (
-          <ScrollArea className="absolute mt-3 h-72 rounded-md border md:w-96">
+          <ScrollArea className="absolute mt-3 h-72 rounded-md border bg-background md:w-96">
             <div className="p-4">
               {suggestions.map((suggestion, index) => (
-                <p
+                <div
+                  className="rounded-lg p-2 hover:bg-secondary"
                   key={index}
                   onClick={() => handleSuggestionClick(suggestion[0])}
                   style={{
@@ -71,8 +73,8 @@ export default function PerformanceSearchForm({ onSubmit }) {
                   }}
                 >
                   {suggestion[0]}
-                  <Separator className="my-2" />
-                </p>
+                  {/* <Separator className="my-2" /> */}
+                </div>
               ))}
             </div>
           </ScrollArea>

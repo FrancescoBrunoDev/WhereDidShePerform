@@ -1,5 +1,5 @@
-import { Suspense, useCallback, useEffect, useState } from "react"
-
+import { Suspense, useCallback } from "react"
+import { animated, useTrail } from "@react-spring/web"
 
 import {
   Accordion,
@@ -9,47 +9,47 @@ import {
 } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Slider } from "@/components/ui/slider"
+import { SliderLifeTime } from "@/components/ui/sliderLifeTime"
 
 export default function ScrollAreaMap({
   locationsData,
   onLocationHover,
   lowestYear,
   highestYear,
-  filterLowestYear,
   updateFilterHighestYear,
-  setIsHover
+  setIsHover,
+  filterHighestYear,
 }) {
-
-
   const handleAccordionHover = useCallback(
     (locationId) => {
-      onLocationHover(locationId);
+      onLocationHover(locationId)
     },
     [onLocationHover]
-  );
- 
+  )
 
   return (
-    <div className="absolute bottom-36 left-10 top-52">
-      <h4 className="mb-4 text-2xl font-black leading-none">Career Limeline</h4>
+    <div className="invisible absolute bottom-36 left-10 top-52 lg:visible">
+      <h4 className="mb-4 text-2xl font-black leading-none">Career Timeline</h4>
       <div className="mt-5 flex justify-normal space-x-2 py-1 pb-5">
         <p>{lowestYear}</p>
-        <Slider
-          defaultValue={[lowestYear]}
+        <SliderLifeTime
+          defaultValue={[50000]}
           min={lowestYear}
           max={highestYear}
           step={1}
-          filterLowestYear={[filterLowestYear]}
+          highestYear={[highestYear]}
+          lowestYear={lowestYear}
+          filterHighestYear={filterHighestYear}
           onValueChange={(newValue) => {
-            updateFilterHighestYear(newValue[0]);
+            updateFilterHighestYear(newValue[0])
           }}
         />
         <p>{highestYear}</p>
       </div>
+
       <h4 className="mb-4 text-2xl font-black leading-none">Locations</h4>
 
-      <ScrollArea className="h-full w-96 pr-2">
+      <ScrollArea className="translucent-background m-3 h-full w-96 rounded-lg pr-2">
         <div className="">
           <Accordion>
             {locationsData.map(({ locationId, title, count, eventInfo }) => (
@@ -58,18 +58,18 @@ export default function ScrollAreaMap({
                 value={locationId}
                 key={locationId}
                 id={locationId}
+                onMouseEnter={() => {
+                  handleAccordionHover(locationId)
+                  setIsHover(true)
+                }}
+                onMouseLeave={() => {
+                  handleAccordionHover(null)
+                  setIsHover(false)
+                }}
               >
                 <AccordionTrigger
                   id={locationId}
-                  className="flex justify-normal space-x-2 py-1"
-                  onMouseEnter={() => {
-                    handleAccordionHover(locationId);
-                    setIsHover(true);
-                  }}
-                  onMouseLeave={() => {
-                    handleAccordionHover(null);
-                    setIsHover(false);
-                  }}
+                  className="flex justify-normal py-0 hover:no-underline"
                 >
                   {" "}
                   <div className="mt-1 flex h-5 w-14 justify-center">
@@ -78,7 +78,7 @@ export default function ScrollAreaMap({
                     </Badge>
                   </div>
                   <p
-                    className="flex justify-self-start text-left"
+                    className="mx-1 flex w-full justify-self-start rounded-lg p-2 text-left hover:bg-secondary hover:text-primary "
                     key={locationId}
                   >
                     {title} for {count} times

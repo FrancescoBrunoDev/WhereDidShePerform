@@ -7,6 +7,9 @@
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
 
+    --transparentBackground: 0.5; /* Adjust the value (0.5) to control the transparency */
+    background-color: hsla(var(--background), var(--transparentBackground));
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
@@ -78,4 +81,10 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+.translucent-background {
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+  background-color: hsla(var(--background), 1); /* Adjust the alpha value (0.5) to control the transparency */
 }

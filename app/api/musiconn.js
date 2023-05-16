@@ -1,4 +1,3 @@
-
 async function queryData(query) {
   const url = `https://performance.musiconn.de/api?action=query&entity=person&person=${query}&sort=1&format=json`
   const res = await fetch(url)

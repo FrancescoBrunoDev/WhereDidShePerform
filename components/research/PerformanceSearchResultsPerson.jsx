@@ -16,17 +16,15 @@ export default function PerformanceSearchResults({ results }) {
     const event = results[0].person[personId].events.count
 
     return (
-      <Suspense fallback={<Loading />}>
-        <Link key={person.uid} href={`/${person.uid}/`}>
-          <Card key={person.uid}>
-            <CardHeader>{person.title}</CardHeader>
-            <CardFooter>
-              <Badge>Events {event}</Badge>
-              <Badge variant="secondary">{person.uid}</Badge>
-            </CardFooter>
-          </Card>
-        </Link>
-      </Suspense>
+      <Link key={person.uid} href={`/${person.uid}/`}>
+        <Card key={person.uid}>
+          <CardHeader>{person.title}</CardHeader>
+          <CardFooter className="gap-x-1">
+            <Badge>Events {event}</Badge>
+            <Badge variant="secondary">{person.uid}</Badge>
+          </CardFooter>
+        </Card>
+      </Link>
     )
   })
 
