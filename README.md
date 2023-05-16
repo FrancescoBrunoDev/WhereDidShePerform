@@ -1,4 +1,4 @@
-# Where did s(he) played
+# Where did s(he) played?
 
 
 I'm Francesco Bruno , a musicologist and programmer. Here, you can search for performers and explore where they have played throughout their lives using the vast Musiconn performance database.
