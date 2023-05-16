@@ -11,6 +11,6 @@ export const siteConfig = {
     }, */
   ],
   links: {
-    github: "https://github.com/franzbruno95",
+    github: "https://github.com/franzbruno95/Musiconnmap",
   },
 }

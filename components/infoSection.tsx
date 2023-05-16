@@ -35,7 +35,7 @@ export function InfoSection() {
           <DialogDescription>
             <div className="text-justify indent-4">
               <p>
-                I'm{" "}
+                I&aposm{" "}
                 <Link
                   className="hover:rounded-md hover:bg-secondary hover:p-1"
                   href={"https://www.francesco-bruno.com/"}
