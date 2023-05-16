@@ -3,7 +3,7 @@ import { Card, CardHeader } from "@/components/ui/card"
 
 export async function List({ locationsData }) {
   return (
-    <section>
+    <section className="mb-10">
       <div className="container mx-auto mt-32 lg:px-20 xl:px-44">
         {locationsData.map((location) => (
           <div key={location.locationId}>

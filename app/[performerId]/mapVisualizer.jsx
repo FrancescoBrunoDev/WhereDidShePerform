@@ -84,6 +84,7 @@ export default function MapVisualizer({
                 coordinates={coordinates}
                 key={locationId}
               >
+                
                 <circle
                   r={scaleRadius(count)}
                   fill={selectedLocationId === locationId ? "white" : "white"}
@@ -96,10 +97,6 @@ export default function MapVisualizer({
                         : isHover
                         ? "scale(0.2)"
                         : "scale(1)",
-                    animation:
-                      isHover && selectedLocationId !== locationId
-                        ? "circling 2s infinite"
-                        : "none",
                   }}
                   onMouseEnter={() => {
                     setSelectedLocationId(locationId)

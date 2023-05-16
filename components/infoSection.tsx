@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog"
 import { Icons } from "@/components/icons"
 
+const randomNumber = Math.floor(Math.random() * 1000) + 1;
+
 export function InfoSection() {
   return (
     <Dialog>
@@ -74,7 +76,7 @@ export function InfoSection() {
               <h1 className="text-xl font-black text-primary">Legend</h1>
               <div className="flex-col-2 mt-2 flex items-center">
                 <div className="pr-2">
-                  <Badge>1234</Badge>
+                  <Badge>{randomNumber}</Badge>
                 </div>
                 <div className="text-left font-normal">
                   <p>
