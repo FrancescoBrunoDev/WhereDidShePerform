@@ -1,64 +1,66 @@
 async function queryData(query) {
-  const url = `https://performance.musiconn.de/api?action=query&entity=person&person=${query}&sort=1&format=json`
-  const res = await fetch(url)
+  const url = `http://localhost:3003/api/queryData?query=${query}`; // Updated relative URL with query parameter
+  const response = await fetch(url);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
   }
 
-  const { records } = await res.json()
-  return records
+  const records = await response.json(); // Use response instead of undefined variable res
+  return records;
 }
 
-export { queryData }
+export { queryData };
 
 async function GetCoordinates(locationUid) {
-  const url = `https://performance.musiconn.de/api?action=get&location=${locationUid}&format=json`
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
+  const url = `http://localhost:3003/api/getCoordinates?locationUid=${locationUid}`; // Updated relative URL with locationUid parameter
+  const response = await fetch(url);
+  
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
   }
-  return res.json()
+
+  return response.json(); // Use response instead of undefined variable res
 }
 
-export { GetCoordinates }
+export { GetCoordinates };
 
 async function GetLocations(eventIud) {
+  const url = `http://localhost:3003/api/getLocations?eventIud=${eventIud}`; // Updated relative URL with eventIud parameter
+  const response = await fetch(url);
 
-  const url = `https://performance.musiconn.de/api?action=get&event=${eventIud}&props=locations|dates&format=json`
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
   }
-  
-  return res.json()
+
+  return response.json(); // Use response instead of undefined variable res
 }
 
-export { GetLocations }
+export { GetLocations };
 
 async function GetInfoPerson(PersonUid) {
-  const url = `https://performance.musiconn.de/api?action=get&person=${PersonUid}&format=json`
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
+  const url = `http://localhost:3003/api/getInfoPerson?PersonUid=${PersonUid}`; // Updated relative URL with PersonUid parameter
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
   }
 
-  const { person } = await res.json()
-  return person
+  const person = await response.json(); // Use response instead of undefined variable res
+  return person;
 }
 
-export { GetInfoPerson }
+export { GetInfoPerson };
 
 async function autocomplete(query) {
-  const url = `https://performance.musiconn.de/api?action=autocomplete&title=${query}&entities=person&format=json`
-  const res = await fetch(url)
+  const url = `http://localhost:3003/api/autocomplete?query=${query}`; // Updated relative URL with query parameter
+  const response = await fetch(url);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
+  if (!response.ok) {
+    throw new Error("Failed to fetch data");
   }
 
-  const autocomplete = await res.json()
-  return autocomplete
+  return response.json(); // Use response instead of undefined variable res
 }
 
-export { autocomplete }
+export { autocomplete };

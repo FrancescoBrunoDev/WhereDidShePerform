@@ -17,6 +17,7 @@ export default function Composer({ params }) {
   useEffect(() => {
     async function fetchData() {
       const data = await GetLocationsWithEventsAndTitle(id)
+      console.log(data, "data geo")
       setLocationsData(data)
     }
     if (id) fetchData()
@@ -25,6 +26,7 @@ export default function Composer({ params }) {
   useEffect(() => {
     async function getData() {
       const data = await GetInfoPerson(performerId)
+      console.log(data, "data composer")
       setId(data[performerId])
     }
     getData()

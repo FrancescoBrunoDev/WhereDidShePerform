@@ -1,3 +1,5 @@
+"ise client"
+
 import { Suspense } from "react"
 import Link from "next/link"
 
