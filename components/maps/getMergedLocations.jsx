@@ -22,8 +22,11 @@ export async function GetLocationsWithEventsAndTitle(performerId) {
       {}
     )
   } else {
-    event = await GetLocations(eventsNumbers.join("|"))
+    const result = await GetLocations(eventsNumbers.join("|"));
+    event = result.event;
   }
+
+  console.log(event, "event")
   // make a string of unique locationUids
   const locationUid = [
     ...new Set(
@@ -35,12 +38,12 @@ export async function GetLocationsWithEventsAndTitle(performerId) {
         .map((locationObj) => locationObj.location)
     ),
   ].join("|")
-
+  console.log(locationUid, "locationUid")
   // make an array of objects with eventId and locationId
   const eventLocations = []
   Object.keys(event).forEach((eventId) => {
     const locations = event[eventId].locations
-    const date = event[eventId]?.dates[0]?.date ?? null;
+    const date = event[eventId]?.dates[0]?.date ?? null
     if (locations && locations.length > 0) {
       locations
         .filter(
