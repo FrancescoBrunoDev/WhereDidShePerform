@@ -8,6 +8,7 @@ import {
   SunMedium,
   Twitter,
   Loader2,
+  Settings2,
   type Icon as LucideIcon,
 } from "lucide-react"
 import { TbBrandNextjs, TbBrandTailwind } from "react-icons/tb"
@@ -30,6 +31,7 @@ export const Icons = {
   loader: Loader2,
   info: Info,
   externalLink: ExternalLink,
+  settings: Settings2,
   nextjs: (props: LucideProps) => <TbBrandNextjs {...props} />,
   tailwind: (props: LucideProps) => <TbBrandTailwind {...props} />,
   reactsimpleMaps: (props: LucideProps) => (

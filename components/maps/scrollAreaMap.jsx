@@ -28,12 +28,13 @@ export default function ScrollAreaMap({
   )
 
   return (
-    <div className="absolute bottom-36 left-10 top-52 hidden lg:block">
+    <div className="absolute bottom-36 top-52 hidden lg:block lg:px-0">
       <h4 className="mb-4 text-2xl font-black leading-none">Career Timeline</h4>
-      <div className="mt-5 flex justify-normal space-x-2 py-1 pb-5">
+      <div className="mr-3 mt-5 flex items-center justify-normal space-x-2 py-1 pb-5">
         <p>{lowestYear}</p>
         <SliderLifeTime
-          defaultValue={[50000]}
+          className="overflow-hidden"
+          defaultValue={[2050]}
           min={lowestYear}
           max={highestYear}
           step={1}

@@ -6,7 +6,6 @@ import { Card, CardFooter, CardHeader } from "@/components/ui/card"
 import { Loading } from "@/components/loading"
 
 export default function PerformanceSearchResults({ results }) {
-  console.log(results)
   if (!results || results.length === 0 || !results[0].person) {
     return <p>No results found.</p>
   }

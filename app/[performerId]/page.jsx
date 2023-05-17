@@ -4,10 +4,10 @@ import { Suspense, useEffect, useState } from "react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GetLocationsWithEventsAndTitle } from "@/components/maps/getMergedLocations"
-import Loading from "./loading"
 
 import { GetInfoPerson } from "../api/musiconn"
 import { List } from "./list"
+import Loading from "./loading"
 import MapVisualizer from "./mapVisualizer"
 
 export default function Composer({ params }) {
@@ -81,30 +81,32 @@ export default function Composer({ params }) {
   )
 
   return (
-    <section className="lg:container relative">
+    <section className="relative">
       <Tabs defaultValue="map">
-        <div className="sticky top-16 flex w-full justify-center">
+        <div className="container sticky top-16">
           {id && (
-            <h1 className="absolute left-0 top-16 mb-10 w-96 text-4xl font-black px-5 lg:px-0">
+            <h1 className="container absolute top-16 mb-10 w-96 px-5 text-4xl font-black lg:px-0">
               {id.title}
             </h1>
           )}
-          <TabsList>
-            <TabsTrigger value="map">map</TabsTrigger>
-            <TabsTrigger value="list">list</TabsTrigger>
-          </TabsList>
+          <div className="flex justify-center">
+            <TabsList>
+              <TabsTrigger value="map">map</TabsTrigger>
+              <TabsTrigger value="list">list</TabsTrigger>
+            </TabsList>
+          </div>
         </div>
 
         <TabsContent value="map">
-            <Suspense fallback={<Loading />}>
-              <MapVisualizer
-                locationsData={filteredLocationsData}
-                lowestYear={lowestYear}
-                highestYear={highestYear}
-                filterHighestYear={filterHighestYear}
-                updateFilterHighestYear={updateFilterHighestYear}
-              />
-            </Suspense>
+          <Suspense fallback={<Loading />}>
+            <MapVisualizer
+              locationsData={filteredLocationsData}
+              lowestYear={lowestYear}
+              highestYear={highestYear}
+              filterHighestYear={filterHighestYear}
+              updateFilterHighestYear={updateFilterHighestYear}
+            />
+          </Suspense>
         </TabsContent>
         <TabsContent value="list">
           <Suspense fallback={<Loading />}>
