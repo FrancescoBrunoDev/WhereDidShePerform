@@ -1,15 +1,29 @@
 import { GetCoordinates, GetLocations } from "@/app/api/musiconn"
 
 export async function GetLocationsWithEventsAndTitle(performerId) {
-  const eventsNumbers = performerId.events.map((event) => event.event);
-  const halfLength = Math.ceil(eventsNumbers.length / 2);
-  const firstHalf = eventsNumbers.slice(0, halfLength);
-  const secondHalf = eventsNumbers.slice(halfLength);
+  let event = {}
+  const eventsNumbers = performerId.events.map((event) => event.event)
+  if (eventsNumbers.length > 500) {
+    const chunkSize = 500
+    const chunks = []
 
-  const firstHalfEvents = await GetLocations(firstHalf.join("|"));
-  const secondHalfEvents = await GetLocations(secondHalf.join("|"));
+    for (let i = 0; i < eventsNumbers.length; i += chunkSize) {
+      const chunk = eventsNumbers.slice(i, i + chunkSize)
+      chunks.push(chunk)
+    }
+    const eventPromises = chunks.map((chunk) => GetLocations(chunk.join("|")))
+    const chunkEvents = await Promise.all(eventPromises)
 
-  const event = { ...firstHalfEvents.event, ...secondHalfEvents.event };
+    event = chunkEvents.reduce(
+      (mergedEvent, chunkEvent) => ({
+        ...mergedEvent,
+        ...chunkEvent.event,
+      }),
+      {}
+    )
+  } else {
+    event = await GetLocations(eventsNumbers.join("|"))
+  }
   // make a string of unique locationUids
   const locationUid = [
     ...new Set(

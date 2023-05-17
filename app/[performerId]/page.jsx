@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GetLocationsWithEventsAndTitle } from "@/components/maps/getMergedLocations"
+import Loading from "./loading"
 
 import { GetInfoPerson } from "../api/musiconn"
 import { List } from "./list"
@@ -17,7 +18,6 @@ export default function Composer({ params }) {
   useEffect(() => {
     async function fetchData() {
       const data = await GetLocationsWithEventsAndTitle(id)
-      console.log(data, "data geo")
       setLocationsData(data)
     }
     if (id) fetchData()
@@ -26,7 +26,6 @@ export default function Composer({ params }) {
   useEffect(() => {
     async function getData() {
       const data = await GetInfoPerson(performerId)
-      console.log(data, "data composer")
       setId(data[performerId])
     }
     getData()
@@ -98,7 +97,7 @@ export default function Composer({ params }) {
 
         <TabsContent value="map">
           {locationsData && (
-            <Suspense>
+            <Suspense fallback={<Loading />}>
               <MapVisualizer
                 locationsData={filteredLocationsData}
                 lowestYear={lowestYear}
@@ -110,7 +109,7 @@ export default function Composer({ params }) {
           )}
         </TabsContent>
         <TabsContent value="list">
-          <Suspense>
+          <Suspense fallback={<Loading />}>
             <List locationsData={filteredLocationsData}></List>
           </Suspense>
         </TabsContent>

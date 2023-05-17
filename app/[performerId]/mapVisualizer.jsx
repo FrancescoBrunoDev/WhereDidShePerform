@@ -1,6 +1,4 @@
-"user client"
-
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import {
   ComposableMap,
   Geographies,
@@ -8,6 +6,7 @@ import {
   Marker,
   ZoomableGroup,
 } from "react-simple-maps"
+import Loading from "./loading"
 
 import ScrollAreaMap from "@/components/maps/scrollAreaMap"
 
@@ -41,6 +40,7 @@ export default function MapVisualizer({
 
   return (
     <section className="">
+      <Suspense fallback={<Loading />}>
       <ScrollAreaMap
         locationsData={locationsData}
         onLocationHover={(locationId) => setSelectedLocationId(locationId)}
@@ -50,6 +50,7 @@ export default function MapVisualizer({
         updateFilterHighestYear={updateFilterHighestYear}
         setIsHover={setIsHover}
       />
+      </Suspense>
       <section className="flex w-full content-center justify-center overflow-hidden">
         <ComposableMap
           className="h-[85vh] w-screen"
