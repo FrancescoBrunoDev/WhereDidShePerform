@@ -35,6 +35,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <html lang="en" suppressHydrationWarning>
         <head />
         <body
+          suppressHydrationWarning={true}
           className={cn(
             "static bg-background text-foreground antialiased",
             fontSans.variable
@@ -42,7 +43,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <SiteHeader />
-            <div>{children}</div>
+            {children}
             <TailwindIndicator />
           </ThemeProvider>
         </body>

@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GetLocationsWithEventsAndTitle } from "@/components/maps/getMergedLocations"
+import Loading from "./loading"
 
 import { GetInfoPerson } from "../api/musiconn"
 import { List } from "./list"
@@ -80,11 +81,11 @@ export default function Composer({ params }) {
   )
 
   return (
-    <section className="container relative">
+    <section className="lg:container relative">
       <Tabs defaultValue="map">
         <div className="sticky top-16 flex w-full justify-center">
           {id && (
-            <h1 className="absolute left-0 top-16 mb-10 w-96 text-4xl font-black">
+            <h1 className="absolute left-0 top-16 mb-10 w-96 text-4xl font-black px-5 lg:px-0">
               {id.title}
             </h1>
           )}
@@ -95,8 +96,7 @@ export default function Composer({ params }) {
         </div>
 
         <TabsContent value="map">
-          {locationsData && (
-            <Suspense>
+            <Suspense fallback={<Loading />}>
               <MapVisualizer
                 locationsData={filteredLocationsData}
                 lowestYear={lowestYear}
@@ -105,10 +105,9 @@ export default function Composer({ params }) {
                 updateFilterHighestYear={updateFilterHighestYear}
               />
             </Suspense>
-          )}
         </TabsContent>
         <TabsContent value="list">
-          <Suspense>
+          <Suspense fallback={<Loading />}>
             <List locationsData={filteredLocationsData}></List>
           </Suspense>
         </TabsContent>

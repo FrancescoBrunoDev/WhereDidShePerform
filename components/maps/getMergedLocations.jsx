@@ -40,7 +40,7 @@ export async function GetLocationsWithEventsAndTitle(performerId) {
   const eventLocations = []
   Object.keys(event).forEach((eventId) => {
     const locations = event[eventId].locations
-    const date = event[eventId].dates[0].date
+    const date = event[eventId]?.dates[0]?.date ?? null;
     if (locations && locations.length > 0) {
       locations
         .filter(

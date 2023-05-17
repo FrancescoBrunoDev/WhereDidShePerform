@@ -7,6 +7,7 @@ import {
   Moon,
   SunMedium,
   Twitter,
+  Loader2,
   type Icon as LucideIcon,
 } from "lucide-react"
 import { TbBrandNextjs, TbBrandTailwind } from "react-icons/tb"
@@ -26,6 +27,7 @@ export const Icons = {
     </svg>
   ),
   gitHub: Github,
+  loader: Loader2,
   info: Info,
   externalLink: ExternalLink,
   nextjs: (props: LucideProps) => <TbBrandNextjs {...props} />,

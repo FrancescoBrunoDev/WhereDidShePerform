@@ -28,7 +28,7 @@ export default function ScrollAreaMap({
   )
 
   return (
-    <div className="invisible absolute bottom-36 left-10 top-52 lg:visible">
+    <div className="absolute bottom-36 left-10 top-52 hidden lg:block">
       <h4 className="mb-4 text-2xl font-black leading-none">Career Timeline</h4>
       <div className="mt-5 flex justify-normal space-x-2 py-1 pb-5">
         <p>{lowestYear}</p>
@@ -49,7 +49,7 @@ export default function ScrollAreaMap({
 
       <h4 className="mb-4 text-2xl font-black leading-none">Locations</h4>
 
-      <ScrollArea className="translucent-background m-3 h-full w-96 rounded-lg pr-2">
+      <ScrollArea className="h-full w-96 rounded-lg pr-2">
         <div className="">
           <Accordion>
             {locationsData.map(({ locationId, title, count, eventInfo }) => (
@@ -78,7 +78,7 @@ export default function ScrollAreaMap({
                     </Badge>
                   </div>
                   <p
-                    className="mx-1 flex w-full justify-self-start rounded-lg p-2 text-left hover:bg-secondary hover:text-primary "
+                    className="mx-1 flex w-full justify-self-start rounded-lg p-2 text-left  hover:bg-secondary hover:text-primary"
                     key={locationId}
                   >
                     {title} for {count} times
