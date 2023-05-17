@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
 import {
-  useTransition,
-  useSpring,
-  useChain,
   animated,
+  useChain,
+  useSpring,
   useSpringRef,
-} from '@react-spring/web'
+  useTransition,
+} from "@react-spring/web"
 import {
   ComposableMap,
   Geographies,
@@ -114,13 +114,20 @@ export default function MapCamp({
         } else {
           newIsHighQuality = false
         }
-      } else {
         // Different configuration for non-Europe Map
         // Adjust these values according to your requirements
-        newScale = 150
-        newCenter = [-60, 0]
-        newMaxZoom = 2
-        newMaxRadius = 5 // Adjust the maximum radius for non-Europe Map
+      } else {
+        if (screenWidth < 768) {
+          newScale = 150
+          newCenter = [0, 0]
+          newMaxZoom = 2
+          newMaxRadius = 5
+        } else {
+          newScale = 150
+          newCenter = [-60, 0]
+          newMaxZoom = 2
+          newMaxRadius = 5 // Adjust the maximum radius for non-Europe Map
+        }
       }
 
       // Update the map configuration state
@@ -164,7 +171,10 @@ export default function MapCamp({
             <div className="w-40">
               <div className="mb-2 grid grid-cols-2 items-center space-x-2">
                 <Label>{isEuropeMap ? "World Map" : "Europe Map"}</Label>
-                <Switch className="data-[state=unchecked]:bg-primary" onClick={handleMapSwitch} />
+                <Switch
+                  className="data-[state=unchecked]:bg-primary"
+                  onClick={handleMapSwitch}
+                />
               </div>
               <div className=" grid grid-cols-2 items-center space-x-2">
                 {" "}
