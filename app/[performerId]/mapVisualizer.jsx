@@ -11,6 +11,8 @@ export default function MapVisualizer({
   highestYear,
   filterHighestYear,
   updateFilterHighestYear,
+  isByCity,
+  setIsByCity,
 }) {
   const [selectedLocationId, setSelectedLocationId] = useState(null)
   const [isHover, setIsHover] = useState(false)
@@ -26,17 +28,20 @@ export default function MapVisualizer({
           filterHighestYear={filterHighestYear}
           updateFilterHighestYear={updateFilterHighestYear}
           setIsHover={setIsHover}
+          isByCity={isByCity}
         />
       </div>
 
       <div className="flex w-full content-center justify-center overflow-hidden sm:max-h-screen">
-        <MapCamp
+{        <MapCamp
           locationsData={locationsData}
           isHover={isHover}
           setIsHover={setIsHover}
           selectedLocationId={selectedLocationId}
           setSelectedLocationId={setSelectedLocationId}
-        />
+          setIsByCity={setIsByCity}
+          isByCity={isByCity}
+        />}
       </div>
     </section>
   )

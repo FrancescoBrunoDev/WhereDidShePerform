@@ -1,8 +1,8 @@
 import { GetCoordinates, GetLocations } from "@/app/api/musiconn"
 
-export async function GetLocationsWithEventsAndTitle(performerId) {
+export async function GetLocationsWithEventsAndTitle(id, isByCity) {
   let event = {}
-  const eventsNumbers = performerId.events.map((event) => event.event)
+  const eventsNumbers = id.events.map((event) => event.event)
   if (eventsNumbers.length > 500) {
     const chunkSize = 500
     const chunks = []
@@ -22,10 +22,11 @@ export async function GetLocationsWithEventsAndTitle(performerId) {
       {}
     )
   } else {
-    const result = await GetLocations(eventsNumbers.join("|"));
-    event = result.event;
+    const result = await GetLocations(eventsNumbers.join("|"))
+    event = result.event
   }
 
+  // console.log(event, "event")
 
   // make a string of unique locationUids
   const locationUid = [
@@ -67,10 +68,11 @@ export async function GetLocationsWithEventsAndTitle(performerId) {
 
   // GET COORDINATES
   const data = await GetCoordinates(locationUid)
-
   // Create a map to store location data with associated event IDs and dates
   const locationMap = {}
   for (const eventLocation of eventLocations) {
+    const parents = data.location[eventLocation.locationId]?.parents
+    const categories = data.location[eventLocation.locationId]?.categories
     const locationId = eventLocation.locationId
     const locationInfo = data.location[locationId]
     const title = locationInfo ? locationInfo.title : null
@@ -91,6 +93,8 @@ export async function GetLocationsWithEventsAndTitle(performerId) {
           title,
           coordinates: [coordinates[1], coordinates[0]],
           eventInfo: [],
+          parents: parents || [],
+          categories: categories || [],
         }
       }
       if (eventId) {
@@ -106,7 +110,6 @@ export async function GetLocationsWithEventsAndTitle(performerId) {
       }
     }
   }
-
   // Convert the map to an array of locations with event counts and dates
   const locationsWithCount = Object.values(locationMap).map((location) => {
     return {
@@ -115,5 +118,53 @@ export async function GetLocationsWithEventsAndTitle(performerId) {
     }
   })
 
-  return locationsWithCount
+  const titlesWithSameCity = {}
+  const locationsWithSameCity = []
+  let key = 1
+
+  for (const location of locationsWithCount) {
+    const { title, coordinates } = location
+    const match = title.match(/\((.*?)\)/) // Find text within parentheses
+
+    if (match && match[1]) {
+      const city = match[1]
+
+      if (!titlesWithSameCity[city]) {
+        titlesWithSameCity[city] = {
+          count: 0, // Updated property name to count
+          locations: [],
+          coordinates: [0, 0],
+        }
+      }
+
+      titlesWithSameCity[city].locations.push(location)
+      titlesWithSameCity[city].count += location.count // Updated property name to count
+      titlesWithSameCity[city].coordinates[0] += coordinates[0]
+      titlesWithSameCity[city].coordinates[1] += coordinates[1]
+    }
+  }
+
+  for (const city in titlesWithSameCity) {
+    const { count, locations, coordinates } = titlesWithSameCity[city]
+    const countLocations = locations.length
+    const averageCoordinates = [
+      coordinates[0] / countLocations,
+      coordinates[1] / countLocations,
+    ]
+    locationsWithSameCity.push({
+      key,
+      city,
+      count, // Updated property name to count
+      countLocations,
+      locations,
+      coordinates: averageCoordinates,
+    })
+    key++
+  }
+
+  if (isByCity) {
+    return locationsWithSameCity
+  } else {
+    return locationsWithCount
+  }
 }
