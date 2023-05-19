@@ -1,6 +1,6 @@
 import { GetCoordinates, GetLocations } from "@/app/api/musiconn"
 
-export async function GetLocationsWithEventsAndTitle(id, isByCity) {
+export async function GetLocationsWithEventsAndTitle(id) {
   let event = {}
   const eventsNumbers = id.events.map((event) => event.event)
   if (eventsNumbers.length > 500) {
@@ -141,6 +141,24 @@ export async function GetLocationsWithEventsAndTitle(id, isByCity) {
       titlesWithSameCity[city].count += location.count // Updated property name to count
       titlesWithSameCity[city].coordinates[0] += coordinates[0]
       titlesWithSameCity[city].coordinates[1] += coordinates[1]
+    } else {
+      // Handle locations without a city match
+      const newCity = location.title
+
+      if (!titlesWithSameCity[newCity]) {
+        titlesWithSameCity[newCity] = {
+          count: 0, // Updated property name to count
+          locations: [],
+          coordinates: [0, 0],
+        }
+      }
+
+      titlesWithSameCity[newCity].locations.push(location)
+      titlesWithSameCity[newCity].count += location.count // Updated property name to count
+      titlesWithSameCity[newCity].coordinates[0] += coordinates[0]
+      titlesWithSameCity[newCity].coordinates[1] += coordinates[1]
+
+      key++
     }
   }
 
@@ -161,10 +179,6 @@ export async function GetLocationsWithEventsAndTitle(id, isByCity) {
     })
     key++
   }
-
-  if (isByCity) {
-    return locationsWithSameCity
-  } else {
-    return locationsWithCount
-  }
+  console.log(locationsWithSameCity, "locationsWithSameCity")
+  return locationsWithSameCity
 }

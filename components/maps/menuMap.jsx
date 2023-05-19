@@ -18,6 +18,7 @@ export default function MenuMap({
   isEuropeMap,
   isByCity,
 }) {
+
   return (
     <HoverCard openDelay={200}>
       <HoverCardTrigger>
@@ -36,13 +37,26 @@ export default function MenuMap({
           <div className="grid grid-cols-2 items-center space-x-2 ">
             <Label>{isEuropeMap ? "World Map" : "Europe Map"}</Label>
             <Switch
-              className="data-[state=unchecked]:bg-primary"
+              className="data-[state=checked]:bg-input"
               onCheckedChange={() => {
                 setChangeMap(changeMap + 1)
                 setTimeout(() => {
                   setIsGeoMap((prevIsGeoMap) => !prevIsGeoMap)
                 }, 100)
               }}
+              checked={isEuropeMap}
+            />
+          </div>
+          <div className="grid grid-cols-2 items-center space-x-2">
+            {" "}
+            {/* set the a drop shadow effect */}
+            <Label>Marks are {isByCity ? " Cities" : " Places"}</Label>
+            <Switch
+              className="data-[state=checked]:bg-input"
+              onCheckedChange={() => {
+                setIsByCity((prevIsByCity) => !prevIsByCity)
+              }}
+              checked={isByCity}
             />
           </div>
           <div className="grid grid-cols-2 items-center space-x-2">
@@ -53,19 +67,7 @@ export default function MenuMap({
               onCheckedChange={() => {
                 setIsHighQuality((prevIsHighQuality) => !prevIsHighQuality)
               }}
-              defaultChecked={isHighQuality} // Set the checked state based on isHighQuality
-            />
-          </div>
-          <div className="grid grid-cols-2 items-center space-x-2">
-            {" "}
-            {/* set the a drop shadow effect */}
-            <Label>Sorted by{isByCity ? " City" : " Place"}</Label>
-            <Switch
-              className="data-[state=unchecked]:bg-primary"
-              defaultChecked={isByCity} // Set the checked state based on isByCity
-              onCheckedChange={() => {
-                setIsByCity((prevIsByCity) => !prevIsByCity)
-              }}
+              checked={isHighQuality}
             />
           </div>
         </div>
