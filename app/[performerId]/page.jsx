@@ -11,10 +11,22 @@ import { List } from "./list"
 import Loading from "./loading"
 import MapVisualizer from "./mapVisualizer"
 
+const geoUrl =
+  "https://raw.githubusercontent.com/leakyMirror/map-of-europe/27a335110674ae5b01a84d3501b227e661beea2b/TopoJSON/europe.topojson"
+
+const worldUrl =
+  "https://raw.githubusercontent.com/deldersveld/topojson/master/world-countries.json"
+
 export default function Composer({ params }) {
   const [locationsData, setLocationsData] = useState([])
   const [id, setId] = useState(null)
   const [isByCity, setIsByCity] = useState(true) // Track the current map type
+
+  const [mapUrl, setMapUrl] = useState(geoUrl) // Initial map URL is geoUrl
+  const [isHighQuality, setIsHighQuality] = useState(true) // Track the current map type
+  const [isEuropeMap, setIsGeoMap] = useState(true) // Track the current map type
+  const [changeMap, setChangeMap] = useState(0)
+
   const { performerId } = params
 
   useEffect(() => {
@@ -118,12 +130,12 @@ export default function Composer({ params }) {
       <Tabs defaultValue="map">
         <div className="container sticky top-16">
           {id && (
-            <h1 className="container absolute top-16 mb-10 w-96 px-5 text-4xl font-black lg:px-0">
+            <h1 className="container z-10 absolute top-16 mb-10 w-96 px-5 text-4xl font-black lg:px-0">
               {id.title}
             </h1>
           )}
           <div className="flex justify-center">
-            <TabsList>
+            <TabsList className="z-10">
               <TabsTrigger value="map">map</TabsTrigger>
               <TabsTrigger value="list">list</TabsTrigger>
             </TabsList>
@@ -131,24 +143,34 @@ export default function Composer({ params }) {
         </div>
 
         <AnimatePresence>
-        <TabsContent value="map">
-          <Suspense fallback={<Loading />}>
-            <MapVisualizer
-              locationsData={filteredLocationsData}
-              lowestYear={lowestYear}
-              highestYear={highestYear}
-              filterHighestYear={filterHighestYear}
-              updateFilterHighestYear={updateFilterHighestYear}
-              isByCity={isByCity}
-              setIsByCity={setIsByCity}
-            />
-          </Suspense>
-        </TabsContent>
-        <TabsContent value="list">
-          <Suspense fallback={<Loading />}>
-            <List locationsData={filteredLocationsData}></List>
-          </Suspense>
-        </TabsContent>
+          <TabsContent value="map">
+            <Suspense fallback={<Loading />}>
+              <MapVisualizer
+                locationsData={filteredLocationsData}
+                lowestYear={lowestYear}
+                highestYear={highestYear}
+                filterHighestYear={filterHighestYear}
+                updateFilterHighestYear={updateFilterHighestYear}
+                isByCity={isByCity}
+                setIsByCity={setIsByCity}
+                isHighQuality={isHighQuality}
+                setIsHighQuality={setIsHighQuality}
+                isEuropeMap={isEuropeMap}
+                setIsGeoMap={setIsGeoMap}
+                changeMap={changeMap}
+                setChangeMap={setChangeMap}
+                mapUrl={mapUrl}
+                setMapUrl={setMapUrl}
+              />
+            </Suspense>
+          </TabsContent>
+          <TabsContent value="list">
+            <Suspense fallback={<Loading />}>
+              {filteredLocationsData && (
+                <List locationsData={filteredLocationsData} id={id} />
+              )}
+            </Suspense>
+          </TabsContent>
         </AnimatePresence>
       </Tabs>
     </m.section>

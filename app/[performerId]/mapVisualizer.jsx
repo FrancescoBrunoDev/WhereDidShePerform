@@ -13,6 +13,14 @@ export default function MapVisualizer({
   updateFilterHighestYear,
   isByCity,
   setIsByCity,
+  setIsHighQuality,
+  isHighQuality,
+  isEuropeMap,
+  setIsGeoMap,
+  changeMap,
+  setChangeMap,
+  mapUrl,
+  setMapUrl,
 }) {
   const [selectedLocationId, setSelectedLocationId] = useState(null)
   const [isHover, setIsHover] = useState(false)
@@ -41,6 +49,14 @@ export default function MapVisualizer({
           setSelectedLocationId={setSelectedLocationId}
           setIsByCity={setIsByCity}
           isByCity={isByCity}
+          isHighQuality={isHighQuality}
+          setIsHighQuality={setIsHighQuality}
+          isEuropeMap={isEuropeMap}
+          setIsGeoMap={setIsGeoMap}
+          changeMap={changeMap}
+          setChangeMap={setChangeMap}
+          mapUrl={mapUrl}
+          setMapUrl={setMapUrl}
         />}
       </div>
     </section>

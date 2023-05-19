@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react"
 import { AnimatePresence, motion as m } from "framer-motion"
-import Marks from "rc-slider/lib/Marks"
 import {
   ComposableMap,
   Geographies,
   Geography,
-  Marker,
-  ZoomableGroup,
 } from "react-simple-maps"
 
 import MarksMap from "./marksMarp"
@@ -26,12 +23,17 @@ export default function MapCamp({
   setSelectedLocationId,
   setIsByCity,
   isByCity,
+  isHighQuality,
+  setIsHighQuality,
+  isEuropeMap,
+  setIsGeoMap,
+  changeMap,
+  setChangeMap,
+  mapUrl,
+  setMapUrl,
 }) {
   // handle map switch
-  const [mapUrl, setMapUrl] = useState(geoUrl) // Initial map URL is geoUrl
-  const [isHighQuality, setIsHighQuality] = useState(true) // Track the current map type
-  const [isEuropeMap, setIsGeoMap] = useState(true) // Track the current map type
-  const [changeMap, setChangeMap] = useState(0)
+
 
   // map size based on screen size
   const [mapConfig, setMapConfig] = useState({
@@ -102,6 +104,10 @@ export default function MapCamp({
           newMaxZoom = 2
         } else if (screenWidth < 1280) {
           newScale = 110
+          newCenter = [-100, 0]
+          newMaxRadius = 5
+        } else if (screenWidth < 1536) {
+          newScale = 130
           newCenter = [-80, 0]
           newMaxRadius = 5
         } else {

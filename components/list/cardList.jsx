@@ -2,11 +2,9 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardHeader } from "@/components/ui/card"
 
 export default function CardList({ locationsData }) {
-  console.log("locationsData", locationsData)
   return (
     <div className="container mx-auto mt-32 lg:px-20 xl:px-44">
       {locationsData.map((city) => {
-        console.log(locationsData)
         return (
           <div key={city.city}>
             <div className="mb-5 mt-7 flex items-center space-x-2">
@@ -29,7 +27,31 @@ export default function CardList({ locationsData }) {
                         <Badge variant="secondary">
                           eventId: {event.eventId}
                         </Badge>
+                        <Badge variant="secondary">
+                          {event.eventCategory === 1
+                            ? "season"
+                            : event.eventCategory === 2
+                            ? "concert"
+                            : event.eventCategory === 3
+                            ? "religious event"
+                            : event.eventCategory === 4
+                            ? "music theater"
+                            : "unknown"}
+                        </Badge>
                         <Badge variant="secondary">date: {event.date}</Badge>
+
+                        {event.composerNamesArray?.map(
+                          (composer) => (
+                            (
+                              <>
+                                <Badge variant="secondary">
+                                  {" "}
+                                  {composer.title}
+                                </Badge>
+                              </>
+                            )
+                          )
+                        )}
                       </CardHeader>
                     </Card>
                   ))}

@@ -1,6 +1,11 @@
-import { GetCoordinates, GetLocations } from "@/app/api/musiconn"
+import {
+  GetCoordinates,
+  GetLocations,
+  GetNameComposer,
+  GetPerformances,
+} from "@/app/api/musiconn"
 
-export async function GetLocationsWithEventsAndTitle(id) {
+export async function GetListOfEvent(id, usePerformances = false) {
   let event = {}
   const eventsNumbers = id.events.map((event) => event.event)
   if (eventsNumbers.length > 500) {
@@ -11,7 +16,13 @@ export async function GetLocationsWithEventsAndTitle(id) {
       const chunk = eventsNumbers.slice(i, i + chunkSize)
       chunks.push(chunk)
     }
-    const eventPromises = chunks.map((chunk) => GetLocations(chunk.join("|")))
+
+    const eventPromises = chunks.map((chunk) =>
+      usePerformances
+        ? GetPerformances(chunk.join("|"))
+        : GetLocations(chunk.join("|"))
+    )
+
     const chunkEvents = await Promise.all(eventPromises)
 
     event = chunkEvents.reduce(
@@ -22,12 +33,86 @@ export async function GetLocationsWithEventsAndTitle(id) {
       {}
     )
   } else {
-    const result = await GetLocations(eventsNumbers.join("|"))
+    const result = await (usePerformances
+      ? GetPerformances(eventsNumbers.join("|"))
+      : GetLocations(eventsNumbers.join("|")))
     event = result.event
   }
 
-  // console.log(event, "event")
+  return event
+}
 
+export async function GetExpandedEventWithPerformances(id, locationsData) {
+  const event = await GetListOfEvent(id, true)
+
+  const expandedLocationsPerformance = locationsData.map((location) => {
+    return {
+      ...location,
+      locations: location.locations.map((locationObj) => {
+        return {
+          ...locationObj,
+          eventInfo: locationObj.eventInfo.map((eventInfo) => {
+            const uid = event[eventInfo.eventId]
+            return {
+              ...eventInfo,
+              eventData: uid,
+            }
+          }),
+        }
+      }),
+    }
+  })
+
+  let composerNumbers = []
+
+  expandedLocationsPerformance.forEach((location) => {
+    location.locations.forEach((locationObj) => {
+      locationObj.eventInfo.forEach((eventInfo) => {
+        eventInfo.eventData.performances?.forEach((performance) => {
+          performance.composers?.forEach((composer) => {
+            if (composer.person) {
+              composerNumbers.push(composer.person)
+            }
+          })
+        })
+      })
+    })
+  })
+
+  const composerNumbersSet = new Set(composerNumbers)
+  const composerNumbersString = Array.from(composerNumbersSet).join("|")
+  const composerNames = await GetNameComposer(composerNumbersString)
+
+  expandedLocationsPerformance.forEach((location) => {
+    location.locations.forEach((locationObj) => {
+      locationObj.eventInfo.forEach((eventInfo) => {
+        const composerNamesSet = new Set()
+
+        eventInfo.eventData.performances?.forEach((performance) => {
+          performance.composers?.forEach((composer) => {
+            if (composer.person) {
+              const composerName = composerNames[composer.person]
+              composer.person = {
+                id: composer.person,
+                name: composerName,
+              }
+              composerNamesSet.add(composerName)
+            }
+          })
+
+          eventInfo.composerNamesArray = Array.from(composerNamesSet)
+          eventInfo.composerNamesString =
+            eventInfo.composerNamesArray.join(", ")
+        })
+      })
+    })
+  })
+
+  return expandedLocationsPerformance
+}
+
+export async function GetLocationsWithEventsAndTitle(id) {
+  const event = await GetListOfEvent(id)
   // make a string of unique locationUids
   const locationUid = [
     ...new Set(
@@ -43,6 +128,7 @@ export async function GetLocationsWithEventsAndTitle(id) {
   // make an array of objects with eventId and locationId
   const eventLocations = []
   Object.keys(event).forEach((eventId) => {
+    const categories = event[eventId]?.categories[0]?.label ?? null
     const locations = event[eventId].locations
     const date = event[eventId]?.dates[0]?.date ?? null
     if (locations && locations.length > 0) {
@@ -55,6 +141,7 @@ export async function GetLocationsWithEventsAndTitle(id) {
             eventId: parseInt(eventId),
             locationId: locationObj.location,
             date: date,
+            categories: categories,
           })
         })
     } else {
@@ -62,6 +149,7 @@ export async function GetLocationsWithEventsAndTitle(id) {
         eventId: parseInt(eventId),
         locationId: 0,
         date: date,
+        categories: categories,
       })
     }
   })
@@ -85,6 +173,7 @@ export async function GetLocationsWithEventsAndTitle(id) {
         : null
     const eventId = eventLocation.eventId
     const date = eventLocation.date
+    const eventCategory = eventLocation.categories
 
     if (title && coordinates) {
       if (!locationMap[locationId]) {
@@ -101,11 +190,13 @@ export async function GetLocationsWithEventsAndTitle(id) {
         locationMap[locationId].eventInfo.push({
           eventId,
           date,
+          eventCategory,
         })
       } else {
         locationMap[locationId].eventInfo.push({
           eventId: null,
           date,
+          eventCategory,
         })
       }
     }
@@ -179,6 +270,6 @@ export async function GetLocationsWithEventsAndTitle(id) {
     })
     key++
   }
-  console.log(locationsWithSameCity, "locationsWithSameCity")
+
   return locationsWithSameCity
 }
