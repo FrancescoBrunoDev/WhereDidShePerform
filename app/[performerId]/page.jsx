@@ -80,7 +80,7 @@ export default function Composer({ params }) {
   const updateFilterHighestYear = (newValue) => {
     setFilterHighestYear(newValue)
   }
-  const filteredLocationsData = locationsData
+  const filteredLocationsDataTimeLine = locationsData
     .map((city) => {
       if (city.locations) {
         const filteredLocations = city.locations
@@ -115,7 +115,7 @@ export default function Composer({ params }) {
     })
 
   // Calculate the count of all filteredEventInfo items across all locations
-  const totalCount = filteredLocationsData.reduce(
+  const totalCount = filteredLocationsDataTimeLine.reduce(
     (sum, { count }) => sum + count,
     0
   )
@@ -127,16 +127,16 @@ export default function Composer({ params }) {
       transition={{ duration: 0.75, ease: "easeInOut" }}
       className="relative"
     >
-      <div className="container z-20">
+      <div className="container">
         {id && (
-          <h1 className="fixed top-32 z-10 w-96 text-4xl font-black">
+          <h1 className="fixed top-16 z-10 w-96 text-4xl font-black lg:top-32">
             {id.title}
           </h1>
         )}
       </div>
       <Tabs defaultValue="map">
-        <div className="fixed top-16 z-20 flex w-full justify-center">
-          <div className="flex justify-center">
+        <div className="fixed bottom-10 z-20 flex w-full justify-center lg:top-16">
+          <div className="flex justify-center shadow-lg lg:shadow-none">
             <TabsList className="z-10">
               <TabsTrigger value="map">map</TabsTrigger>
               <TabsTrigger value="list">list</TabsTrigger>
@@ -144,35 +144,49 @@ export default function Composer({ params }) {
           </div>
         </div>
 
-        <AnimatePresence>
-          <TabsContent value="map">
-            <Suspense fallback={<Loading />}>
-              <MapVisualizer
-                locationsData={filteredLocationsData}
-                lowestYear={lowestYear}
-                highestYear={highestYear}
-                filterHighestYear={filterHighestYear}
-                updateFilterHighestYear={updateFilterHighestYear}
-                isByCity={isByCity}
-                setIsByCity={setIsByCity}
-                isHighQuality={isHighQuality}
-                setIsHighQuality={setIsHighQuality}
-                isEuropeMap={isEuropeMap}
-                setIsGeoMap={setIsGeoMap}
-                changeMap={changeMap}
-                setChangeMap={setChangeMap}
-                mapUrl={mapUrl}
-                setMapUrl={setMapUrl}
-              />
-            </Suspense>
-          </TabsContent>
-          <TabsContent value="list">
-            <Suspense fallback={<Loading />}>
-              {filteredLocationsData && (
-                <List locationsData={filteredLocationsData} id={id} />
-              )}
-            </Suspense>
-          </TabsContent>
+        <AnimatePresence initial={false}>
+          <m.div
+            initial={{ x: 300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -300, opacity: 0 }}
+            key="map"
+          >
+            <TabsContent value="map">
+              <Suspense fallback={<Loading />}>
+                <MapVisualizer
+                  locationsData={filteredLocationsDataTimeLine}
+                  lowestYear={lowestYear}
+                  highestYear={highestYear}
+                  filterHighestYear={filterHighestYear}
+                  updateFilterHighestYear={updateFilterHighestYear}
+                  isByCity={isByCity}
+                  setIsByCity={setIsByCity}
+                  isHighQuality={isHighQuality}
+                  setIsHighQuality={setIsHighQuality}
+                  isEuropeMap={isEuropeMap}
+                  setIsGeoMap={setIsGeoMap}
+                  changeMap={changeMap}
+                  setChangeMap={setChangeMap}
+                  mapUrl={mapUrl}
+                  setMapUrl={setMapUrl}
+                />
+              </Suspense>
+            </TabsContent>
+          </m.div>
+          <m.div
+            initial={{ x: 300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -300, opacity: 0 }}
+            key="list"
+          >
+            <TabsContent value="list">
+              <Suspense fallback={<Loading />}>
+                {filteredLocationsDataTimeLine && (
+                  <List locationsData={filteredLocationsDataTimeLine} id={id} />
+                )}
+              </Suspense>
+            </TabsContent>
+          </m.div>
         </AnimatePresence>
       </Tabs>
     </m.section>

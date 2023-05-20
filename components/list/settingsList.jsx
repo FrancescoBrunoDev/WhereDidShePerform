@@ -1,3 +1,5 @@
+import { motion as m } from "framer-motion"
+
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Toggle } from "@/components/ui/toggle"
@@ -19,8 +21,12 @@ export default function SettingsList({
   isSeasonAvailable,
 }) {
   return (
-    <div className="container fixed top-56 z-10 flex items-center justify-around lg:top-40 lg:justify-end">
-      <div className="flex flex-wrap items-center space-x-3 divide-x divide-inherit rounded-lg bg-secondary py-2 px-4 md:space-y-0">
+    <m.div className="container flex justify-center lg:justify-end">
+      <m.div
+        initial={{ x: 5,  opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        className="fixed top-40 z-30 flex flex-wrap items-center space-x-3 divide-x divide-inherit rounded-lg bg-secondary px-4 py-2 md:space-y-0"
+      >
         <div className="flex grow justify-center space-x-3 py-3 lg:justify-end">
           {isConcertAvailable && (
             <div className="flex-cols-2 flex items-center space-x-2">
@@ -80,7 +86,7 @@ export default function SettingsList({
             How did s(he) played?
           </Toggle>
         </div>
-      </div>
-    </div>
+      </m.div>
+    </m.div>
   )
 }

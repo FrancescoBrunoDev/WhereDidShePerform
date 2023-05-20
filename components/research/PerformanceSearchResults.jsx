@@ -1,8 +1,13 @@
 import { Suspense } from "react"
 import Link from "next/link"
+import { motion as m } from "framer-motion"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardFooter, CardHeader } from "@/components/ui/card"
+import {
+  item,
+  list,
+} from "@/components/animationConst/animationConst"
 import { Loading } from "@/components/loading"
 
 import getRandomSentenceWithEmoji from "./randomSencences"
@@ -20,15 +25,17 @@ export default function PerformanceSearchResults({ results }) {
       return null // Exclude this person from the regular mapping
     } else {
       return (
-        <Link key={person.uid} href={`/${person.uid}/`}>
-          <Card key={person.uid}>
-            <CardHeader>{person.title}</CardHeader>
-            <CardFooter className="gap-x-1">
-              <Badge>Events {event}</Badge>
-              <Badge variant="secondary">{person.uid}</Badge>
-            </CardFooter>
-          </Card>
-        </Link>
+        <m.div variants={item}>
+          <Link key={person.uid} href={`/${person.uid}/`}>
+            <Card key={person.uid}>
+              <CardHeader>{person.title}</CardHeader>
+              <CardFooter className="gap-x-1">
+                <Badge>Events {event}</Badge>
+                <Badge variant="secondary">{person.uid}</Badge>
+              </CardFooter>
+            </Card>
+          </Link>
+        </m.div>
       )
     }
   })
@@ -46,42 +53,48 @@ export default function PerformanceSearchResults({ results }) {
     const sentenceWithEmoji = getRandomSentenceWithEmoji()
 
     content.unshift(
-      <Link key={person.uid} href={`/${person.uid}/`} className="col-span-2">
-        <Card key={person.uid} className="bg-accent  shadow-lg">
-          <CardHeader>
-            <span>{sentenceWithEmoji}</span>
-            <span style={{ fontWeight: "bold" }}>{cleanedTitle}</span>
-          </CardHeader>
-          <CardFooter className="gap-x-1">
-            <Badge>Events {event}</Badge>
-            <Badge variant="outline">{person.uid}</Badge>
-          </CardFooter>
-        </Card>
-      </Link>
+      <m.div variants={item} className="col-span-2">
+        <Link key={person.uid} href={`/${person.uid}/`}>
+          <Card key={person.uid} className="bg-accent  shadow-lg">
+            <CardHeader>
+              <span>{sentenceWithEmoji}</span>
+              <span style={{ fontWeight: "bold" }}>{cleanedTitle}</span>
+            </CardHeader>
+            <CardFooter className="gap-x-1">
+              <Badge>Events {event}</Badge>
+              <Badge variant="outline">{person.uid}</Badge>
+            </CardFooter>
+          </Card>
+        </Link>
+      </m.div>
     )
   } else {
     content.unshift(
-      <Card
-        key="no-results"
-        className="col-span-2 bg-accent text-center shadow-lg"
-      >
-        <CardHeader className="font-bold">
-          <span>Tip</span>
-        </CardHeader>
-        <CardFooter className="gap-x-1">
-          <span>
-            Mmm, that's strange. No luck finding a match! Are you in search of a
-            composer? Just a friendly reminder that Musiconn Performance
-            database primarily focuses on performers, not composers. 🎹
-          </span>
-        </CardFooter>
-      </Card>
+      <m.div variants={item} className="col-span-2">
+        <Card key="no-results" className="bg-accent text-center shadow-lg">
+          <CardHeader className="font-bold">
+            <span>Tip</span>
+          </CardHeader>
+          <CardFooter className="gap-x-1">
+            <span>
+              Mmm, that's strange. No luck finding a match! Are you in search of
+              a composer? Just a friendly reminder that Musiconn Performance
+              database primarily focuses on performers, not composers. 🎹
+            </span>
+          </CardFooter>
+        </Card>
+      </m.div>
     )
   }
 
   return (
-    <div className="grid grid-flow-row place-content-stretch gap-4 md:grid-cols-3 lg:grid-cols-4">
+    <m.div
+      initial="hidden"
+      animate="visible"
+      variants={list}
+      className="grid grid-flow-row place-content-stretch gap-4 md:grid-cols-3 lg:grid-cols-4"
+    >
       <Suspense fallback={<Loading />}>{content}</Suspense>
-    </div>
+    </m.div>
   )
 }

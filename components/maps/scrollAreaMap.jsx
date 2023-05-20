@@ -25,7 +25,7 @@ export default function ScrollAreaMap({
 
   return (
     <div className="container hidden lg:block">
-      <div className="fixed bottom-10 top-60 z-10 w-96">
+      <div className="fixed bottom-10 top-60 z-20 w-96">
         <h4 className="mb-4 mt-5 text-2xl font-black leading-none">
           Career Timeline
         </h4>
@@ -49,7 +49,7 @@ export default function ScrollAreaMap({
 
         <h4 className="mb-4 text-2xl font-black leading-none">Locations</h4>
 
-        <ScrollArea className="h-96 w-full rounded-lg pr-2">
+        <ScrollArea className="h-[30rem] w-full rounded-lg pr-2">
           <Accordion>
             <ScrollAreaItem
               locationsData={locationsData}

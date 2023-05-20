@@ -69,12 +69,12 @@ export default function MapCamp({
           newCenter = [-7, 0]
         } else if (screenWidth < 1536) {
           newScale = 850
-          newCenter = [-3, 0]
+          newCenter = [-5, 2]
           newMaxZoom = 1
           newMaxRadius = 10
         } else {
           newScale = 850
-          newCenter = [-3, 0]
+          newCenter = [-5, 2]
           newMaxRadius = 10
         }
 
@@ -138,7 +138,8 @@ export default function MapCamp({
   return (
     <>
       <div className="container flex justify-end">
-        <div className="fixed top-40 z-50">
+        <div className="fixed bottom-11 z-20
+         lg:top-40">
           <MenuMap
             setChangeMap={setChangeMap}
             changeMap={changeMap}
