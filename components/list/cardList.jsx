@@ -3,7 +3,7 @@ import { Card, CardHeader } from "@/components/ui/card"
 
 export default function CardList({ locationsData }) {
   return (
-    <div className="container mx-auto pt-60 lg:px-20 xl:px-44">
+    <div className="container mx-auto pt-72 lg:px-20 xl:px-44">
       {locationsData.map((city) => {
         const hasEvents = city.locations.some(
           (location) => location.eventInfo.length > 0
@@ -41,7 +41,7 @@ export default function CardList({ locationsData }) {
                               </Badge>
                             </div>
                             <div className="grid grid-cols-1 gap-2 w-full justify-center">
-                              <div className="inline-flex items-center rounded-lg bg-secondary px-2.5 py-0.5 text-xs font-black">
+                              <div className="inline-flex items-center rounded-lg bg-secondary px-2.5 py-0.5 text-xs font-bold text-c">
                                 {event.date}
                               </div>
                               <div className="inline-flex items-center rounded-lg bg-secondary px-2.5 py-0.5 text-xs font-semibold">

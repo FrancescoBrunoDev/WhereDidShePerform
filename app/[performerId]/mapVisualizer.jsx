@@ -26,7 +26,7 @@ export default function MapVisualizer({
   const [isHover, setIsHover] = useState(false)
 
   return (
-    <section className="">
+    <section className=" ">
       <ScrollAreaMap
         locationsData={locationsData}
         onLocationHover={(locationId) => setSelectedLocationId(locationId)}

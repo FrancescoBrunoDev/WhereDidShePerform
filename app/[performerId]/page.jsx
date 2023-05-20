@@ -127,9 +127,9 @@ export default function Composer({ params }) {
       transition={{ duration: 0.75, ease: "easeInOut" }}
       className="relative"
     >
-      <div className="container fixed top-32 z-20">
+      <div className="container z-20">
         {id && (
-          <h1 className="container absolute z-10 mb-10 w-96 px-5 text-4xl font-black lg:px-0">
+          <h1 className="fixed top-32 z-10 w-96 text-4xl font-black">
             {id.title}
           </h1>
         )}

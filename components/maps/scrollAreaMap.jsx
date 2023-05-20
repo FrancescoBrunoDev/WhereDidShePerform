@@ -24,8 +24,8 @@ export default function ScrollAreaMap({
   )
 
   return (
-    <div className="container">
-      <div className="fixed bottom-10 top-56 z-10 w-96">
+    <div className="container hidden lg:block">
+      <div className="fixed bottom-10 top-60 z-10 w-96">
         <h4 className="mb-4 mt-5 text-2xl font-black leading-none">
           Career Timeline
         </h4>

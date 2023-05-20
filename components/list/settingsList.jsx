@@ -20,7 +20,7 @@ export default function SettingsList({
 }) {
   return (
     <div className="container fixed top-56 z-10 flex items-center justify-around lg:top-40 lg:justify-end">
-      <div className="flex flex-wrap items-center space-x-3 divide-x divide-inherit rounded-lg bg-secondary p-2 md:space-y-0">
+      <div className="flex flex-wrap items-center space-x-3 divide-x divide-inherit rounded-lg bg-secondary py-2 px-4 md:space-y-0">
         <div className="flex grow justify-center space-x-3 py-3 lg:justify-end">
           {isConcertAvailable && (
             <div className="flex-cols-2 flex items-center space-x-2">

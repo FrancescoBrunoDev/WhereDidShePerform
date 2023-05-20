@@ -137,8 +137,8 @@ export default function MapCamp({
 
   return (
     <>
-      <>
-        <div className="container fixed top-40 z-50 flex justify-end">
+      <div className="container flex justify-end">
+        <div className="fixed top-40 z-50">
           <MenuMap
             setChangeMap={setChangeMap}
             changeMap={changeMap}
@@ -150,11 +150,11 @@ export default function MapCamp({
             isByCity={isByCity}
           />
         </div>
-      </>
+      </div>
       <>
         <AnimatePresence initial={false} mode="wait">
           <m.div
-            className="fixed top-32 bottom-0 h-[80vh] z-[-1]"
+            className="fixed bottom-0 top-32 z-[-1] h-[80vh]"
             key={changeMap}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

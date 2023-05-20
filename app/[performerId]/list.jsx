@@ -80,7 +80,7 @@ export default function List({ locationsData, id }) {
       <Suspense fallback={<Loading />}>
         <section className="relative mb-10 lg:container">
           <CardList locationsData={filteredLocationsData} />
-          <div className="fixed top-0 h-80 w-full bg-gradient-to-b from-background from-40% via-background to-transparent" />
+          <div className="fixed top-0 h-80 w-full bg-gradient-to-b from-background from-70% via-background to-transparent" />
         </section>
       </Suspense>
     </>
