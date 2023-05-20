@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react"
 import { AnimatePresence, motion as m } from "framer-motion"
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-} from "react-simple-maps"
+import { ComposableMap, Geographies, Geography } from "react-simple-maps"
 
 import MarksMap from "./marksMarp"
 import MenuMap from "./menuMap"
@@ -33,7 +29,6 @@ export default function MapCamp({
   setMapUrl,
 }) {
   // handle map switch
-
 
   // map size based on screen size
   const [mapConfig, setMapConfig] = useState({
@@ -141,72 +136,62 @@ export default function MapCamp({
   const { scale, center, maxZoom } = mapConfig
 
   return (
-    <div className="">
-      <div className="container z-50 flex justify-end">
-        <MenuMap
-          setChangeMap={setChangeMap}
-          changeMap={changeMap}
-          setIsGeoMap={setIsGeoMap}
-          setIsHighQuality={setIsHighQuality}
-          isHighQuality={isHighQuality}
-          isEuropeMap={isEuropeMap}
-          setIsByCity={setIsByCity}
-          isByCity={isByCity}
-        />
-      </div>
-
-      <AnimatePresence initial={false} mode="wait">
-        <m.div
-          key={changeMap}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <ComposableMap
-            className="h-[80vh] w-screen"
-            projection={isEuropeMap ? "geoAzimuthalEquidistant" : undefined}
-            projectionConfig={{
-              rotate: isEuropeMap ? [-10.0, -52.0, 0] : [-10, 0, 0],
-              center: center,
-              scale: scale,
-            }}
+    <>
+      <>
+        <div className="container fixed top-40 z-50 flex justify-end">
+          <MenuMap
+            setChangeMap={setChangeMap}
+            changeMap={changeMap}
+            setIsGeoMap={setIsGeoMap}
+            setIsHighQuality={setIsHighQuality}
+            isHighQuality={isHighQuality}
+            isEuropeMap={isEuropeMap}
+            setIsByCity={setIsByCity}
+            isByCity={isByCity}
+          />
+        </div>
+      </>
+      <>
+        <AnimatePresence initial={false} mode="wait">
+          <m.div
+            className="fixed top-32 bottom-0 h-[80vh] z-[-1]"
+            key={changeMap}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
           >
-            {/* <ZoomableGroup zoom={1} maxZoom={maxZoom}> */}
-            <Geographies
-              geography={mapUrl}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+            <ComposableMap
+              className="h-[80vh] w-screen"
+              projection={isEuropeMap ? "geoAzimuthalEquidistant" : undefined}
+              projectionConfig={{
+                rotate: isEuropeMap ? [-10.0, -52.0, 0] : [-10, 0, 0],
+                center: center,
+                scale: scale,
+              }}
             >
-              {({ geographies }) =>
-                geographies.map((geo) => (
-                  <Geography
-                    key={geo.rsmKey}
-                    fill="transparent"
-                    stroke="currentColor"
-                    strokeWidth="0.7"
-                    geography={geo}
-                  />
-                ))
-              }
-            </Geographies>{" "}
-            {isByCity ? (
-              <MarksMap
-                locationsData={locationsData}
-                isByCity={isByCity}
-                isHighQuality={isHighQuality}
-                selectedLocationId={selectedLocationId}
-                setSelectedLocationId={setSelectedLocationId}
-                isHover={isHover}
-                setIsHover={setIsHover}
-                mapConfig={mapConfig}
-              />
-            ) : (
-              locationsData.map(({ locations }) => (
+              {/* <ZoomableGroup zoom={1} maxZoom={maxZoom}> */}
+              <Geographies
+                geography={mapUrl}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                {({ geographies }) =>
+                  geographies.map((geo) => (
+                    <Geography
+                      key={geo.rsmKey}
+                      fill="transparent"
+                      stroke="currentColor"
+                      strokeWidth="0.7"
+                      geography={geo}
+                    />
+                  ))
+                }
+              </Geographies>{" "}
+              {isByCity ? (
                 <MarksMap
-                  key={locations}
-                  locationsData={locations}
+                  locationsData={locationsData}
                   isByCity={isByCity}
                   isHighQuality={isHighQuality}
                   selectedLocationId={selectedLocationId}
@@ -215,12 +200,26 @@ export default function MapCamp({
                   setIsHover={setIsHover}
                   mapConfig={mapConfig}
                 />
-              ))
-            )}
-            {/* </ZoomableGroup> */}
-          </ComposableMap>
-        </m.div>
-      </AnimatePresence>
-    </div>
+              ) : (
+                locationsData.map(({ locations }) => (
+                  <MarksMap
+                    key={locations}
+                    locationsData={locations}
+                    isByCity={isByCity}
+                    isHighQuality={isHighQuality}
+                    selectedLocationId={selectedLocationId}
+                    setSelectedLocationId={setSelectedLocationId}
+                    isHover={isHover}
+                    setIsHover={setIsHover}
+                    mapConfig={mapConfig}
+                  />
+                ))
+              )}
+              {/* </ZoomableGroup> */}
+            </ComposableMap>
+          </m.div>
+        </AnimatePresence>
+      </>
+    </>
   )
 }

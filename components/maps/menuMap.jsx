@@ -1,9 +1,9 @@
 import { buttonVariants } from "@/components/ui/button"
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Icons } from "@/components/icons"
@@ -20,8 +20,8 @@ export default function MenuMap({
 }) {
 
   return (
-    <HoverCard openDelay={200}>
-      <HoverCardTrigger>
+    <Popover openDelay={200}>
+      <PopoverTrigger>
         <div
           className={buttonVariants({
             size: "sm",
@@ -31,8 +31,8 @@ export default function MenuMap({
           <Icons.settings className="h-5 w-5" />
           <span className="sr-only">settings</span>
         </div>
-      </HoverCardTrigger>
-      <HoverCardContent>
+      </PopoverTrigger>
+      <PopoverContent>
         <div className="grid w-40 grid-cols-1 gap-y-2">
           <div className="grid grid-cols-2 items-center space-x-2 ">
             <Label>{isEuropeMap ? "World Map" : "Europe Map"}</Label>
@@ -71,7 +71,7 @@ export default function MenuMap({
             />
           </div>
         </div>
-      </HoverCardContent>
-    </HoverCard>
+      </PopoverContent>
+    </Popover>
   )
 }

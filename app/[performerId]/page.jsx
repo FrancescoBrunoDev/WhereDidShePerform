@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { GetLocationsWithEventsAndTitle } from "@/components/maps/getMergedLocations"
 
 import { GetInfoPerson } from "../api/musiconn"
-import { List } from "./list"
+import List from "./list"
 import Loading from "./loading"
 import MapVisualizer from "./mapVisualizer"
 
@@ -127,13 +127,15 @@ export default function Composer({ params }) {
       transition={{ duration: 0.75, ease: "easeInOut" }}
       className="relative"
     >
+      <div className="container fixed top-32 z-20">
+        {id && (
+          <h1 className="container absolute z-10 mb-10 w-96 px-5 text-4xl font-black lg:px-0">
+            {id.title}
+          </h1>
+        )}
+      </div>
       <Tabs defaultValue="map">
-        <div className="container sticky top-16">
-          {id && (
-            <h1 className="container z-10 absolute top-16 mb-10 w-96 px-5 text-4xl font-black lg:px-0">
-              {id.title}
-            </h1>
-          )}
+        <div className="fixed top-16 z-20 flex w-full justify-center">
           <div className="flex justify-center">
             <TabsList className="z-10">
               <TabsTrigger value="map">map</TabsTrigger>

@@ -24,30 +24,32 @@ export default function ScrollAreaMap({
   )
 
   return (
-    <div className="absolute bottom-36 top-52 hidden lg:block lg:px-0">
-      <h4 className="mb-4 text-2xl font-black leading-none">Career Timeline</h4>
-      <div className="mr-3 mt-5 flex items-center justify-normal space-x-2 py-1 pb-5">
-        <p className="w-15">{lowestYear}</p>
-        <SliderLifeTime
-          className="overflow-hidden"
-          defaultValue={[2050]}
-          min={lowestYear}
-          max={highestYear}
-          step={1}
-          highestYear={[highestYear]}
-          lowestYear={lowestYear}
-          filterHighestYear={filterHighestYear}
-          onValueChange={(newValue) => {
-            updateFilterHighestYear(newValue[0])
-          }}
-        />
-        <p className="w-15">{highestYear}</p>
-      </div>
+    <div className="container">
+      <div className="fixed bottom-10 top-56 z-10 w-96">
+        <h4 className="mb-4 mt-5 text-2xl font-black leading-none">
+          Career Timeline
+        </h4>
+        <div className="mr-3 flex items-center justify-normal space-x-2 py-1 pb-5">
+          <p className="w-15">{lowestYear}</p>
+          <SliderLifeTime
+            className="overflow-hidden"
+            defaultValue={[2050]}
+            min={lowestYear}
+            max={highestYear}
+            step={1}
+            highestYear={[highestYear]}
+            lowestYear={lowestYear}
+            filterHighestYear={filterHighestYear}
+            onValueChange={(newValue) => {
+              updateFilterHighestYear(newValue[0])
+            }}
+          />
+          <p className="w-15">{highestYear}</p>
+        </div>
 
-      <h4 className="mb-4 text-2xl font-black leading-none">Locations</h4>
+        <h4 className="mb-4 text-2xl font-black leading-none">Locations</h4>
 
-      <ScrollArea className="h-full w-96 rounded-lg pr-2">
-        <div className="">
+        <ScrollArea className="h-96 w-full rounded-lg pr-2">
           <Accordion>
             <ScrollAreaItem
               locationsData={locationsData}
@@ -56,8 +58,8 @@ export default function ScrollAreaMap({
               isByCity={isByCity}
             />
           </Accordion>
-        </div>
-      </ScrollArea>
+        </ScrollArea>
+      </div>
     </div>
   )
 }
