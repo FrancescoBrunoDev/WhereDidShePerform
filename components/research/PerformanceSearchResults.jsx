@@ -77,7 +77,7 @@ export default function PerformanceSearchResults({ results }) {
           </CardHeader>
           <CardFooter className="gap-x-1">
             <span>
-              Mmm, that's strange. No luck finding a match! Are you in search of
+              Mmm, that&apos;s strange. No luck finding a match! Are you in search of
               a composer? Just a friendly reminder that Musiconn Performance
               database primarily focuses on performers, not composers. 🎹
             </span>

@@ -40,8 +40,8 @@ export default function MapCamp({
 
   useEffect(() => {
     // Update the map URL based on the current map type
-    setMapUrl(isEuropeMap ? geoUrl : worldUrl)
-  }, [isEuropeMap])
+    setMapUrl(isEuropeMap ? geoUrl : worldUrl);
+  }, [isEuropeMap]);
 
   useEffect(() => {
     const updateMapConfig = () => {
