@@ -13,6 +13,7 @@ export default function ScrollAreaItem({
   setIsHover,
   isByCity,
 }) {
+
   return (
     <div>
       {locationsData.map(({ city, locations, key, locationId }) => (
@@ -22,7 +23,7 @@ export default function ScrollAreaItem({
             <AccordionItem
               className="justify-normal border-0"
               value={locationId}
-              key={isByCity ? key : locationId}
+              key={locationId}
               id={locationId}
               onMouseEnter={() => {
                 handleAccordionHover(isByCity ? key : locationId)

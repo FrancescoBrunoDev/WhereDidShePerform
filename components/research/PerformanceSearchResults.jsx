@@ -25,8 +25,8 @@ export default function PerformanceSearchResults({ results }) {
       return null // Exclude this person from the regular mapping
     } else {
       return (
-        <m.div variants={item}>
-          <Link key={person.uid} href={`/${person.uid}/`}>
+        <m.div key={person.uid} variants={item}>
+          <Link  href={`/${person.uid}/`}>
             <Card key={person.uid}>
               <CardHeader>{person.title}</CardHeader>
               <CardFooter className="gap-x-1">
@@ -53,8 +53,8 @@ export default function PerformanceSearchResults({ results }) {
     const sentenceWithEmoji = getRandomSentenceWithEmoji()
 
     content.unshift(
-      <m.div variants={item} className="col-span-2">
-        <Link key={person.uid} href={`/${person.uid}/`}>
+      <m.div variants={item} key={person.uid} className="col-span-2">
+        <Link href={`/${person.uid}/`}>
           <Card key={person.uid} className="bg-accent  shadow-lg">
             <CardHeader>
               <span>{sentenceWithEmoji}</span>

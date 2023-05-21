@@ -61,9 +61,12 @@ export default function MarksMap({
                       : { scale: 0.2 }
                     : { scale: 1 }
                 }
-                transition={{ duration: transitionDuration, delay: transitionDuration }}
+                transition={{
+                  duration: transitionDuration,
+                  delay: transitionDuration,
+                }}
+                key={isByCity ? key : locationId}
                 exit={{ scale: 0 }}
-
                 r={scaleRadius(count)}
                 fill={
                   isByCity

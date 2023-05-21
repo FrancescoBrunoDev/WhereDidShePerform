@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { motion as m } from "framer-motion"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 import { autocomplete } from "@/app/api/musiconn"
-
-import { itemSearchBox, listSearchBox } from "../animationConst/animationConst"
 
 export default function PerformanceSearchForm({ onSubmit }) {
   const [searchTerm, setSearchTerm] = useState("")
@@ -63,29 +61,23 @@ export default function PerformanceSearchForm({ onSubmit }) {
           placeholder="Search for a performer"
         />
         {isScrollAreaVisible && suggestions.length > 0 && (
-          <m.div
-            initial="hidden"
-            animate={isScrollAreaVisible ? "visible" : "hidden"}
-            variants={listSearchBox}
-          >
-            <ScrollArea className="absolute mt-3 h-72 rounded-md border bg-background md:w-96">
-              <m.div varians={itemSearchBox} className="p-4">
-                {suggestions.map((suggestion, index) => (
-                  <div
-                    className="rounded-lg p-2 hover:bg-secondary"
-                    key={index}
-                    onClick={() => handleSuggestionClick(suggestion[0])}
-                    style={{
-                      cursor: "pointer",
-                    }}
-                  >
-                    {suggestion[0]}
-                    {/* <Separator className="my-2" /> */}
-                  </div>
-                ))}
-              </m.div>
-            </ScrollArea>
-          </m.div>
+          <ScrollArea className="absolute mt-3 h-72 rounded-md border bg-background md:w-96">
+            <div className="p-4">
+              {suggestions.map((suggestion, index) => (
+                <div
+                  className="rounded-lg p-2 hover:bg-secondary"
+                  key={index}
+                  onClick={() => handleSuggestionClick(suggestion[0])}
+                  style={{
+                    cursor: "pointer",
+                  }}
+                >
+                  {suggestion[0]}
+                  {/* <Separator className="my-2" /> */}
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
         )}
       </div>
       <Button type="submit">Search</Button>

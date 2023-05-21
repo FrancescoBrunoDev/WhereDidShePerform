@@ -1,9 +1,13 @@
 "use client"
 
 import { Suspense, useEffect, useState } from "react"
-import { AnimatePresence, motion as m } from "framer-motion"
+import { motion as m } from "framer-motion"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  checkCategoryAvailability,
+  filterLocationsData,
+} from "@/components/list/filterLocationsData"
 import { GetLocationsWithEventsAndTitle } from "@/components/maps/getMergedLocations"
 
 import { GetInfoPerson } from "../api/musiconn"
@@ -25,7 +29,51 @@ export default function Composer({ params }) {
   const [mapUrl, setMapUrl] = useState(geoUrl) // Initial map URL is geoUrl
   const [isHighQuality, setIsHighQuality] = useState(true) // Track the current map type
   const [isEuropeMap, setIsGeoMap] = useState(true) // Track the current map type
-  const [changeMap, setChangeMap] = useState(0)
+  const [changeMap, setChangeMap] = useState(0) // Track if the map is changed
+  const [expandedLocations, setExpandedLocations] = useState(false) // Track if the composer is expanded
+  const [concerts, setConcerts] = useState(true) // Track if the concerts-filter are triggered
+  const [musicTheater, setMusicTheater] = useState(true) // Track if the musicTheater-filter are triggered
+  const [religiousEvent, setReligiousEvent] = useState(true) // Track if the religiousEvent-filter are triggered
+  const [season, setSeason] = useState(true) // Track if the season-filter are triggered
+  const [areAllFiltersDeactivated, setAreAllFiltersDeactivated] =
+    useState(false)
+
+  const [isConcertCategoryAvailable, setIsConcertCategoryAvailable] =
+    useState(true)
+  const [isMusicTheaterCategoryAvailable, setIsMusicTheaterCategoryAvailable] =
+    useState(true)
+  const [
+    isReligiousEventCategoryAvailable,
+    setIsReligiousEventCategoryAvailable,
+  ] = useState(true)
+  const [isSeasonCategoryAvailable, setIsSeasonCategoryAvailable] =
+    useState(true)
+
+  const handleFilterChange = () => {
+    if (
+      (!concerts || !isConcertCategoryAvailable) &&
+      (!musicTheater || !isMusicTheaterCategoryAvailable) &&
+      (!religiousEvent || !isReligiousEventCategoryAvailable) &&
+      (!season || !isSeasonCategoryAvailable)
+    ) {
+      setAreAllFiltersDeactivated(true)
+    } else {
+      setAreAllFiltersDeactivated(false)
+    }
+  }
+
+  useEffect(() => {
+    handleFilterChange()
+  }, [
+    concerts,
+    musicTheater,
+    religiousEvent,
+    season,
+    isConcertCategoryAvailable,
+    isMusicTheaterCategoryAvailable,
+    isReligiousEventCategoryAvailable,
+    isSeasonCategoryAvailable,
+  ])
 
   const { performerId } = params
 
@@ -80,6 +128,7 @@ export default function Composer({ params }) {
   const updateFilterHighestYear = (newValue) => {
     setFilterHighestYear(newValue)
   }
+
   const filteredLocationsDataTimeLine = locationsData
     .map((city) => {
       if (city.locations) {
@@ -120,6 +169,44 @@ export default function Composer({ params }) {
     0
   )
 
+  const [filteredLocationsData, setFilteredLocationsData] = useState(
+    filteredLocationsDataTimeLine
+  )
+
+  useEffect(() => {
+    filterLocationsData(
+      expandedLocations,
+      concerts,
+      musicTheater,
+      religiousEvent,
+      season,
+      id,
+      filteredLocationsDataTimeLine,
+      setFilteredLocationsData
+    )
+
+    const seasonAvailable = checkCategoryAvailability(locationsData, 1)
+    setIsSeasonCategoryAvailable(seasonAvailable)
+
+    const concertAvailable = checkCategoryAvailability(locationsData, 2)
+    setIsConcertCategoryAvailable(concertAvailable)
+
+    const religiousEventAvailable = checkCategoryAvailability(locationsData, 3)
+    setIsReligiousEventCategoryAvailable(religiousEventAvailable)
+
+    const musicTheaterAvailable = checkCategoryAvailability(locationsData, 4)
+    setIsMusicTheaterCategoryAvailable(musicTheaterAvailable)
+  }, [
+    expandedLocations,
+    concerts,
+    musicTheater,
+    religiousEvent,
+    season,
+    id,
+    filteredLocationsDataTimeLine,
+    setFilteredLocationsData,
+  ])
+
   return (
     <m.section
       initial={{ opacity: 0 }}
@@ -129,7 +216,7 @@ export default function Composer({ params }) {
     >
       <div className="container">
         {id && (
-          <h1 className="fixed top-16 z-10 w-96 text-4xl font-black lg:top-32">
+          <h1 className="fixed top-16 z-10 w-fit lg:w-96 text-3xl md:text-4xl font-black lg:top-32">
             {id.title}
           </h1>
         )}
@@ -144,50 +231,59 @@ export default function Composer({ params }) {
           </div>
         </div>
 
-        <AnimatePresence initial={false}>
-          <m.div
-            initial={{ x: 300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -300, opacity: 0 }}
-            key="map"
-          >
-            <TabsContent value="map">
-              <Suspense fallback={<Loading />}>
-                <MapVisualizer
-                  locationsData={filteredLocationsDataTimeLine}
-                  lowestYear={lowestYear}
-                  highestYear={highestYear}
-                  filterHighestYear={filterHighestYear}
-                  updateFilterHighestYear={updateFilterHighestYear}
-                  isByCity={isByCity}
-                  setIsByCity={setIsByCity}
-                  isHighQuality={isHighQuality}
-                  setIsHighQuality={setIsHighQuality}
-                  isEuropeMap={isEuropeMap}
-                  setIsGeoMap={setIsGeoMap}
-                  changeMap={changeMap}
-                  setChangeMap={setChangeMap}
-                  mapUrl={mapUrl}
-                  setMapUrl={setMapUrl}
+        <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key="map">
+          <TabsContent value="map">
+            <Suspense fallback={<Loading />}>
+              <MapVisualizer
+                locationsData={filteredLocationsData}
+                lowestYear={lowestYear}
+                highestYear={highestYear}
+                filterHighestYear={filterHighestYear}
+                updateFilterHighestYear={updateFilterHighestYear}
+                isByCity={isByCity}
+                setIsByCity={setIsByCity}
+                isHighQuality={isHighQuality}
+                setIsHighQuality={setIsHighQuality}
+                isEuropeMap={isEuropeMap}
+                setIsGeoMap={setIsGeoMap}
+                changeMap={changeMap}
+                setChangeMap={setChangeMap}
+                mapUrl={mapUrl}
+                setMapUrl={setMapUrl}
+              />
+            </Suspense>
+          </TabsContent>
+        </m.div>
+        <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key="list">
+          <TabsContent value="list">
+            <Suspense fallback={<Loading />}>
+              {filteredLocationsData && (
+                <List
+                  filteredLocationsData={filteredLocationsData}
+                  setExpandedLocations={setExpandedLocations}
+                  setConcerts={setConcerts}
+                  setMusicTheater={setMusicTheater}
+                  setReligiousEvent={setReligiousEvent}
+                  setSeason={setSeason}
+                  isConcertCategoryAvailable={isConcertCategoryAvailable}
+                  isMusicTheaterCategoryAvailable={
+                    isMusicTheaterCategoryAvailable
+                  }
+                  isReligiousEventCategoryAvailable={
+                    isReligiousEventCategoryAvailable
+                  }
+                  isSeasonCategoryAvailable={isSeasonCategoryAvailable}
+                  concerts={concerts}
+                  musicTheater={musicTheater}
+                  religiousEvent={religiousEvent}
+                  season={season}
+                  areAllFiltersDeactivated={areAllFiltersDeactivated}
+                  expandedLocations={expandedLocations}
                 />
-              </Suspense>
-            </TabsContent>
-          </m.div>
-          <m.div
-            initial={{ x: 300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -300, opacity: 0 }}
-            key="list"
-          >
-            <TabsContent value="list">
-              <Suspense fallback={<Loading />}>
-                {filteredLocationsDataTimeLine && (
-                  <List locationsData={filteredLocationsDataTimeLine} id={id} />
-                )}
-              </Suspense>
-            </TabsContent>
-          </m.div>
-        </AnimatePresence>
+              )}
+            </Suspense>
+          </TabsContent>
+        </m.div>
       </Tabs>
     </m.section>
   )

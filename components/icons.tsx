@@ -9,6 +9,7 @@ import {
   Twitter,
   Loader2,
   Settings2,
+  X,
   type Icon as LucideIcon,
 } from "lucide-react"
 import { TbBrandNextjs, TbBrandTailwind } from "react-icons/tb"
@@ -29,6 +30,7 @@ export const Icons = {
   ),
   gitHub: Github,
   loader: Loader2,
+  exit: X,
   info: Info,
   externalLink: ExternalLink,
   settings: Settings2,

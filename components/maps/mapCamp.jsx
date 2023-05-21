@@ -40,8 +40,8 @@ export default function MapCamp({
 
   useEffect(() => {
     // Update the map URL based on the current map type
-    setMapUrl(isEuropeMap ? geoUrl : worldUrl);
-  }, [isEuropeMap]);
+    setMapUrl(isEuropeMap ? geoUrl : worldUrl)
+  }, [isEuropeMap])
 
   useEffect(() => {
     const updateMapConfig = () => {
@@ -58,7 +58,7 @@ export default function MapCamp({
           newScale = 900
           newCenter = [6, 0]
           newMaxZoom = 1.5
-          newMaxRadius = 8
+          newMaxRadius = 20
         } else if (screenWidth < 1024) {
           newScale = 850
           newCenter = [6, 3]
@@ -138,8 +138,10 @@ export default function MapCamp({
   return (
     <>
       <div className="container flex justify-end">
-        <div className="fixed bottom-11 z-20
-         lg:top-40">
+        <div
+          className="fixed bottom-11 z-20
+         lg:top-40"
+        >
           <MenuMap
             setChangeMap={setChangeMap}
             changeMap={changeMap}
