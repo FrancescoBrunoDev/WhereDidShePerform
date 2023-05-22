@@ -90,7 +90,9 @@ export function SettingsList({
 
         <Separator className="bg-primary" orientation="vertical" />
 
-        <div className="flex-cols-2 flex h-10 space-x-2 pl-3">
+        <m.div
+          className="flex-cols-2 flex h-10 space-x-2 pl-3"
+        >
           {expandedLocations && (
             <ComposerSearchBox
               locationsData={locationsData}
@@ -110,7 +112,7 @@ export function SettingsList({
           >
             {expandedLocations ? <Icons.exit /> : "How did s(he) played?"}
           </Toggle>
-        </div>
+        </m.div>
       </m.div>
     </m.div>
   )
