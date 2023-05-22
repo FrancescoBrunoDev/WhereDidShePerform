@@ -1,5 +1,3 @@
-"use client"
-
 import React from "react"
 import * as SliderPrimitive from "@radix-ui/react-slider"
 
@@ -44,7 +42,7 @@ const SliderLifeTime = React.forwardRef(
       <SliderPrimitive.Root
         ref={ref}
         className={cn(
-          "relative flex w-full touch-none select-none items-center",
+          "relative flex h-16 w-full touch-none select-none items-center",
           className
         )}
         {...props}
@@ -55,7 +53,7 @@ const SliderLifeTime = React.forwardRef(
         </SliderPrimitive.Track>
         {value.map((i) => (
           <SliderPrimitive.Thumb key={i} className="">
-            <p className="pb-8 text-sm text-background hover:text-primary">
+            <p className="w-10 pb-8 text-center text-sm text-background animate-in hover:text-primary">
               {filterHighestYear}
             </p>
           </SliderPrimitive.Thumb>

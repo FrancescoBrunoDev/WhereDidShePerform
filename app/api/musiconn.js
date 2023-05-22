@@ -13,7 +13,7 @@ async function queryData(query) {
 export { queryData }
 
 async function GetCoordinates(locationUid) {
-  const url = `https://performance.musiconn.de/api?action=get&location=${locationUid}&format=json`
+  const url = `https://performance.musiconn.de/api?action=get&location=${locationUid}&props=title|geometries|uid|parents|categories&format=json`
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error("Failed to fetch data")
@@ -25,7 +25,7 @@ export { GetCoordinates }
 
 async function GetLocations(eventIud) {
 
-  const url = `https://performance.musiconn.de/api?action=get&event=${eventIud}&props=locations|dates&format=json`
+  const url = `https://performance.musiconn.de/api?action=get&event=${eventIud}&props=locations|dates|categories&format=json`
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error("Failed to fetch data")
@@ -35,6 +35,19 @@ async function GetLocations(eventIud) {
 }
 
 export { GetLocations }
+
+async function GetPerformances(eventIud) {
+
+  const url = `https://performance.musiconn.de/api?action=get&event=${eventIud}&props=|performances|uid&format=json`
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+  
+  return res.json()
+}
+
+export { GetPerformances }
 
 async function GetInfoPerson(PersonUid) {
   const url = `https://performance.musiconn.de/api?action=get&person=${PersonUid}&format=json`
@@ -48,6 +61,19 @@ async function GetInfoPerson(PersonUid) {
 }
 
 export { GetInfoPerson }
+
+async function GetNameComposer(PersonUid) {
+  const url = `https://performance.musiconn.de/api?action=get&person=${PersonUid}&props=title&format=json`
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+
+  const { person } = await res.json()
+  return person
+}
+
+export { GetNameComposer }
 
 async function autocomplete(query) {
   const url = `https://performance.musiconn.de/api?action=autocomplete&title=${query}&entities=person&format=json`

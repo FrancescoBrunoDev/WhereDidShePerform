@@ -16,7 +16,7 @@ export default function PerformanceSearch() {
     <section className="">
       <div className="sticky top-[-5rem] bg-background pb-14 pt-32">
         <h1 className="pb-5 text-6xl font-black md:text-8xl">
-          Who&apos;s the player?
+          Who&apos;s the performer?
         </h1>
         <PerformanceSearchForm onSubmit={handleSearch} />
       </div>
