@@ -4,17 +4,29 @@ import { motion as m } from "framer-motion"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardFooter, CardHeader } from "@/components/ui/card"
-import {
-  item,
-  list,
-} from "@/components/animationConst/animationConst"
+import { item, list } from "@/components/animationConst/animationConst"
 import { Loading } from "@/components/loading"
 
 import getRandomSentenceWithEmoji from "./randomSencences"
 
 export default function PerformanceSearchResults({ results }) {
-  if (!results || results.length === 0 || !results[0].person) {
-    return <p>No results found.</p>
+  if (!results || results.length === 0) {
+    return null
+  }
+
+  if (!results[0].person) {
+    return (
+      <m.div
+        initial="hidden"
+        animate="visible"
+        variants={list}
+        className="mt-20 flex justify-center"
+      >
+        <div className="rounded-lg bg-secondary p-2">
+          <p className="text-sm">no result found</p>
+        </div>
+      </m.div>
+    )
   }
 
   const content = Object.keys(results[0].person).map((personId) => {
@@ -26,7 +38,7 @@ export default function PerformanceSearchResults({ results }) {
     } else {
       return (
         <m.div key={person.uid} variants={item}>
-          <Link  href={`/${person.uid}/`}>
+          <Link href={`/${person.uid}/`}>
             <Card key={person.uid}>
               <CardHeader>{person.title}</CardHeader>
               <CardFooter className="gap-x-1">
@@ -77,9 +89,10 @@ export default function PerformanceSearchResults({ results }) {
           </CardHeader>
           <CardFooter className="gap-x-1">
             <span>
-              Mmm, that&apos;s strange. No luck finding a match! Are you in search of
-              a composer? Just a friendly reminder that Musiconn Performance
-              database primarily focuses on performers, not composers. 🎹
+              Mmm, that&apos;s strange. No luck finding a match! Are you in
+              search of a composer? Just a friendly reminder that Musiconn
+              Performance database primarily focuses on performers, not
+              composers. 🎹
             </span>
           </CardFooter>
         </Card>

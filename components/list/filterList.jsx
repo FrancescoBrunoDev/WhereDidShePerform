@@ -1,5 +1,5 @@
-import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 
 export function FilterList({
   setConcerts,
@@ -18,7 +18,7 @@ export function FilterList({
   return (
     <>
       {isConcertAvailable && (
-        <div className="flex-cols-2 flex items-center space-x-2">
+        <div className="lg:flex-cols-2 grid grid-cols-2 items-center space-x-2 lg:flex">
           <Label>Concerts</Label>
           <Switch
             onCheckedChange={() => {
@@ -29,7 +29,7 @@ export function FilterList({
         </div>
       )}
       {isMusicTheaterAvailable && (
-        <div className="flex-cols-2 flex items-center space-x-2">
+        <div className="lg:flex-cols-2 grid grid-cols-2 items-center space-x-2 lg:flex">
           <Label>Music Theatre</Label>
           <Switch
             onCheckedChange={() => {
@@ -40,7 +40,7 @@ export function FilterList({
         </div>
       )}
       {isReligiousEventAvailable && (
-        <div className="flex-cols-2 flex items-center space-x-2">
+        <div className="lg:flex-cols-2 grid grid-cols-2 items-center space-x-2 lg:flex">
           <Label>Religious Event</Label>
           <Switch
             onCheckedChange={() => {
@@ -51,7 +51,7 @@ export function FilterList({
         </div>
       )}
       {isSeasonAvailable && (
-        <div className="grid grid-cols-2 items-center space-x-2">
+        <div className=" lg:flex-cols-2 grid grid-cols-2 items-center space-x-2 lg:flex">
           <Label>Season</Label>
           <Switch
             onCheckedChange={() => {

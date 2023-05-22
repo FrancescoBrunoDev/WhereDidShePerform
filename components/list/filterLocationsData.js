@@ -21,8 +21,9 @@ export async function filterLocationsData(
   filterLowestYear,
   filterHighestYear
 ) {
-  let filteredData = locationsData
 
+  // Apply timeline filter
+  let filteredData = locationsData
   filteredData = getEventFilteredByTimeLine(
     locationsData,
     filterLowestYear,
@@ -33,7 +34,36 @@ export async function filterLocationsData(
     filteredData = locationsWithComposer
   }
 
-  filteredData = filteredData
+  // Apply category filter
+  let categoryFilteredData = filteredData
+  categoryFilteredData = getEventsByCathegoryFilters(
+    filteredData,
+    concerts,
+    musicTheater,
+    religiousEvent,
+    season
+  )
+
+  // Apply composer filter
+  let composerFilteredData = categoryFilteredData
+  if (selectedComposerNames.length > 0) {
+    composerFilteredData = getEventsByComposerSearch(
+      selectedComposerNames,
+      filteredData
+    )
+  }
+
+  setFilteredLocationsData(composerFilteredData)
+}
+
+export function getEventsByCathegoryFilters(
+  filteredDataByTimeLine,
+  concerts,
+  musicTheater,
+  religiousEvent,
+  season
+) {
+  const filteredData = filteredDataByTimeLine
     .map((city) => {
       const { locations, count: totalCount } = city
       const filteredLocations = locations.reduce((filtered, location) => {
@@ -72,16 +102,7 @@ export async function filterLocationsData(
     })
     .filter((city) => city)
 
-  // Apply composer filter
-  let composerFilteredData = filteredData
-  if (selectedComposerNames.length > 0) {
-    composerFilteredData = getEventsByComposerSearch(
-      selectedComposerNames,
-      filteredData
-    )
-  }
-
-  setFilteredLocationsData(composerFilteredData)
+  return filteredData
 }
 
 export function getEventsByComposerSearch(

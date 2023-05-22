@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import {
-  getAvailableComposers,
-} from "@/components/list/filterLocationsData"
+import { getAvailableComposers } from "@/components/list/filterLocationsData"
 
-export function ComposerSearchBox({ locationsData, setSelectedComposerNames, selectedComposerNames}) {
+export function ComposerSearchBox({
+  locationsData,
+  setSelectedComposerNames,
+  selectedComposerNames,
+}) {
   const [searchQuery, setSearchQuery] = useState("")
   const [suggestions, setSuggestions] = useState([])
 
@@ -27,15 +29,15 @@ export function ComposerSearchBox({ locationsData, setSelectedComposerNames, sel
 
   return (
     <div className="flex-cols-2 flex content-center space-x-2 pb-5">
-      <div className="static">
+      <div className="static w-48 sm:w-64 md:w-72">
         <Input
           placeholder="Composer"
           value={searchQuery}
           onChange={handleInputChange}
-          className=" md:w-72"
+          className=""
         />
         {suggestions.length > 0 && (
-          <ScrollArea className="absolute mt-5 h-72 w-40 rounded-md border bg-background md:w-72">
+          <ScrollArea className="absolute mt-5  h-72 rounded-md border bg-background">
             <div className="p-4">
               {selectedComposerNames.length > 0 &&
                 selectedComposerNames.map((name) => (

@@ -4,10 +4,12 @@ import { Suspense, useEffect, useState } from "react"
 import { motion as m } from "framer-motion"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ToastAction } from "@/components/ui/toast"
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from "@/components/ui/use-toast"
 import {
   checkCategoryAvailability,
   filterLocationsData,
-  getEventFilteredByTimeLine,
 } from "@/components/list/filterLocationsData"
 import {
   GetExpandedEventWithPerformances,
@@ -131,18 +133,11 @@ export default function Composer({ params }) {
 
   let filterLowestYear = lowestYear
 
-  const [filterHighestYear, setFilterHighestYear] = useState([highestYear])
+  const [filterHighestYear, setFilterHighestYear] = useState()
 
   const updateFilterHighestYear = (newValue) => {
     setFilterHighestYear(newValue)
   }
-
-/*   const filteredLocationsDataTimeLine = getEventFilteredByTimeLine(
-    locationsData,
-    filterLowestYear,
-    filterHighestYear,
-    setFilteredLocationsData
-  ) */
 
   useEffect(() => {
     async function fetchData() {
@@ -157,7 +152,6 @@ export default function Composer({ params }) {
       fetchData()
     }
   }, [id, expandedLocations])
-
 
   useEffect(() => {
     filterLocationsData(
@@ -196,7 +190,7 @@ export default function Composer({ params }) {
     selectedComposerNames,
     locationsWithComposer,
     filterLowestYear,
-    filterHighestYear
+    filterHighestYear,
   ])
 
   // Calculate the count of all filteredEventInfo items across all locations
@@ -204,6 +198,7 @@ export default function Composer({ params }) {
       (sum, { count }) => sum + count,
       0
     ) */
+  const { toast } = useToast()
 
   return (
     <m.section
@@ -223,7 +218,25 @@ export default function Composer({ params }) {
         <div className="fixed bottom-10 z-20 flex w-full justify-center lg:top-16">
           <div className="flex justify-center shadow-lg lg:shadow-none">
             <TabsList className="z-10">
-              <TabsTrigger value="map">map</TabsTrigger>
+              <TabsTrigger
+                onClick={() => {
+                  toast({
+                    title: areAllFiltersDeactivated
+                      ? "It's more fun with at least one filter!"
+                      : "The map is updated with your filter settings!",
+                    action: (
+                      <ToastAction altText="Goto schedule to undo">
+                        {areAllFiltersDeactivated
+                          ? "leave me alone!"
+                          : "Thanks!"}
+                      </ToastAction>
+                    ),
+                  })
+                }}
+                value="map"
+              >
+                map
+              </TabsTrigger>
               <TabsTrigger value="list">list</TabsTrigger>
             </TabsList>
           </div>
@@ -285,6 +298,7 @@ export default function Composer({ params }) {
           </TabsContent>
         </m.div>
       </Tabs>
+      <Toaster />
     </m.section>
   )
 }
