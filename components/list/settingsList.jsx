@@ -104,6 +104,7 @@ export function SettingsList({
               setExpandedLocations(
                 (prevExpandedLocations) => !prevExpandedLocations
               )
+              setSelectedComposerNames([])
             }}
             checked={expandedLocations}
           >

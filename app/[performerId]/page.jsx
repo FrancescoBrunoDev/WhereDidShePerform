@@ -1,6 +1,5 @@
 "use client"
 
-import { get } from "http"
 import { Suspense, useEffect, useState } from "react"
 import { motion as m } from "framer-motion"
 
@@ -9,9 +8,11 @@ import {
   checkCategoryAvailability,
   filterLocationsData,
   getEventFilteredByTimeLine,
-  getEventsByComposerSearch,
 } from "@/components/list/filterLocationsData"
-import { GetLocationsWithEventsAndTitle } from "@/components/maps/getMergedLocations"
+import {
+  GetExpandedEventWithPerformances,
+  GetLocationsWithEventsAndTitle,
+} from "@/components/maps/getMergedLocations"
 
 import { GetInfoPerson } from "../api/musiconn"
 import List from "./list"
@@ -51,6 +52,10 @@ export default function Composer({ params }) {
   ] = useState(true)
   const [isSeasonCategoryAvailable, setIsSeasonCategoryAvailable] =
     useState(true)
+
+  const [filteredLocationsData, setFilteredLocationsData] = useState()
+  const [selectedComposerNames, setSelectedComposerNames] = useState([])
+  const [locationsWithComposer, setlocationsWithComposer] = useState([])
 
   const handleFilterChange = () => {
     if (
@@ -132,23 +137,27 @@ export default function Composer({ params }) {
     setFilterHighestYear(newValue)
   }
 
-  const filteredLocationsDataTimeLine = getEventFilteredByTimeLine(
+/*   const filteredLocationsDataTimeLine = getEventFilteredByTimeLine(
     locationsData,
     filterLowestYear,
-    filterHighestYear
-  )
-
-  /*   // Calculate the count of all filteredEventInfo items across all locations
-  const totalCount = filteredLocationsDataTimeLine.reduce(
-    (sum, { count }) => sum + count,
-    0
+    filterHighestYear,
+    setFilteredLocationsData
   ) */
 
-  const [filteredLocationsData, setFilteredLocationsData] = useState(
-    filteredLocationsDataTimeLine
-  )
+  useEffect(() => {
+    async function fetchData() {
+      const locationsWithComposer = await GetExpandedEventWithPerformances(
+        id,
+        locationsData
+      )
+      setlocationsWithComposer(locationsWithComposer)
+    }
 
-  const [selectedComposerNames, setSelectedComposerNames] = useState([])
+    if (expandedLocations) {
+      fetchData()
+    }
+  }, [id, expandedLocations])
+
 
   useEffect(() => {
     filterLocationsData(
@@ -157,12 +166,13 @@ export default function Composer({ params }) {
       musicTheater,
       religiousEvent,
       season,
-      id,
-      filteredLocationsDataTimeLine,
+      locationsData,
       setFilteredLocationsData,
-      selectedComposerNames
+      selectedComposerNames,
+      locationsWithComposer,
+      filterLowestYear,
+      filterHighestYear
     )
-  
 
     const seasonAvailable = checkCategoryAvailability(locationsData, 1)
     setIsSeasonCategoryAvailable(seasonAvailable)
@@ -181,11 +191,19 @@ export default function Composer({ params }) {
     musicTheater,
     religiousEvent,
     season,
-    id,
-    filteredLocationsDataTimeLine,
+    locationsData,
     setFilteredLocationsData,
     selectedComposerNames,
+    locationsWithComposer,
+    filterLowestYear,
+    filterHighestYear
   ])
+
+  // Calculate the count of all filteredEventInfo items across all locations
+  /*     const totalCount = filteredLocationsData.reduce(
+      (sum, { count }) => sum + count,
+      0
+    ) */
 
   return (
     <m.section

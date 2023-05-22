@@ -16,7 +16,7 @@ export default function ScrollAreaItem({
 
   return (
     <div>
-      {locationsData.map(({ city, locations, key, locationId }) => (
+      {locationsData?.map(({ city, locations, key, locationId }) => (
         <div key={isByCity ? key : locationId}>
           <h2 className="font-black">{city}</h2>
           {locations.map(({ locationId, title, count, eventInfo }) => (

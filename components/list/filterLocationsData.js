@@ -1,5 +1,3 @@
-import { GetExpandedEventWithPerformances } from "@/components/maps/getMergedLocations"
-
 export function checkCategoryAvailability(locationsData, category) {
   const isCategoryAvailable = locationsData.some((city) =>
     city.locations.some((location) =>
@@ -16,49 +14,63 @@ export async function filterLocationsData(
   musicTheater,
   religiousEvent,
   season,
-  id,
-  filteredLocationsDataTimeLine,
+  locationsData,
   setFilteredLocationsData,
-  selectedComposerNames
+  selectedComposerNames,
+  locationsWithComposer,
+  filterLowestYear,
+  filterHighestYear
 ) {
-  let filteredData = filteredLocationsDataTimeLine
+  let filteredData = locationsData
+
+  filteredData = getEventFilteredByTimeLine(
+    locationsData,
+    filterLowestYear,
+    filterHighestYear
+  )
 
   if (expandedLocations) {
-    filteredData = await GetExpandedEventWithPerformances(id, filteredData)
+    filteredData = locationsWithComposer
   }
 
   filteredData = filteredData
     .map((city) => {
-      let totalCount = 0
-      const filteredLocations = city.locations
-        .map((location) => {
-          const filteredEventInfo = location.eventInfo.filter(
-            (event) =>
-              (concerts || event.eventCategory !== 2) &&
-              (musicTheater || event.eventCategory !== 4) &&
-              (religiousEvent || event.eventCategory !== 3) &&
-              (season || event.eventCategory !== 1)
-          )
+      const { locations, count: totalCount } = city
+      const filteredLocations = locations.reduce((filtered, location) => {
+        const filteredEventInfo = location.eventInfo.filter(
+          (event) =>
+            (concerts || event.eventCategory !== 2) &&
+            (musicTheater || event.eventCategory !== 4) &&
+            (religiousEvent || event.eventCategory !== 3) &&
+            (season || event.eventCategory !== 1)
+        )
 
-          const count = filteredEventInfo.length
-          totalCount += count
+        const count = filteredEventInfo.length
 
-          return {
+        if (count > 0) {
+          const updatedLocation = {
             ...location,
             eventInfo: filteredEventInfo,
-            count: count,
+            count,
           }
-        })
-        .filter((location) => location.count > 0)
+          filtered.push(updatedLocation)
+        }
 
-      return {
-        ...city,
-        locations: filteredLocations,
-        count: totalCount,
-        countLocations: filteredLocations.length,
+        return filtered
+      }, [])
+
+      if (filteredLocations.length > 0) {
+        return {
+          ...city,
+          locations: filteredLocations,
+          count: totalCount,
+          countLocations: filteredLocations.length,
+        }
       }
+
+      return null
     })
-    .filter((city) => city.countLocations > 0)
+    .filter((city) => city)
 
   // Apply composer filter
   let composerFilteredData = filteredData
@@ -72,70 +84,55 @@ export async function filterLocationsData(
   setFilteredLocationsData(composerFilteredData)
 }
 
-export function getAvailableComposers(locationsData) {
-  const composerMap = new Map()
-
-  locationsData.forEach((city) => {
-    city.locations.forEach((location) => {
-      location.eventInfo.forEach((event) => {
-        event.composerNamesArray?.forEach((composer) => {
-          composerMap.set(composer, {
-            title: composer.title,
-          })
-        })
-      })
-    })
-  })
-
-  return Array.from(composerMap.values())
-}
-
 export function getEventsByComposerSearch(
   selectedComposerNames,
-  filteredLocationsDataTimeLine
+  filteredDataFilteredByCategory
 ) {
-  let filteredData = filteredLocationsDataTimeLine
-
-  filteredData = filteredData
+  const filteredData = filteredDataFilteredByCategory
     .map((city) => {
-      const filteredLocations = city.locations
-        .map((location) => {
-          const filteredEventInfo = location.eventInfo
-            .map((event) => {
-              const composerNamesArray = event?.composerNamesArray
-              if (composerNamesArray) {
-                const hasAllSelectedNames = selectedComposerNames.every(
-                  (selectedName) =>
-                    composerNamesArray.some(
-                      (composer) => composer.title === selectedName
-                    )
+      const { locations, count: totalCount } = city
+      const filteredLocations = locations.reduce((filtered, location) => {
+        const filteredEventInfo = location.eventInfo.filter((event) => {
+          const composerNamesArray = event?.composerNamesArray
+          if (composerNamesArray) {
+            const hasAllSelectedNames = selectedComposerNames.every(
+              (selectedName) =>
+                composerNamesArray.some(
+                  (composer) => composer.title === selectedName
                 )
-
-                if (hasAllSelectedNames) {
-                  return event
-                }
-                return null
-              }
-              return event
-            })
-            .filter(
-              (event) =>
-                event?.composerNamesArray && event.composerNamesArray.length > 0
             )
 
-          return {
+            return hasAllSelectedNames
+          }
+          return true
+        })
+
+        const count = filteredEventInfo.length
+
+        if (count > 0) {
+          const updatedLocation = {
             ...location,
             eventInfo: filteredEventInfo,
+            count,
           }
-        })
-        .filter((location) => location.eventInfo.length > 0)
+          filtered.push(updatedLocation)
+        }
 
-      return {
-        ...city,
-        locations: filteredLocations,
+        return filtered
+      }, [])
+
+      if (filteredLocations.length > 0) {
+        return {
+          ...city,
+          locations: filteredLocations,
+          count: totalCount,
+          countLocations: filteredLocations.length,
+        }
       }
+
+      return null
     })
-    .filter((city) => city.locations.length > 0)
+    .filter((city) => city)
 
   return filteredData
 }
@@ -145,7 +142,7 @@ export function getEventFilteredByTimeLine(
   filterLowestYear,
   filterHighestYear
 ) {
-  const filteredLocationsDataTimeLine = locationsData
+  const filteredData = locationsData
     .map((city) => {
       if (city.locations) {
         const filteredLocations = city.locations
@@ -163,20 +160,35 @@ export function getEventFilteredByTimeLine(
               count: filteredEventInfo.length,
             }
           })
-          .filter((location) => {
-            return location.eventInfo.length > 0
-          })
+          .filter((location) => location.eventInfo.length > 0)
 
-        return {
-          ...city,
-          locations: filteredLocations,
+        if (filteredLocations.length > 0) {
+          return {
+            ...city,
+            locations: filteredLocations,
+          }
         }
       }
 
-      return city
+      return null
     })
-    .filter((city) => {
-      return city.locations && city.locations.length > 0
+    .filter((city) => city)
+
+  return filteredData
+}
+
+export function getAvailableComposers(locationsData) {
+  const composerSet = new Set()
+
+  locationsData.forEach((city) => {
+    city.locations.forEach((location) => {
+      location.eventInfo.forEach((event) => {
+        event.composerNamesArray?.forEach((composer) => {
+          composerSet.add(composer.title)
+        })
+      })
     })
-  return filteredLocationsDataTimeLine
+  })
+
+  return Array.from(composerSet).map((title) => ({ title }))
 }

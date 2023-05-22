@@ -79,7 +79,7 @@ export default function MapCamp({
         }
 
         // Check the number of points and update the isHighQuality state
-        if (locationsData.length < 50) {
+        if (locationsData?.length < 50) {
           newIsHighQuality = true
         } else {
           newIsHighQuality = false
@@ -131,7 +131,7 @@ export default function MapCamp({
     return () => {
       window.removeEventListener("resize", updateMapConfig)
     }
-  }, [isEuropeMap, locationsData.length, mapConfig.maxRadius])
+  }, [isEuropeMap, locationsData?.length, mapConfig.maxRadius])
 
   const { scale, center, maxZoom } = mapConfig
 
