@@ -133,11 +133,17 @@ export default function Composer({ params }) {
 
   let filterLowestYear = lowestYear
 
-  const [filterHighestYear, setFilterHighestYear] = useState()
+  const [filterHighestYear, setFilterHighestYear] = useState(highestYear)
+
+  useEffect(() => {
+    setFilterHighestYear(highestYear)
+  }, [highestYear])
+
 
   const updateFilterHighestYear = (newValue) => {
     setFilterHighestYear(newValue)
   }
+
 
   useEffect(() => {
     async function fetchData() {

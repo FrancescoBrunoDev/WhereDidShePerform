@@ -48,7 +48,7 @@ export default function ScrollAreaItem({
                   className="mx-1 flex w-full justify-self-start rounded-lg p-2 text-left  hover:bg-secondary hover:text-primary"
                   key={isByCity ? key : locationId}
                 >
-                  {title} for {count} times
+                  {title} for {count} {count === 1 ? "time" : "times"}
                 </p>
               </AccordionTrigger>
               <AccordionContent>
