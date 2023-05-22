@@ -105,7 +105,7 @@ export default function PerformanceSearchResults({ results }) {
       initial="hidden"
       animate="visible"
       variants={list}
-      className="grid grid-flow-row place-content-stretch gap-4 md:grid-cols-3 lg:grid-cols-4"
+      className="xs:grid-cols-1 grid grid-flow-row place-content-stretch gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
     >
       <Suspense fallback={<Loading />}>{content}</Suspense>
     </m.div>
