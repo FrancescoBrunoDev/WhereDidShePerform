@@ -44,7 +44,7 @@ export default function ScrollAreaMap({
                   </p>
                 ) : (
                   <>
-                    <p className="w-15">{lowestYear}</p>
+                    <p className="w-15 text-primary">{lowestYear}</p>
                     <Slider
                       disabled={lowestYear === highestYear ? true : false}
                       defaultValue={[filterHighestYear]}
