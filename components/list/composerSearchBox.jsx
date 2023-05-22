@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useClickOutside } from "@mantine/hooks"
 import { motion as m } from "framer-motion"
 
 import { Checkbox } from "@/components/ui/checkbox"
@@ -16,6 +17,8 @@ export function ComposerSearchBox({
 }) {
   const [searchQuery, setSearchQuery] = useState("")
   const [suggestions, setSuggestions] = useState([])
+  const [opened, setOpened] = useState(false)
+  const ref = useClickOutside(() => setOpened(false))
 
   const availableComposers = getAvailableComposers(locationsData)
 
@@ -27,6 +30,7 @@ export function ComposerSearchBox({
       composer.title.toLowerCase().startsWith(newSearchQuery.toLowerCase())
     )
     setSuggestions(matchedSuggestions)
+    setOpened(true)
   }
 
   return (
@@ -44,10 +48,12 @@ export function ComposerSearchBox({
           placeholder="Composer"
           value={searchQuery}
           onChange={handleInputChange}
+          onClick={() => setOpened(true)}
           className=""
         />
-        {suggestions.length > 0 && (
+        {opened && suggestions.length > 0 && (
           <m.div
+            ref={ref}
             initial="hidden"
             animate="visible"
             variants={{

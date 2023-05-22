@@ -3,13 +3,14 @@ import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 import { autocomplete } from "@/app/api/musiconn"
+import { useClickOutside } from '@mantine/hooks';
 
 export default function PerformanceSearchForm({ onSubmit }) {
   const [searchTerm, setSearchTerm] = useState("")
   const [suggestions, setSuggestions] = useState([])
-  const [isScrollAreaVisible, setIsScrollAreaVisible] = useState(true)
+  const [opened, setOpened] = useState(false);
+  const ref = useClickOutside(() => setOpened(false));
 
   useEffect(() => {
     if (searchTerm) {
@@ -30,13 +31,13 @@ export default function PerformanceSearchForm({ onSubmit }) {
   function handleInputChange(event) {
     const newSearchTerm = event.target.value
     setSearchTerm(newSearchTerm)
-    setIsScrollAreaVisible(true)
+    setOpened(true)
   }
 
   function handleSuggestionClick(suggestion) {
     setSearchTerm(suggestion)
     setSuggestions([])
-    setIsScrollAreaVisible(false)
+    setOpened(false)
     onSubmit(suggestion) // Trigger the search with the clicked suggestion
   }
 
@@ -44,7 +45,7 @@ export default function PerformanceSearchForm({ onSubmit }) {
     event.preventDefault()
     onSubmit(searchTerm)
     setSearchTerm("")
-    setIsScrollAreaVisible(false)
+    setOpened(false)
   }
 
   return (
@@ -60,8 +61,8 @@ export default function PerformanceSearchForm({ onSubmit }) {
           onChange={(event) => handleInputChange(event)}
           placeholder="Search for a performer"
         />
-        {isScrollAreaVisible && suggestions.length > 0 && (
-          <ScrollArea className="absolute mt-3 h-72 rounded-md border bg-background md:w-96">
+        {opened && (
+          <ScrollArea ref={ref} className="absolute mt-3 h-72 rounded-md border bg-background md:w-96">
             <div className="p-4">
               {suggestions.map((suggestion, index) => (
                 <div
