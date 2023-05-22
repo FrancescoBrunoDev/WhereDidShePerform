@@ -18,6 +18,8 @@ export default function List({
   season,
   expandedLocations,
   areAllFiltersDeactivated,
+  setSelectedComposerNames,
+  selectedComposerNames,
 }) {
   return (
     <>
@@ -37,6 +39,8 @@ export default function List({
         season={season}
         isSeasonAvailable={isSeasonCategoryAvailable}
         locationsData={filteredLocationsData}
+        setSelectedComposerNames={setSelectedComposerNames}
+        selectedComposerNames={selectedComposerNames}
       />
 
       <section className="relative mb-10 overflow-y-scroll lg:container">

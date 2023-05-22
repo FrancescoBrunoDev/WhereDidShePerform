@@ -1,5 +1,6 @@
 "use client"
 
+import { get } from "http"
 import { Suspense, useEffect, useState } from "react"
 import { motion as m } from "framer-motion"
 
@@ -7,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   checkCategoryAvailability,
   filterLocationsData,
+  getEventFilteredByTimeLine,
+  getEventsByComposerSearch,
 } from "@/components/list/filterLocationsData"
 import { GetLocationsWithEventsAndTitle } from "@/components/maps/getMergedLocations"
 
@@ -129,49 +132,23 @@ export default function Composer({ params }) {
     setFilterHighestYear(newValue)
   }
 
-  const filteredLocationsDataTimeLine = locationsData
-    .map((city) => {
-      if (city.locations) {
-        const filteredLocations = city.locations
-          .map((location) => {
-            const filteredEventInfo = (location.eventInfo || []).filter(
-              ({ date }) => {
-                const year = Number(date.substr(0, 4))
-                return year >= filterLowestYear && year <= filterHighestYear
-              }
-            )
+  const filteredLocationsDataTimeLine = getEventFilteredByTimeLine(
+    locationsData,
+    filterLowestYear,
+    filterHighestYear
+  )
 
-            return {
-              ...location,
-              eventInfo: filteredEventInfo,
-              count: filteredEventInfo.length,
-            }
-          })
-          .filter((location) => {
-            return location.eventInfo.length > 0
-          })
-
-        return {
-          ...city,
-          locations: filteredLocations,
-        }
-      }
-
-      return city
-    })
-    .filter((city) => {
-      return city.locations && city.locations.length > 0
-    })
-
-  // Calculate the count of all filteredEventInfo items across all locations
+  /*   // Calculate the count of all filteredEventInfo items across all locations
   const totalCount = filteredLocationsDataTimeLine.reduce(
     (sum, { count }) => sum + count,
     0
-  )
+  ) */
 
   const [filteredLocationsData, setFilteredLocationsData] = useState(
     filteredLocationsDataTimeLine
   )
+
+  const [selectedComposerNames, setSelectedComposerNames] = useState([])
 
   useEffect(() => {
     filterLocationsData(
@@ -182,8 +159,10 @@ export default function Composer({ params }) {
       season,
       id,
       filteredLocationsDataTimeLine,
-      setFilteredLocationsData
+      setFilteredLocationsData,
+      selectedComposerNames
     )
+  
 
     const seasonAvailable = checkCategoryAvailability(locationsData, 1)
     setIsSeasonCategoryAvailable(seasonAvailable)
@@ -205,6 +184,7 @@ export default function Composer({ params }) {
     id,
     filteredLocationsDataTimeLine,
     setFilteredLocationsData,
+    selectedComposerNames,
   ])
 
   return (
@@ -216,7 +196,7 @@ export default function Composer({ params }) {
     >
       <div className="container">
         {id && (
-          <h1 className="fixed top-16 z-10 w-fit lg:w-96 text-3xl md:text-4xl font-black lg:top-32">
+          <h1 className="fixed top-16 z-10 w-fit text-3xl font-black md:text-4xl lg:top-32 lg:w-96">
             {id.title}
           </h1>
         )}
@@ -279,6 +259,8 @@ export default function Composer({ params }) {
                   season={season}
                   areAllFiltersDeactivated={areAllFiltersDeactivated}
                   expandedLocations={expandedLocations}
+                  setSelectedComposerNames={setSelectedComposerNames}
+                  selectedComposerNames={selectedComposerNames}
                 />
               )}
             </Suspense>

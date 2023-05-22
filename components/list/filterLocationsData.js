@@ -18,7 +18,8 @@ export async function filterLocationsData(
   season,
   id,
   filteredLocationsDataTimeLine,
-  setFilteredLocationsData
+  setFilteredLocationsData,
+  selectedComposerNames
 ) {
   let filteredData = filteredLocationsDataTimeLine
 
@@ -59,7 +60,16 @@ export async function filterLocationsData(
     })
     .filter((city) => city.countLocations > 0)
 
-  setFilteredLocationsData(filteredData)
+  // Apply composer filter
+  let composerFilteredData = filteredData
+  if (selectedComposerNames.length > 0) {
+    composerFilteredData = getEventsByComposerSearch(
+      selectedComposerNames,
+      filteredData
+    )
+  }
+
+  setFilteredLocationsData(composerFilteredData)
 }
 
 export function getAvailableComposers(locationsData) {
@@ -68,18 +78,105 @@ export function getAvailableComposers(locationsData) {
   locationsData.forEach((city) => {
     city.locations.forEach((location) => {
       location.eventInfo.forEach((event) => {
-        event.composerNamesArray?.forEach((composer)=>{
+        event.composerNamesArray?.forEach((composer) => {
           composerMap.set(composer, {
-            id: composer,
-            name: {
-              title: composer,
-            },
+            title: composer.title,
           })
         })
-        
       })
     })
   })
 
   return Array.from(composerMap.values())
+}
+
+export function getEventsByComposerSearch(
+  selectedComposerNames,
+  filteredLocationsDataTimeLine
+) {
+  let filteredData = filteredLocationsDataTimeLine
+
+  filteredData = filteredData
+    .map((city) => {
+      const filteredLocations = city.locations
+        .map((location) => {
+          const filteredEventInfo = location.eventInfo
+            .map((event) => {
+              const composerNamesArray = event?.composerNamesArray
+              if (composerNamesArray) {
+                const hasAllSelectedNames = selectedComposerNames.every(
+                  (selectedName) =>
+                    composerNamesArray.some(
+                      (composer) => composer.title === selectedName
+                    )
+                )
+
+                if (hasAllSelectedNames) {
+                  return event
+                }
+                return null
+              }
+              return event
+            })
+            .filter(
+              (event) =>
+                event?.composerNamesArray && event.composerNamesArray.length > 0
+            )
+
+          return {
+            ...location,
+            eventInfo: filteredEventInfo,
+          }
+        })
+        .filter((location) => location.eventInfo.length > 0)
+
+      return {
+        ...city,
+        locations: filteredLocations,
+      }
+    })
+    .filter((city) => city.locations.length > 0)
+
+  return filteredData
+}
+
+export function getEventFilteredByTimeLine(
+  locationsData,
+  filterLowestYear,
+  filterHighestYear
+) {
+  const filteredLocationsDataTimeLine = locationsData
+    .map((city) => {
+      if (city.locations) {
+        const filteredLocations = city.locations
+          .map((location) => {
+            const filteredEventInfo = (location.eventInfo || []).filter(
+              ({ date }) => {
+                const year = Number(date.substr(0, 4))
+                return year >= filterLowestYear && year <= filterHighestYear
+              }
+            )
+
+            return {
+              ...location,
+              eventInfo: filteredEventInfo,
+              count: filteredEventInfo.length,
+            }
+          })
+          .filter((location) => {
+            return location.eventInfo.length > 0
+          })
+
+        return {
+          ...city,
+          locations: filteredLocations,
+        }
+      }
+
+      return city
+    })
+    .filter((city) => {
+      return city.locations && city.locations.length > 0
+    })
+  return filteredLocationsDataTimeLine
 }
