@@ -51,7 +51,7 @@ export default function PerformanceSearch() {
                   exit={{ y: 5, opacity: 0, transition: { delay: 0.1 } }}
                   className="pb-5 text-end text-4xl font-black md:text-6xl"
                 >
-                  Need some inspirations?
+                  Need some inspiration?
                 </m.h1>
                 <m.div
                   initial={{ y: 5, opacity: 0 }}
