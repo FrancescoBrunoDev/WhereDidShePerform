@@ -115,7 +115,7 @@ export function getEventsByComposerSearch(
       const filteredLocations = locations.reduce((filtered, location) => {
         const filteredEventInfo = location.eventInfo.filter((event) => {
           const composerNamesArray = event?.composerNamesArray
-          if (composerNamesArray) {
+          if (composerNamesArray && composerNamesArray.length > 0) {
             const hasAllSelectedNames = selectedComposerNames.every(
               (selectedName) =>
                 composerNamesArray.some(
@@ -125,7 +125,7 @@ export function getEventsByComposerSearch(
 
             return hasAllSelectedNames
           }
-          return true
+          return false
         })
 
         const count = filteredEventInfo.length
@@ -157,6 +157,7 @@ export function getEventsByComposerSearch(
 
   return filteredData
 }
+
 
 export function getEventFilteredByTimeLine(
   locationsData,
