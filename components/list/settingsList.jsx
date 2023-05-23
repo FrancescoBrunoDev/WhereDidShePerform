@@ -94,27 +94,26 @@ export function SettingsList({
 
         <Separator className="bg-primary" orientation="vertical" />
 
-        <m.div layout className="flex h-10 justify-end space-x-2 pl-3">
-          {expandedLocations ? (
-            <m.div layout className="flex h-10 justify-end space-x-2 pl-3">
-              <ComposerSearchBox
-                locationsData={locationsData}
-                setSelectedComposerNames={setSelectedComposerNames}
-                selectedComposerNames={selectedComposerNames}
-              />
-              <Toggle
-                onPressedChange={() => {
-                  setExpandedLocations(
-                    (prevExpandedLocations) => !prevExpandedLocations
-                  )
-                  setSelectedComposerNames([])
-                }}
-                checked={expandedLocations}
+        <m.div className="flex h-10 justify-end space-x-2 pl-3">
+          <AnimatePresence initial={false} mode="wait">
+            {expandedLocations && (
+              <m.div
+              layout
+                key="composerSearchBox"
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 270, opacity: 1 }}
+                exit={{ width: 0, opacity: 0 }}
+                className="flex h-10 justify-end space-x-2 pl-3"
               >
-                <Icons.exit />
-              </Toggle>
-            </m.div>
-          ) : (
+                <ComposerSearchBox
+                  locationsData={locationsData}
+                  setSelectedComposerNames={setSelectedComposerNames}
+                  selectedComposerNames={selectedComposerNames}
+                />
+              </m.div>
+            )}
+          </AnimatePresence>
+          <LayoutGroup>
             <Toggle
               onPressedChange={() => {
                 setExpandedLocations(
@@ -124,9 +123,16 @@ export function SettingsList({
               }}
               checked={expandedLocations}
             >
-              <span>How did s(he) played</span>
+              
+              {expandedLocations ? (
+                <LayoutGroup>
+                  <Icons.exit />
+                </LayoutGroup>
+              ) : (
+                "How did s(he) played"
+              )}
             </Toggle>
-          )}
+          </LayoutGroup>
         </m.div>
       </m.div>
     </m.div>
