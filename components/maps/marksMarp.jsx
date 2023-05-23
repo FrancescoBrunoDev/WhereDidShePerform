@@ -49,6 +49,7 @@ export default function MarksMap({
           >
             <AnimatePresence mode={"wait"}>
               <m.circle
+                layout
                 initial={{ scale: 0 }}
                 animate={
                   isHover

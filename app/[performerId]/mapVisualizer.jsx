@@ -21,6 +21,7 @@ export default function MapVisualizer({
   setChangeMap,
   mapUrl,
   setMapUrl,
+  expandedLocations,
 }) {
   const [selectedLocationId, setSelectedLocationId] = useState(null)
   const [isHover, setIsHover] = useState(false)
@@ -36,6 +37,7 @@ export default function MapVisualizer({
         updateFilterHighestYear={updateFilterHighestYear}
         setIsHover={setIsHover}
         isByCity={isByCity}
+        expandedLocations={expandedLocations}
       />
 
       <div>

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react"
+import { useClickOutside } from "@mantine/hooks"
+import { AnimatePresence, motion as m } from "framer-motion"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { autocomplete } from "@/app/api/musiconn"
-import { useClickOutside } from '@mantine/hooks';
 
 export default function PerformanceSearchForm({ onSubmit }) {
   const [searchTerm, setSearchTerm] = useState("")
   const [suggestions, setSuggestions] = useState([])
-  const [opened, setOpened] = useState(false);
-  const ref = useClickOutside(() => setOpened(false));
+  const [opened, setOpened] = useState(false)
+  const ref = useClickOutside(() => setOpened(false))
 
   useEffect(() => {
     if (searchTerm) {
@@ -61,25 +62,40 @@ export default function PerformanceSearchForm({ onSubmit }) {
           onChange={(event) => handleInputChange(event)}
           placeholder="Search for a performer"
         />
-        {opened && (
-          <ScrollArea ref={ref} className="absolute mt-3 h-72 rounded-md border bg-background md:w-96">
-            <div className="p-4">
-              {suggestions.map((suggestion, index) => (
-                <div
-                  className="rounded-lg p-2 hover:bg-secondary"
-                  key={index}
-                  onClick={() => handleSuggestionClick(suggestion[0])}
-                  style={{
-                    cursor: "pointer",
-                  }}
-                >
-                  {suggestion[0]}
-                  {/* <Separator className="my-2" /> */}
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
-        )}
+        <AnimatePresence>
+          {opened && suggestions.length > 0 && (
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.1 }}
+              layout
+              className="h-64"
+            >
+              <ScrollArea
+                ref={ref}
+                className="absolute mt-3 h-full rounded-md border bg-background shadow-lg md:w-96"
+              >
+                <m.div className="p-4">
+                  {suggestions.map((suggestion, index) => (
+                    <m.div
+                      layout
+                      className="rounded-lg p-2 hover:bg-secondary"
+                      key={index}
+                      onClick={() => handleSuggestionClick(suggestion[0])}
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    >
+                      {suggestion[0]}
+                      {/* <Separator className="my-2" /> */}
+                    </m.div>
+                  ))}
+                </m.div>
+              </ScrollArea>
+            </m.div>
+          )}
+        </AnimatePresence>
       </div>
       <Button type="submit">Search</Button>
     </form>

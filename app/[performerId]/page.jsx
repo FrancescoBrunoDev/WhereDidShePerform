@@ -1,7 +1,7 @@
 "use client"
 
 import { Suspense, useEffect, useState } from "react"
-import { motion as m } from "framer-motion"
+import { LayoutGroup, motion as m } from "framer-motion"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToastAction } from "@/components/ui/toast"
@@ -136,11 +136,9 @@ export default function Composer({ params }) {
     setFilterHighestYear(highestYear)
   }, [highestYear])
 
-
   const updateFilterHighestYear = (newValue) => {
     setFilterHighestYear(newValue)
   }
-
 
   useEffect(() => {
     async function fetchData() {
@@ -245,7 +243,7 @@ export default function Composer({ params }) {
           </div>
         </div>
 
-        <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key="map">
+        <LayoutGroup>
           <TabsContent value="map">
             <Suspense fallback={<Loading />}>
               <MapVisualizer
@@ -264,11 +262,10 @@ export default function Composer({ params }) {
                 setChangeMap={setChangeMap}
                 mapUrl={mapUrl}
                 setMapUrl={setMapUrl}
+                expandedLocations={expandedLocations}
               />
             </Suspense>
           </TabsContent>
-        </m.div>
-        <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key="list">
           <TabsContent value="list">
             <Suspense fallback={<Loading />}>
               {filteredLocationsData && (
@@ -299,7 +296,7 @@ export default function Composer({ params }) {
               )}
             </Suspense>
           </TabsContent>
-        </m.div>
+        </LayoutGroup>
       </Tabs>
       <Toaster />
     </m.section>

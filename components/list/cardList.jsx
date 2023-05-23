@@ -104,20 +104,23 @@ export default function CardList({ locationsData, areAllFiltersDeactivated }) {
 
                             {event.composerNamesArray &&
                               event.composerNamesArray.length > 0 && (
-                                <div className="inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
-                                  <span>
+                                <m.div
+                                  layout
+                                  className="inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                >
+                                  <m.span layout>
                                     {event.composerNamesArray.map(
                                       (composer, index) => (
-                                        <span key={composer.title}>
+                                        <m.span layout key={composer.title}>
                                           {composer.title}
                                           {index <
                                             event.composerNamesArray.length -
                                               1 && " • "}
-                                        </span>
+                                        </m.span>
                                       )
                                     )}
-                                  </span>
-                                </div>
+                                  </m.span>
+                                </m.div>
                               )}
                           </CardHeader>
                         </Card>

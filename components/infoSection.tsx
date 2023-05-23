@@ -47,7 +47,7 @@ export function InfoSection() {
                   Francesco Bruno
                   <Icons.externalLink className="inline-block h-4 w-4 align-text-top" />{" "}
                 </Link>
-                , a musicologist and programmer. Here, you can search for
+                , a musicologist and developer. Here, you can search for
                 performers and explore where they have played throughout their
                 lives using the vast{" "}
                 <Link

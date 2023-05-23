@@ -16,6 +16,7 @@ export default function ScrollAreaMap({
   setIsHover,
   filterHighestYear,
   isByCity,
+  expandedLocations,
 }) {
   const handleAccordionHover = useCallback(
     (locationId) => {
@@ -44,18 +45,29 @@ export default function ScrollAreaMap({
                   </p>
                 ) : (
                   <>
-                    <p className="w-15 text-primary">{lowestYear}</p>
-                    <Slider
-                      disabled={lowestYear === highestYear ? true : false}
-                      defaultValue={[filterHighestYear]}
-                      min={lowestYear}
-                      max={highestYear}
-                      step={1}
-                      onValueChange={(newValue) => {
-                        updateFilterHighestYear(newValue[0])
-                      }}
-                    />
-                    <p className="w-15">{highestYear}</p>
+                    {expandedLocations ? (
+                      <div>Slider non avaiable when you filtering per composer</div>
+                    ) : (
+                      <>
+                        {" "}
+                        <p className="w-15 text-primary">{lowestYear}</p>
+                        <Slider
+                          disabled={
+                            expandedLocations || lowestYear === highestYear
+                              ? true
+                              : false
+                          }
+                          defaultValue={[filterHighestYear]}
+                          min={lowestYear}
+                          max={highestYear}
+                          step={1}
+                          onValueChange={(newValue) => {
+                            updateFilterHighestYear(newValue[0])
+                          }}
+                        />
+                        <p className="w-15">{highestYear}</p>{" "}
+                      </>
+                    )}
                   </>
                 )
               ) : null}
