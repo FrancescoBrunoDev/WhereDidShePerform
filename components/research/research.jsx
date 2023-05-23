@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react"
-import { motion as m } from "framer-motion"
+import { AnimatePresence, motion as m } from "framer-motion"
 
 import Loading from "@/components/ui/loading"
 import PerformanceSearchResults from "@/components/research/PerformanceSearchResults"
@@ -11,6 +11,7 @@ import PerformanceSearchForm from "./PerformanceSearchForm"
 export default function PerformanceSearch() {
   const [results, setResults] = useState([])
   const [opened, setOpened] = useState(false)
+  const [isClicked, setIsClicked] = useState(false)
 
   async function handleSearch(searchTerm) {
     const data = await queryData(searchTerm)
@@ -32,6 +33,7 @@ export default function PerformanceSearch() {
           onSubmit={handleSearch}
           opened={opened}
           setOpened={setOpened}
+          setIsClicked={setIsClicked}
         />
       </m.div>
       <div className="-z-10 pt-10">
@@ -40,25 +42,27 @@ export default function PerformanceSearch() {
             <PerformanceSearchResults results={results} />
           </Suspense>
         ) : (
-          <div className="">
-            <m.h1
-              initial={{ y: 5, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 5, opacity: 0 }}
-              transition={{ delay: 0.2 }}
-              className="pb-5 text-end text-4xl font-black md:text-6xl"
-            >
-              Need some inspirations?
-            </m.h1>
-            <m.div
-              initial={{ y: 5, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 5, opacity: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <Suggestions />
-            </m.div>
-          </div>
+          <AnimatePresence>
+            {!isClicked && !opened && (
+              <>
+                <m.h1
+                  initial={{ y: 5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1, transition: { delay: 0.1 } }}
+                  exit={{ y: 5, opacity: 0, transition: { delay: 0.1 } }}
+                  className="pb-5 text-end text-4xl font-black md:text-6xl"
+                >
+                  Need some inspirations?
+                </m.h1>
+                <m.div
+                  initial={{ y: 5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1, transition: { delay: 0.5 } }}
+                  exit={{ y: 5, opacity: 0, transition: { delay: 0.1 } }}
+                >
+                  <Suggestions />
+                </m.div>
+              </>
+            )}
+          </AnimatePresence>
         )}
       </div>
     </section>

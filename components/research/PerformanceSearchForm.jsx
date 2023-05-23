@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { autocomplete } from "@/app/api/musiconn"
 
-export default function PerformanceSearchForm({ onSubmit, opened, setOpened }) {
+export default function PerformanceSearchForm({ onSubmit, opened, setOpened, setIsClicked }) {
   const [searchTerm, setSearchTerm] = useState("")
   const [suggestions, setSuggestions] = useState([])
   const ref = useClickOutside(() => setOpened(false))
@@ -59,6 +59,7 @@ export default function PerformanceSearchForm({ onSubmit, opened, setOpened }) {
           type="text"
           value={searchTerm}
           onChange={(event) => handleInputChange(event)}
+          onClick={() => setIsClicked(true)}
           placeholder="Search for a performer"
         />
         <AnimatePresence>

@@ -14,14 +14,13 @@ export default function RandomCard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const getRandomNumbers = () => {
-          const randomNumbers = []
-          for (let i = 0; i < 500; i++) {
-            randomNumbers.push(Math.floor(Math.random() * 26601))
-          }
-          return randomNumbers.join("|")
+        const getCurrentDayNumber = () => {
+          const currentDate = new Date()
+          return currentDate.getDate()
         }
-        const query = getRandomNumbers()
+
+        const dayNumber = getCurrentDayNumber()
+        const query = String(dayNumber)
         const personData = await GetInfoPerson(query)
 
         // Find the first performer with at least 20 events
@@ -54,12 +53,12 @@ export default function RandomCard() {
             }}
             initial={{ y: 5, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{  y: 5, opacity: 0 }}
+            exit={{ y: 5, opacity: 0 }}
           >
-            <Card className="w-64 bg-secondary">
+            <Card className="w-64 bg-secondary shadow-lg">
               <CardHeader className="pb-2">
                 <h2 className="text-2xl font-black">
-                  Performer of the Session
+                  Performer of the day
                 </h2>
               </CardHeader>
               <CardFooter className="grid grid-cols-1 gap-y-4">
