@@ -46,7 +46,7 @@ export default function ScrollAreaMap({
                 ) : (
                   <>
                     {expandedLocations ? (
-                      <div className="text-sm">The slider's value is fixed due to the active composer filter, prohibiting any modifications.</div>
+                      <div className="text-sm">The slider&apos;s value is fixed due to the active composer filter, prohibiting any modifications.</div>
                     ) : (
                       <>
                         {" "}
