@@ -124,7 +124,7 @@ export function SettingsList({
               }}
               checked={expandedLocations}
             >
-              <span>"How did s(he) played?"</span>
+              <span>How did s(he) played</span>
             </Toggle>
           )}
         </m.div>
