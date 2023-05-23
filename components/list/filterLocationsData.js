@@ -119,7 +119,7 @@ export function getEventsByComposerSearch(
             const hasAllSelectedNames = selectedComposerNames.every(
               (selectedName) =>
                 composerNamesArray.some(
-                  (composer) => composer.title === selectedName
+                  (composer) => composer?.title === selectedName
                 )
             )
 
@@ -206,7 +206,7 @@ export function getAvailableComposers(locationsData) {
     city.locations.forEach((location) => {
       location.eventInfo.forEach((event) => {
         event.composerNamesArray?.forEach((composer) => {
-          composerSet.add(composer.title)
+          composerSet.add(composer?.title)
         })
       })
     })

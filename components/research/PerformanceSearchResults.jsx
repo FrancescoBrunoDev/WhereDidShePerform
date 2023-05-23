@@ -10,6 +10,7 @@ import { Loading } from "@/components/loading"
 import getRandomSentenceWithEmoji from "./randomSencences"
 
 export default function PerformanceSearchResults({ results }) {
+  
   if (!results || results.length === 0) {
     return null
   }

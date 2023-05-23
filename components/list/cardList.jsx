@@ -101,31 +101,30 @@ export default function CardList({ locationsData, areAllFiltersDeactivated }) {
                                 </div>
                               </div>
                             </div>
-                            <AnimatePresence initial={false} mode="wait">
-                              {event.composerNamesArray &&
-                                event.composerNamesArray.length > 0 && (
-                                  <m.div
-                                    key={event.composerNamesArray}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className="inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                  >
-                                    <m.span >
-                                      {event.composerNamesArray.map(
-                                        (composer, index) => (
-                                          <m.span  key={composer.title}>
-                                            {composer.title}
-                                            {index <
-                                              event.composerNamesArray.length -
-                                                1 && " • "}
-                                          </m.span>
-                                        )
-                                      )}
-                                    </m.span>
-                                  </m.div>
-                                )}
-                            </AnimatePresence>
+
+                            {event.composerNamesArray &&
+                              event.composerNamesArray.length > 0 && (
+                                <m.div
+                                  key={event.composerNamesArray}
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  exit={{ opacity: 0 }}
+                                  className="inline-flex items-center rounded-lg border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                                >
+                                  <m.span>
+                                    {event.composerNamesArray.map(
+                                      (composer, index) => (
+                                        <m.span key={composer?.title}>
+                                          {composer?.title}
+                                          {index <
+                                            event.composerNamesArray.length -
+                                              1 && " • "}
+                                        </m.span>
+                                      )
+                                    )}
+                                  </m.span>
+                                </m.div>
+                              )}
                           </CardHeader>
                         </Card>
                       </m.div>

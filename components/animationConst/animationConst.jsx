@@ -3,14 +3,14 @@ const list = {
     opacity: 1,
     transition: {
       when: "beforeChildren",
-      staggerChildren: 0.1 / 4,
+      
     },
   },
   hidden: {
     opacity: 0,
     transition: {
       when: "afterChildren",
-      staggerChildren: 0.1 / 3,
+      
     },
   },
 }

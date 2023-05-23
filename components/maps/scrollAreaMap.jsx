@@ -24,7 +24,7 @@ export default function ScrollAreaMap({
     },
     [onLocationHover]
   )
-  console.log(filterHighestYear, "filterHighestYear")
+
   return (
     <Suspense>
       <m.div
