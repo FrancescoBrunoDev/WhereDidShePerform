@@ -34,16 +34,9 @@ export function ComposerSearchBox({
   }
 
   return (
-    <m.div
-      initial={{ opacity: 0, width: "0px" }}
-      animate={{ opacity: 1, width: "100%" }}
-      className="flex-cols-2 flex content-center space-x-2 pb-5"
-    >
-      <m.div layout className="static w-48 sm:w-64 md:w-72">
-        <m.div
-          initial={{ opacity: 0, width: "0px" }}
-          animate={{ opacity: 1, width: "100%" }}
-        >
+    <div className="flex-cols-2 flex content-center space-x-2 pb-5">
+      <div className="static w-48 sm:w-64 md:w-72">
+        <m.div layout>
           <Input
             placeholder={
               selectedComposerNames.length > 0
@@ -53,7 +46,6 @@ export function ComposerSearchBox({
             value={searchQuery}
             onChange={handleInputChange}
             onClick={() => setOpened(true)}
-            className=""
           />
         </m.div>
 
@@ -133,7 +125,7 @@ export function ComposerSearchBox({
             </m.div>
           </m.div>
         )}
-      </m.div>
-    </m.div>
+      </div>
+    </div>
   )
 }
