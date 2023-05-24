@@ -1,12 +1,50 @@
 import { useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion as m, useInView } from "framer-motion"
 
-import { CardItem } from "@/components/list/cardItem"
 import { Badge } from "@/components/ui/badge"
+import { Card, CardHeader } from "@/components/ui/card"
 import { list } from "@/components/animationConst/animationConst"
+import { CardItem } from "@/components/list/cardItem"
 import getRandomSentenceList from "@/components/list/randomSencences"
 
+export function CardItemMoreLeft({ location, remainingCount }) {
+  // Find the highest and lowest dates
+  const dates = location.eventInfo.map((event) => new Date(event.date))
+  const minDate = dates.reduce(
+    (min, date) => (date < min ? date : min),
+    dates[0]
+  )
+  const maxDate = dates.reduce(
+    (max, date) => (date > max ? date : max),
+    dates[0]
+  )
 
+  // Format the dates as "dd-mm-yyyy"
+  const formatDate = (date) => {
+    const day = date.getDate().toString().padStart(2, "0")
+    const month = (date.getMonth() + 1).toString().padStart(2, "0")
+    const year = date.getFullYear()
+    return `${day}-${month}-${year}`
+  }
+
+  return (
+    <Card
+      key="remaining-events"
+      className="col-span-2 flex items-center justify-center bg-secondary shadow-lg"
+    >
+      <CardHeader className="flex gap-y-2">
+        <div className=" text-sm font-bold">
+          There are still {remainingCount}{" "}
+          {remainingCount === 1 ? "event" : "events"} remaining. I recommend
+          using filters for more effective search.
+        </div>
+        <div className="mt-2 text-xs">
+          Events from {formatDate(minDate)} to {formatDate(maxDate)}
+        </div>
+      </CardHeader>
+    </Card>
+  )
+}
 
 export default function CardList({ locationsData, areAllFiltersDeactivated }) {
   const [sentence, setSentence] = useState(getRandomSentenceList())
@@ -72,10 +110,28 @@ export default function CardList({ locationsData, areAllFiltersDeactivated }) {
                       {location.locationId}
                     </Badge>
                   </div>
-                  <m.div className="grid grid-flow-row grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                    {location.eventInfo.map((event) => (
-                      <CardItem event={event} />
-                    ))}
+                  <m.div
+                    variants={list}
+                    className="grid grid-flow-row grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+                  >
+                    {location.eventInfo.map((event, index) => {
+                      if (index < 20) {
+                        return <CardItem event={event} />
+                      } else if (index === 20) {
+                        const remainingCount = location.eventInfo.length - 20
+                        if (remainingCount < 20) {
+                          return <CardItem event={event} />
+                        } else {
+                          return (
+                            <CardItemMoreLeft
+                              location={location}
+                              remainingCount={remainingCount}
+                            />
+                          )
+                        }
+                      }
+                      return null
+                    })}
                   </m.div>
                 </m.div>
               )

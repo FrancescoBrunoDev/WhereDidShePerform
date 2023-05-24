@@ -57,9 +57,7 @@ export default function RandomCard() {
           >
             <Card className="w-64 bg-secondary shadow-lg">
               <CardHeader className="pb-2">
-                <h2 className="text-2xl font-black">
-                  Performer of the day
-                </h2>
+                <h2 className="text-2xl font-black">Performer of the day</h2>
               </CardHeader>
               <CardFooter className="grid grid-cols-1 gap-y-4">
                 <h3 className="text-base font-black">{person.title}</h3>

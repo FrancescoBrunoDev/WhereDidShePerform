@@ -7,7 +7,7 @@ import TopComposers from "./topComposers"
 
 export default function suggestions() {
   return (
-    <div className="flex snap-x scroll-pl-6 flex-nowrap gap-4 overflow-x-auto">
+    <div className="flex snap-x scroll-pl-6 flex-nowrap gap-4 overflow-x-auto pt-1">
       <TopComposers />
 
       <RandomCard />
