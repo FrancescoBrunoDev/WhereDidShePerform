@@ -20,6 +20,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: List files in directory
+        run: ls utils/
+
       - name: Run script
         run: node utils/generateStatistics.js
 
