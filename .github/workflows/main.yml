@@ -5,18 +5,15 @@ on:
     - cron: '0 0 * * *' # Run every midnight
   workflow_dispatch:
 
-  runs:
-  using: 'node16'
-
 jobs:
   run-script:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Node.js 16.x
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
 
@@ -30,7 +27,7 @@ jobs:
         run: ls components/suggestions/
 
       - name: Save JSON file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: success() # Only upload artifact if the script ran successfully
         with:
           name: statistics
