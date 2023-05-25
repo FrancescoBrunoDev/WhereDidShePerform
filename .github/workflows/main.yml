@@ -20,6 +20,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: install fetch
+        run: npm install fetch
+
       - name: Install ESM
         run: npm install esm
 
