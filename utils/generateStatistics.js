@@ -6,14 +6,11 @@ async function getAPIResponse(eventIds) {
   const url = `https://performance.musiconn.de/api?action=get&event=${eventIds.join(
     "|"
   )}&props=performances|persons&format=json`
-  const res = await fetch(url)
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
-
-  const data = await res.json()
-  return data
+  return await response.json();
 }
 
 async function getPersonName(id) {

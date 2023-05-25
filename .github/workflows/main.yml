@@ -26,9 +26,6 @@ jobs:
       - name: Install ESM
         run: npm install esm
 
-      - name: List files in directory
-        run: ls utils/
-
       - name: Run script
         run: node utils/generateStatistics.js
 
