@@ -68,7 +68,7 @@ export default function PerformanceSearchResults({ results }) {
     content.unshift(
       <m.div variants={item} key={person.uid} className="col-span-2">
         <Link href={`/${person.uid}/`}>
-          <Card key={person.uid} className="bg-accent  shadow-lg">
+          <Card key={person.uid} className="bg-accent shadow-lg border-0">
             <CardHeader>
               <span>{sentenceWithEmoji}</span>
               <span style={{ fontWeight: "bold" }}>{cleanedTitle}</span>
@@ -84,7 +84,7 @@ export default function PerformanceSearchResults({ results }) {
   } else {
     content.unshift(
       <m.div variants={item} className="col-span-2">
-        <Card key="no-results" className="bg-accent text-center shadow-lg">
+        <Card key="no-results" className="bg-accent text-center shadow-lg border-0">
           <CardHeader className="font-bold">
             <span>Tip</span>
           </CardHeader>

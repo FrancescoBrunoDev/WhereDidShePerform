@@ -1,7 +1,6 @@
 "use client"
 
-import Link from "next/link"
-import { AnimatePresence, motion as m } from "framer-motion"
+import { motion as m } from "framer-motion"
 
 import PerformanceSearch from "@/components/research/research"
 

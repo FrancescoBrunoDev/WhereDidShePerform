@@ -55,7 +55,7 @@ export default function RandomCard() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 5, opacity: 0 }}
           >
-            <Card className="w-64 bg-secondary shadow-lg">
+            <Card className="w-64 bg-secondary shadow-lg border-0">
               <CardHeader className="pb-2">
                 <h2 className="text-2xl font-black">Performer of the day</h2>
               </CardHeader>

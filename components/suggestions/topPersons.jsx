@@ -20,7 +20,7 @@ export function TopPersons() {
   const sortedPerformer = performer.sort((a, b) => b.count - a.count)
   const sortedComposers = composers.sort((a, b) => b.count - a.count)
   return (
-    <Tabs defaultValue="performers" className="w-[500px]">
+    <Tabs defaultValue="performers" className="w-[400px] shrink-0">
       <TabsList className="mb-2 grid w-full grid-cols-2">
         <TabsTrigger value="composers">Composers</TabsTrigger>
         <TabsTrigger value="performers">Performers</TabsTrigger>

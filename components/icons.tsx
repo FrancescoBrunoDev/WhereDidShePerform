@@ -10,7 +10,7 @@ import {
   Loader2,
   Settings2,
   X,
-  ChevronsRight,
+  ArrowRight,
   type Icon as LucideIcon,
 } from "lucide-react"
 import { TbBrandNextjs, TbBrandTailwind } from "react-icons/tb"
@@ -35,7 +35,7 @@ export const Icons = {
   info: Info,
   externalLink: ExternalLink,
   settings: Settings2,
-  arrowRight: ChevronsRight,
+  arrowRight: ArrowRight,
   nextjs: (props: LucideProps) => <TbBrandNextjs {...props} />,
   tailwind: (props: LucideProps) => <TbBrandTailwind {...props} />,
   reactsimpleMaps: (props: LucideProps) => (
