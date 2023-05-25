@@ -20,14 +20,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: install fetch
-        run: npm install fetch
-
       - name: Install ESM
         run: npm install esm
 
       - name: Run script
-        run: node utils/generateStatistics.js
+        run: node --experimental-modules utils/generateStatistics.js
 
       - name: List files in directory
         run: ls components/suggestions/
