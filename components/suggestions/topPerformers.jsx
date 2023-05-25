@@ -41,8 +41,8 @@ export default function TopPerfomers() {
           <CardTitle className="text-2xl font-black">Wall of Fame 💪</CardTitle>
           <div className="col-span-3">
             <CardDescription>
-              How is the performer with the higests number of performance for
-              the top 30 composers?
+              Who is the performer with the most performances for each of the 30
+              composers?
             </CardDescription>
             <CardDescription className="flex justify-end font-black">
               works played
