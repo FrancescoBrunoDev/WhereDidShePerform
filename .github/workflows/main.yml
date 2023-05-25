@@ -5,6 +5,9 @@ on:
     - cron: '0 0 * * *' # Run every midnight
   workflow_dispatch:
 
+  runs:
+  using: 'node16'
+
 jobs:
   run-script:
     runs-on: ubuntu-latest
