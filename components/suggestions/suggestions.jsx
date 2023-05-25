@@ -16,7 +16,7 @@ export default function Suggestions() {
       <TopPersons />
       <TopPerfomers />
       <RandomCard />
-      <Button onClick={handleButtonClick}>More</Button>
+{/*       <Button onClick={handleButtonClick}>More</Button> */}
     </div>
   )
 }
