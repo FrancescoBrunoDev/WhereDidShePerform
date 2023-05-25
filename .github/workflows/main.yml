@@ -19,6 +19,8 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Install ESM
         run: npm install esm
 
       - name: List files in directory
