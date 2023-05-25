@@ -21,7 +21,7 @@ jobs:
         run: npm ci
 
       - name: Run script
-        run: node ./utils/generateStatistics.js
+        run: node utils/generateStatistics.js
 
       - name: List files in directory
         run: ls components/suggestions/
