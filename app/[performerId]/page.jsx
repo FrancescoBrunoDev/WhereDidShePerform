@@ -194,11 +194,6 @@ export default function Composer({ params }) {
     filterHighestYear,
   ])
 
-  // Calculate the count of all filteredEventInfo items across all locations
-  /*     const totalCount = filteredLocationsData.reduce(
-      (sum, { count }) => sum + count,
-      0
-    ) */
   const { toast } = useToast()
 
   return (
@@ -217,30 +212,26 @@ export default function Composer({ params }) {
       </div>
       <Tabs defaultValue="map">
         <div className="fixed bottom-10 z-20 flex w-full justify-center lg:top-16">
-          <div className="flex justify-center shadow-lg lg:shadow-none">
-            <TabsList className="z-10">
-              <TabsTrigger
-                onClick={() => {
-                  toast({
-                    title: areAllFiltersDeactivated
-                      ? "It's more fun with at least one filter!"
-                      : "The map is updated with your filter settings!",
-                    action: (
-                      <ToastAction altText="Goto schedule to undo">
-                        {areAllFiltersDeactivated
-                          ? "leave me alone!"
-                          : "Thanks!"}
-                      </ToastAction>
-                    ),
-                  })
-                }}
-                value="map"
-              >
-                map
-              </TabsTrigger>
-              <TabsTrigger value="list">list</TabsTrigger>
-            </TabsList>
-          </div>
+          <TabsList className="flex justify-center shadow-lg lg:shadow-none">
+            <TabsTrigger
+              onClick={() => {
+                toast({
+                  title: areAllFiltersDeactivated
+                    ? "It's more fun with at least one filter!"
+                    : "The map is updated with your filter settings!",
+                  action: (
+                    <ToastAction altText="Goto schedule to undo">
+                      {areAllFiltersDeactivated ? "leave me alone!" : "Thanks!"}
+                    </ToastAction>
+                  ),
+                })
+              }}
+              value="map"
+            >
+              map
+            </TabsTrigger>
+            <TabsTrigger value="list">list</TabsTrigger>
+          </TabsList>
         </div>
 
         <LayoutGroup>

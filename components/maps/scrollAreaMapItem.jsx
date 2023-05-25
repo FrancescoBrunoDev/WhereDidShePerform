@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 
 import {
   AccordionContent,
@@ -6,6 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 
 export default function ScrollAreaItem({
   locationsData,
@@ -13,6 +14,7 @@ export default function ScrollAreaItem({
   setIsHover,
   isByCity,
 }) {
+  const [visibleItems, setVisibleItems] = useState(20)
 
   return (
     <div>
@@ -53,7 +55,7 @@ export default function ScrollAreaItem({
               </AccordionTrigger>
               <AccordionContent>
                 <Suspense>
-                  {eventInfo.map(({ eventId, date }) => (
+                  {eventInfo.slice(0, visibleItems).map(({ eventId, date }) => (
                     <div
                       key={eventId}
                       className="ml-6 flex justify-normal border-0"
@@ -71,6 +73,21 @@ export default function ScrollAreaItem({
                       </div>
                     </div>
                   ))}
+                  {visibleItems < eventInfo.length && (
+                    <div className="flex w-full justify-center pb-5">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => {
+                          setVisibleItems(
+                            (prevVisibleItems) => prevVisibleItems + 20
+                          )
+                        }}
+                      >
+                        Show More
+                      </Button>
+                    </div>
+                  )}
                 </Suspense>
               </AccordionContent>
             </AccordionItem>

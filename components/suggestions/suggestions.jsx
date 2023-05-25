@@ -1,15 +1,12 @@
-import { Suspense } from "react"
-
-import { Loading } from "@/components/loading"
 
 import RandomCard from "./randomCard"
-import TopComposers from "./topComposers"
+import { TopPersons } from "./topPersons"
 
-export default function suggestions() {
+export default function Suggestions() {
+
   return (
     <div className="flex snap-x scroll-pl-6 flex-nowrap gap-4 overflow-x-auto pt-1">
-      <TopComposers />
-
+      <TopPersons />
       <RandomCard />
     </div>
   )
