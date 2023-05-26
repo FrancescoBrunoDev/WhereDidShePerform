@@ -40,15 +40,14 @@ export function TopPersons() {
             <ScrollArea className="h-full">
               {sortedComposers.map(
                 ({ composerId, composerName, count }, index) => (
-                  <div
-                    key={composerId}
-                    className="flex-cols-2 flex justify-between px-3"
-                  >
-                    <div className="flex-cols-3 flex">
-                      <h1 className="w-10 font-black">{index + 1}</h1>
-                      <h2 className="pr-3 text-sm">{composerName}</h2>
+                  <div key={composerId} className="w-full justify-between px-3">
+                    <div className="grid grid-cols-8">
+                      <h1 className="col-span-1 font-black">{index + 1}</h1>
+                      <h2 className="col-span-6 pr-3 text-sm">
+                        {composerName}
+                      </h2>
+                      <h3 className="col-span-1 text-right text-sm">{count}</h3>
                     </div>
-                    <h3 className="w-20 text-right text-sm">{count}</h3>
                   </div>
                 )
               )}
@@ -77,13 +76,17 @@ export function TopPersons() {
                         scale: 1.01,
                         transition: { duration: 0.1 },
                       }}
-                      className="flex-cols-2 flex justify-between space-y-1 rounded-lg px-3 py-1 hover:bg-secondary"
+                      className="grid w-full space-y-1 rounded-lg px-3 py-1 hover:bg-secondary"
                     >
-                      <div className="flex-cols-3 flex">
-                        <h1 className="w-10 font-black">{index + 1}</h1>
-                        <h2 className="pr-3 text-sm">{performerName}</h2>
+                      <div className="grid w-full grid-cols-8">
+                        <h1 className="col-span-1 font-black">{index + 1}</h1>
+                        <h2 className="col-span-6 pr-3 text-sm">
+                          {performerName}
+                        </h2>
+                        <h3 className="col-span-1 text-right text-sm">
+                          {count}
+                        </h3>
                       </div>
-                      <h3 className="w-20 text-right text-sm">{count}</h3>
                     </m.div>
                   </Link>
                 )
