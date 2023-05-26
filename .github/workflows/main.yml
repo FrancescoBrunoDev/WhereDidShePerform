@@ -29,6 +29,9 @@ jobs:
       - name: List files in directory
         run: ls components/suggestions/
 
+      - name: Print secret value
+        run: echo ${{ secrets.PAT }}
+
       - name: Set up Git
         run: |
           git config --global user.email "franzbruno95@gmail.com"
