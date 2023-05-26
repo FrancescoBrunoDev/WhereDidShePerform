@@ -9,12 +9,6 @@ jobs:
   run-script:
     runs-on: ubuntu-latest
     steps:
-      - name: Set secret value as environment variable
-        run: echo "::set-env name=MY_SECRET_VALUE::${{ secrets.PAT }}"
-
-      - name: Print secret value
-        run: echo $MY_SECRET_VALUE
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -49,4 +43,4 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           branch: main
-          github_token: ${{ secrets.PAT }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
