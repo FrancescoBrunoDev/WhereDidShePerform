@@ -135,7 +135,7 @@ async function printTopPersons(topPersons, filename) {
 }
 
 async function main() {
-  const batchSize = 600
+  const batchSize = 1000
   let batchStart = 1
   let batchEnd = batchSize
   const topPersons = {
