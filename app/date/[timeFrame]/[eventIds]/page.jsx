@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
-import { parseISO, set } from "date-fns"
+import { format, parseISO } from "date-fns"
 import { LayoutGroup, motion as m } from "framer-motion"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -31,6 +31,8 @@ export default function Dates() {
   const [startDateString, endDateString] = timeFrame.split("%7C")
   const startDate = parseISO(startDateString)
   const endDate = parseISO(endDateString)
+  const formattedStartDate = format(startDate, "do MMM, yyyy")
+  const formattedEndDate = format(endDate, "do MMM, yyyy")
   const [searchData, setSearchData] = useState(true)
 
   const [locationsData, setLocationsData] = useState([])
@@ -92,10 +94,21 @@ export default function Dates() {
 
   useEffect(() => {
     async function fetchData() {
-      const fetchEvents = await GetEventsDetails(eventIds)
-      const events = Object.values(fetchEvents).map(({ uid }) => ({
-        event: uid,
-      }))
+      const eventIdsArray = eventIds.split("|")
+      const batches = []
+      for (let i = 0; i < eventIdsArray.length; i += 1000) {
+        const batch = eventIdsArray.slice(i, i + 1000)
+        batches.push(batch)
+      }
+      const fetchPromises = batches.map((batch) => GetEventsDetails(batch))
+      const fetchResults = await Promise.all(fetchPromises)
+      const events = []
+      for (const fetchResult of fetchResults) {
+        const batchEvents = Object.values(fetchResult).map(({ uid }) => ({
+          event: uid,
+        }))
+        events.push(...batchEvents)
+      }
       let id = {
         events: events,
       }
@@ -213,9 +226,9 @@ export default function Dates() {
       <div className="container">
         {startDateString && endDateString && (
           <h1 className="fixed top-16 z-10 w-fit text-3xl font-black md:text-4xl lg:top-32 lg:w-96">
-            Events from
-            <br /> {startDateString} to <br />
-            {endDateString}
+            From {formattedStartDate}
+            <br />
+            to {formattedEndDate}
           </h1>
         )}
       </div>

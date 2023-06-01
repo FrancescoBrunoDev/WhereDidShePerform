@@ -55,7 +55,9 @@ export default function SearchDates({
             onChange={handleToChange}
           />
         </div>
-        <Label>use the format yyyy-MM-dd</Label>
+        <CardDescription>
+          use the format yyyy-MM-dd
+        </CardDescription>
         <Button className="col-span-1" type="submit" onClick={handleDateSubmit}>
           Search
         </Button>

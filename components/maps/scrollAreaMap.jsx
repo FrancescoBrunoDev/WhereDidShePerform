@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/accordion"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Switch } from "@/components/ui/switch"
-import { DatePicker } from "@/components/calendar/eventPicker"
+import { DatePicker } from "@/components/researchDate/eventPicker"
 import CarrerTimeline from "@/components/maps/careerTimeline"
 
 import ScrollAreaItem from "./scrollAreaMapItem"

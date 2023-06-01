@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { motion as m } from "framer-motion"
 
-import { DatePicker } from "@/components/calendar/eventPicker"
+import { DatePicker } from "@/components/researchDate/eventPicker"
 import { Icons } from "@/components/icons"
 
 import RandomCard from "./randomCard"

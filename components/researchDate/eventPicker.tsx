@@ -7,8 +7,8 @@ import { DateRange } from "react-day-picker"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardFooter } from "@/components/ui/card"
-import { main } from "@/components/calendar/EventByDateFinder"
-import animationData from "@/components/calendar/calendarAnimation.json"
+import { main } from "@/components/researchDate/EventByDateFinder"
+import animationData from "@/components/researchDate/calendarAnimation.json"
 
 import ResultFound from "./resultFound"
 import SearchDates from "./searchDates"
@@ -101,7 +101,7 @@ export function DatePicker(props: DatePickerProps) {
         <AnimatePresence initial={false} mode="wait">
           <m.div
             className={
-              props.searchData ? "flex h-28 items-center py-3" : "h-52"
+              props.searchData ? "flex h-32 items-center py-3" : "h-52"
             }
             layout
           >
