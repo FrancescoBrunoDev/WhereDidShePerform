@@ -67,7 +67,7 @@ export default function PerformanceSearchResults({ results }) {
 
     content.unshift(
       <m.div variants={item} key={person.uid} className="col-span-2">
-        <Link href={`/${person.uid}/`}>
+        <Link href={`/perfomer/${person.uid}/`}>
           <Card key={person.uid} className="bg-accent shadow-lg border-0">
             <CardHeader>
               <span>{sentenceWithEmoji}</span>

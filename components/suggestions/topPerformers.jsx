@@ -37,7 +37,7 @@ export default function TopPerfomers() {
     <Card className="w-[600px] shrink-0">
       <CardHeader className="pb-2">
         <div className="grid grid-cols-4">
-          <CardTitle className="text-2xl font-black">Wall of Fame 💪</CardTitle>
+          <CardTitle>Wall of Fame 💪</CardTitle>
           <div className="col-span-3">
             <CardDescription>
               Who is the performer with the most performances for each of the 30
@@ -53,8 +53,8 @@ export default function TopPerfomers() {
         <ScrollArea className="h-full shrink-0">
           {performersByComposer.map(
             ({ performerId, performerName, composerName, count }, index) => (
-              <div className="grid grid-cols-2 gap-2">
-                <div key={performerId} className="col-span-1 grid grid-cols-6">
+              <div key={composerName} className="grid grid-cols-2 gap-2">
+                <div  className="col-span-1 grid grid-cols-6">
                   <h1 className="col-span-1 font-black">{index + 1}</h1>
                   <div className="col-span-5">
                     <h2 className="p-1 text-right text-sm">
@@ -63,7 +63,7 @@ export default function TopPerfomers() {
                   </div>
                 </div>
                 <div className="col-span-1 grid grid-cols-6">
-                  <Link href={`/${performerId}/`} className="col-span-5">
+                  <Link key={performerId} href={`/perfomer/${performerId}/`} className="col-span-5">
                     <m.h2
                       whileHover={{
                         scale: 1.01,

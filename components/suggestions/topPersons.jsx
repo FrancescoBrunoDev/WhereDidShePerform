@@ -59,7 +59,7 @@ export function TopPersons() {
       <TabsContent value="performers">
         <Card className="">
           <CardHeader className="pb-0">
-            <CardTitle className="text-2xl font-black">
+            <CardTitle>
               Most active performers
             </CardTitle>
             <CardDescription className="flex justify-end font-black">
@@ -70,7 +70,7 @@ export function TopPersons() {
             <ScrollArea className="h-full">
               {sortedPerformer.map(
                 ({ performerId, performerName, count }, index) => (
-                  <Link key={performerId} href={`/${performerId}/`}>
+                  <Link key={performerId} href={`/perfomer/${performerId}/`}>
                     <m.div
                       whileHover={{
                         scale: 1.01,

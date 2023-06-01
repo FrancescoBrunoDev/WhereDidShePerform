@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { motion as m } from "framer-motion"
 
+import { DatePicker } from "@/components/calendar/eventPicker"
 import { Icons } from "@/components/icons"
 
 import RandomCard from "./randomCard"
@@ -44,6 +45,7 @@ export default function Suggestions() {
         exit={{ y: 5, opacity: 0, transition: { delay: 0.1 } }}
       >
         <div className="flex snap-x scroll-pl-6 flex-nowrap gap-4 overflow-x-scroll pr-10 pt-1">
+          <DatePicker />
           <TopPersons />
           <TopPerfomers />
           <RandomCard />

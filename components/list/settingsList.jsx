@@ -30,6 +30,7 @@ export function SettingsList({
   locationsData,
   setSelectedComposerNames,
   selectedComposerNames,
+  searchData,
 }) {
   const isFilterActive =
     isConcertAvailable ||
@@ -107,6 +108,7 @@ export function SettingsList({
                 locationsData={locationsData}
                 setSelectedComposerNames={setSelectedComposerNames}
                 selectedComposerNames={selectedComposerNames}
+                searchData={searchData}
               />
             </m.div>
           )}
@@ -120,7 +122,15 @@ export function SettingsList({
             }}
             checked={expandedLocations}
           >
-            {expandedLocations ? <Icons.exit /> : "How did s(he) played"}
+            {expandedLocations ? (
+              <Icons.exit />
+            ) : (
+              <span>
+                {searchData
+                  ? "Who was performed?"
+                  : "How did s(he) performed?"}
+              </span>
+            )}
           </Toggle>
         </div>
       </m.div>
