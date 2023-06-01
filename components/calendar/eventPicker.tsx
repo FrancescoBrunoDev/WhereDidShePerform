@@ -94,13 +94,15 @@ export function DatePicker(props: DatePickerProps) {
       <Card
         className={
           props.searchData
-            ? "h-full border-0 pb-0 shadow-none bg-transparent"
+            ? "h-full border-0 bg-transparent pb-0 shadow-none"
             : "relative h-64 w-[350px] shrink-0"
         }
       >
         <AnimatePresence initial={false} mode="wait">
           <m.div
-            className={props.searchData ? "flex h-28 py-3 items-center" : "h-52"}
+            className={
+              props.searchData ? "flex h-28 items-center py-3" : "h-52"
+            }
             layout
           >
             {/* Render animation when loading is true */}
@@ -122,7 +124,7 @@ export function DatePicker(props: DatePickerProps) {
             ) : (
               <React.Fragment key={"query"}>
                 <m.div
-                  className="w-full h-full"
+                  className="h-full w-full"
                   initial={{ y: 10, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: 10, opacity: 0 }}
