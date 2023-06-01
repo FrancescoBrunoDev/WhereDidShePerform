@@ -54,7 +54,7 @@ export default function TopPerfomers() {
           {performersByComposer.map(
             ({ performerId, performerName, composerName, count }, index) => (
               <div key={composerName} className="grid grid-cols-2 gap-2">
-                <div  className="col-span-1 grid grid-cols-6">
+                <div className="col-span-1 grid grid-cols-6">
                   <h1 className="col-span-1 font-black">{index + 1}</h1>
                   <div className="col-span-5">
                     <h2 className="p-1 text-right text-sm">
@@ -63,7 +63,11 @@ export default function TopPerfomers() {
                   </div>
                 </div>
                 <div className="col-span-1 grid grid-cols-6">
-                  <Link key={performerId} href={`/perfomer/${performerId}/`} className="col-span-5">
+                  <Link
+                    key={performerId}
+                    href={`/perfomer/${performerId}/`}
+                    className="col-span-5"
+                  >
                     <m.h2
                       whileHover={{
                         scale: 1.01,
@@ -74,7 +78,7 @@ export default function TopPerfomers() {
                       {performerName.replace(/\s\(\d{4}–\d{4}\)/, "")}
                     </m.h2>
                   </Link>
-                  <h3 className="col-span-1 w-10 pr-3 py-1 text-right text-sm">
+                  <h3 className="col-span-1 w-10 py-1 pr-3 text-right text-sm">
                     {count}
                   </h3>
                 </div>
