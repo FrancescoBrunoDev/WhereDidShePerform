@@ -35,7 +35,7 @@ export default function PerformanceSearchResults({ results }) {
 
     if (person.title.includes("<mark>")) {
       return null // Exclude this person from the regular mapping
-    } else {
+    } else if (event > 0) {
       return (
         <m.div key={person.uid} variants={item}>
           <Link href={`/perfomer/${person.uid}/`}>
@@ -49,6 +49,8 @@ export default function PerformanceSearchResults({ results }) {
           </Link>
         </m.div>
       )
+    } else {
+      return null
     }
   })
 
