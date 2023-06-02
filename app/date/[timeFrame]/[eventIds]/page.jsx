@@ -98,8 +98,8 @@ export default function Dates() {
       const eventIdsArray = eventIds.split("-")
       const uidString = eventIdsArray.join("|")
       const batches = []
-      for (let i = 0; i < uidString.length; i += 800) {
-        const batch = uidString.slice(i, i + 800)
+      for (let i = 0; i < uidString.length; i += 1000) {
+        const batch = uidString.slice(i, i + 1000)
         batches.push(batch)
       }
       const fetchPromises = batches.map((batch) => GetEventsDetails(batch))
