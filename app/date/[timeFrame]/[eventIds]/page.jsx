@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
+import { useViewportSize } from "@mantine/hooks"
 import { format, parseISO } from "date-fns"
 import { LayoutGroup, motion as m } from "framer-motion"
 
@@ -65,6 +66,7 @@ export default function Dates() {
   const [filteredLocationsData, setFilteredLocationsData] = useState()
   const [selectedComposerNames, setSelectedComposerNames] = useState([])
   const [locationsWithComposer, setlocationsWithComposer] = useState([])
+  const { width } = useViewportSize()
 
   const handleFilterChange = () => {
     if (
@@ -188,7 +190,7 @@ export default function Dates() {
       selectedComposerNames,
       locationsWithComposer,
       filterLowestYear,
-      filterHighestYear,
+      filterHighestYear
     )
 
     const seasonAvailable = checkCategoryAvailability(locationsData, 1)
@@ -235,7 +237,14 @@ export default function Dates() {
         )}
       </div>
       <Tabs defaultValue="map">
-        <div className="fixed bottom-10 z-20 flex w-full justify-center lg:top-16">
+        <div
+          className={
+            // It can't be done with tailwind because otherwise it makes the items in the list not clickable
+            width < 1024
+              ? "fixed bottom-10 z-20 flex w-full justify-center"
+              : "fixed top-16 z-20 flex w-full justify-center"
+          }
+        >
           <TabsList className="flex justify-center shadow-lg lg:shadow-none">
             <TabsTrigger
               onClick={() => {

@@ -1,8 +1,10 @@
 "use client"
 
 import { Suspense, useEffect, useState } from "react"
+import { useViewportSize } from "@mantine/hooks"
 import { LayoutGroup, motion as m } from "framer-motion"
 
+import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToastAction } from "@/components/ui/toast"
 import { Toaster } from "@/components/ui/toaster"
@@ -11,15 +13,15 @@ import {
   checkCategoryAvailability,
   filterLocationsData,
 } from "@/components/list/filterLocationsData"
+import List from "@/components/list/list"
 import {
   GetExpandedEventWithPerformances,
   GetLocationsWithEventsAndTitle,
 } from "@/components/maps/getMergedLocations"
+import MapVisualizer from "@/components/maps/mapVisualizer"
 
 import { GetInfoPerson } from "../../api/musiconn"
-import List from "@/components/list/list"
 import Loading from "./loading"
-import MapVisualizer from "@/components/maps/mapVisualizer"
 
 const geoUrl =
   "https://raw.githubusercontent.com/leakyMirror/map-of-europe/27a335110674ae5b01a84d3501b227e661beea2b/TopoJSON/europe.topojson"
@@ -55,6 +57,7 @@ export default function Composer({ params }) {
   const [filteredLocationsData, setFilteredLocationsData] = useState()
   const [selectedComposerNames, setSelectedComposerNames] = useState([])
   const [locationsWithComposer, setlocationsWithComposer] = useState([])
+  const { width } = useViewportSize()
 
   const handleFilterChange = () => {
     if (
@@ -197,23 +200,28 @@ export default function Composer({ params }) {
   ])
 
   const { toast } = useToast()
-
   return (
     <m.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.75, ease: "easeInOut" }}
-      className="relative"
     >
       <div className="container">
         {id && (
-          <h1 className="fixed top-16 z-10 w-fit text-3xl font-black md:text-4xl lg:top-32 lg:w-96">
-            {id.title}
-          </h1>
+          <div className="fixed top-16 z-10 w-fit text-3xl font-black md:text-4xl lg:top-32 lg:w-96">
+            <h1>{id.title}</h1>
+          </div>
         )}
       </div>
       <Tabs defaultValue="map">
-        <div className="fixed bottom-10 z-20 flex w-full justify-center lg:top-16">
+        <div
+          className={
+            // It can't be done with tailwind because otherwise it makes the items in the list not clickable
+            width < 1024
+              ? "fixed bottom-10 z-20 flex w-full justify-center"
+              : "fixed top-16 z-20 flex w-full justify-center"
+          }
+        >
           <TabsList className="flex justify-center shadow-lg lg:shadow-none">
             <TabsTrigger
               onClick={() => {

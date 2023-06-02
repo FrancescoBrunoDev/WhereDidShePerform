@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import Link from "next/link"
+import { linkMaker } from "@/utils/linkMaker"
 import { motion as m } from "framer-motion"
 
 import { Badge } from "@/components/ui/badge"
@@ -31,6 +32,7 @@ export default function PerformanceSearchResults({ results }) {
 
   const content = Object.keys(results[0].person).map((personId) => {
     const person = results[0].person[personId]
+    console.log(person.title, "person")
     const event = results[0].person[personId].events.count
 
     if (person.title.includes("<mark>")) {
@@ -42,8 +44,9 @@ export default function PerformanceSearchResults({ results }) {
             <Card key={person.uid}>
               <CardHeader>{person.title}</CardHeader>
               <CardFooter className="gap-x-1">
-                <Badge>Events {event}</Badge>
-                <Badge variant="secondary">{person.uid}</Badge>
+                <Badge variant="secondary">Events {event}</Badge>
+
+                <Badge>{person.uid}</Badge>
               </CardFooter>
             </Card>
           </Link>
@@ -75,8 +78,8 @@ export default function PerformanceSearchResults({ results }) {
               <span style={{ fontWeight: "bold" }}>{cleanedTitle}</span>
             </CardHeader>
             <CardFooter className="gap-x-1">
-              <Badge>Events {event}</Badge>
-              <Badge variant="outline">{person.uid}</Badge>
+              <Badge variant="outline">Events {event}</Badge>
+              <Badge>{person.uid}</Badge>
             </CardFooter>
           </Card>
         </Link>

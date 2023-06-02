@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react"
+import Link from "next/link"
 import { AnimatePresence, motion as m, useInView } from "framer-motion"
+import { linkMaker } from "@/utils/linkMaker"
 
 import { Badge } from "@/components/ui/badge"
-import { Card, CardHeader } from "@/components/ui/card"
+import { Card, CardDescription, CardHeader } from "@/components/ui/card"
 import { list } from "@/components/animationConst/animationConst"
 import { CardItem } from "@/components/list/cardItem"
 import getRandomSentenceList from "@/components/list/randomSencences"
@@ -34,13 +36,13 @@ export function CardItemMoreLeft({ location, remainingCount }) {
     >
       <CardHeader className="flex gap-y-2">
         <div className=" text-sm font-bold">
-          There are still {remainingCount}{" "}
+          There are {remainingCount} more{" "}
           {remainingCount === 1 ? "event" : "events"} remaining. I recommend
           using filters for more effective search.
         </div>
-        <div className="mt-2 text-xs">
+        <CardDescription className="text-xs">
           Events from {formatDate(minDate)} to {formatDate(maxDate)}
-        </div>
+        </CardDescription>
       </CardHeader>
     </Card>
   )
@@ -50,7 +52,6 @@ export default function CardList({ locationsData, areAllFiltersDeactivated }) {
   const [sentence, setSentence] = useState(getRandomSentenceList())
   const ref = useRef(null)
   const isInView = useInView(ref)
-
   useEffect(() => {
     const interval = setInterval(() => {
       setSentence(getRandomSentenceList())
@@ -100,15 +101,21 @@ export default function CardList({ locationsData, areAllFiltersDeactivated }) {
               if (location.eventInfo.length === 0) {
                 return null // Skip rendering the location if it has no events
               }
+              const locationTitleLink = linkMaker(location.title)
               return (
                 <m.div variants={list} key={location.locationId}>
                   <div className="mb-5 mt-7 flex items-center space-x-2">
                     <h1 className="text-lg font-black leading-none">
                       {location.title}
                     </h1>{" "}
-                    <Badge className="flex h-6 w-14 justify-center">
-                      {location.locationId}
-                    </Badge>
+                    <Link
+                      href={`https://performance.musiconn.de/location/${locationTitleLink}`}
+                      target="_blank"
+                    >
+                      <Badge className="flex h-6 w-14 justify-center">
+                        {location.locationId}
+                      </Badge>
+                    </Link>
                   </div>
                   <m.div
                     variants={list}

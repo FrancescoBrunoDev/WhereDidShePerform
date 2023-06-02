@@ -1,4 +1,6 @@
 import { Suspense, useState } from "react"
+import Link from "next/link"
+import { linkMaker } from "@/utils/linkMaker"
 
 import {
   AccordionContent,
@@ -21,77 +23,92 @@ export default function ScrollAreaItem({
       {locationsData?.map(({ city, locations, key, locationId }) => (
         <div key={isByCity ? key : locationId}>
           <h2 className="font-black">{city}</h2>
-          {locations.map(({ locationId, title, count, eventInfo }) => (
-            <AccordionItem
-              className="justify-normal border-0"
-              value={locationId}
-              key={locationId}
-              id={locationId}
-              onMouseEnter={() => {
-                handleAccordionHover(isByCity ? key : locationId)
-                setIsHover(true)
-              }}
-              onMouseLeave={() => {
-                handleAccordionHover(null)
-                setIsHover(false)
-              }}
-            >
-              <AccordionTrigger
+          {locations.map(({ locationId, title, count, eventInfo }) => {
+            const locationTitleLink = linkMaker(title)
+            return (
+              <AccordionItem
+                className="justify-normal border-0"
+                value={locationId}
+                key={locationId}
                 id={locationId}
-                className="flex justify-normal py-0 hover:no-underline"
+                onMouseEnter={() => {
+                  handleAccordionHover(isByCity ? key : locationId)
+                  setIsHover(true)
+                }}
+                onMouseLeave={() => {
+                  handleAccordionHover(null)
+                  setIsHover(false)
+                }}
               >
-                {" "}
-                <div className="mt-1 flex h-5 w-14 justify-center">
-                  <Badge className="flex w-14 justify-center">
-                    {locationId}
-                  </Badge>
-                </div>
-                <p
-                  className="mx-1 flex w-full justify-self-start rounded-lg p-2 text-left  hover:bg-secondary hover:text-primary"
-                  key={isByCity ? key : locationId}
+                <AccordionTrigger
+                  id={locationId}
+                  className="flex justify-normal py-0 hover:no-underline"
                 >
-                  {title} for {count} {count === 1 ? "time" : "times"}
-                </p>
-              </AccordionTrigger>
-              <AccordionContent>
-                <Suspense>
-                  {eventInfo.slice(0, visibleItems).map(({ eventId, date }) => (
-                    <div
-                      key={eventId}
-                      className="ml-6 flex justify-normal border-0"
+                  {" "}
+                  <div className="mt-1 flex h-5 w-14 justify-center">
+                    <Link
+                      href={`https://performance.musiconn.de/location/${locationTitleLink}`}
+                      target="_blank"
                     >
-                      <div className="flex items-center justify-normal py-1">
-                        <Badge
-                          variant={"secondary"}
-                          className="flex w-14 justify-center"
+                      <Badge className="flex w-14 justify-center">
+                        {locationId}
+                      </Badge>
+                    </Link>
+                  </div>
+                  <p
+                    className="mx-1 flex w-full justify-self-start rounded-lg p-2 text-left  hover:bg-secondary hover:text-primary"
+                    key={isByCity ? key : locationId}
+                  >
+                    {title} for {count} {count === 1 ? "time" : "times"}
+                  </p>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <Suspense>
+                    {eventInfo
+                      .slice(0, visibleItems)
+                      .map(({ eventId, date, eventTitle }) => {
+                        const cleanedTitleLink = linkMaker(eventTitle)
+                        return (
+                          <div
+                            key={eventId}
+                            className="ml-6 flex justify-normal border-0"
+                          >
+                            <div className="flex items-center justify-normal py-1">
+                              <Link
+                                href={`https://performance.musiconn.de/event/${cleanedTitleLink}`}
+                                target="_blank"
+                              >
+                                <Badge className="flex w-14 justify-center">
+                                  {eventId}
+                                </Badge>
+                              </Link>
+                            </div>
+                            <div className="ml-2 flex items-center">
+                              <p>{date}</p>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    {visibleItems < eventInfo.length && (
+                      <div className="flex w-full justify-center pb-5">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => {
+                            setVisibleItems(
+                              (prevVisibleItems) => prevVisibleItems + 20
+                            )
+                          }}
                         >
-                          {eventId}
-                        </Badge>
+                          Show More
+                        </Button>
                       </div>
-                      <div className="ml-2 flex items-center">
-                        <p>{date}</p>
-                      </div>
-                    </div>
-                  ))}
-                  {visibleItems < eventInfo.length && (
-                    <div className="flex w-full justify-center pb-5">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => {
-                          setVisibleItems(
-                            (prevVisibleItems) => prevVisibleItems + 20
-                          )
-                        }}
-                      >
-                        Show More
-                      </Button>
-                    </div>
-                  )}
-                </Suspense>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
+                    )}
+                  </Suspense>
+                </AccordionContent>
+              </AccordionItem>
+            )
+          })}
         </div>
       ))}
     </div>

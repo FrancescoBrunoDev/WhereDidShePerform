@@ -7,7 +7,6 @@ import {
 
 export async function GetListOfEvent(id, usePerformances = false) {
   let event = {}
-  console.log(id, "id")
   const eventsNumbers = id.events.map((event) => event.event)
   if (eventsNumbers.length > 500) {
     const chunkSize = 500
@@ -112,7 +111,7 @@ export async function GetExpandedEventWithPerformances(id, locationsData) {
   return expandedLocationsPerformance
 }
 
-export async function GetLocationsWithEventsAndTitle(id, eventIds) {
+export async function GetLocationsWithEventsAndTitle(id) {
   // get event
   const event = await GetListOfEvent(id)
 
@@ -134,6 +133,7 @@ export async function GetLocationsWithEventsAndTitle(id, eventIds) {
     const categories = event[eventId]?.categories[0]?.label ?? null
     const locations = event[eventId].locations
     const date = event[eventId]?.dates[0]?.date ?? null
+    const title = event[eventId]?.title ?? null
     if (locations && locations.length > 0) {
       locations
         .filter(
@@ -145,6 +145,7 @@ export async function GetLocationsWithEventsAndTitle(id, eventIds) {
             locationId: locationObj.location,
             date: date,
             categories: categories,
+            title: title,
           })
         })
     } else {
@@ -153,6 +154,7 @@ export async function GetLocationsWithEventsAndTitle(id, eventIds) {
         locationId: 0,
         date: date,
         categories: categories,
+        title: title,
       })
     }
   })
@@ -162,7 +164,6 @@ export async function GetLocationsWithEventsAndTitle(id, eventIds) {
   // Create a map to store location data with associated event IDs and dates
   const locationMap = {}
   for (const eventLocation of eventLocations) {
-    const parents = data.location[eventLocation.locationId]?.parents
     const categories = data.location[eventLocation.locationId]?.categories
     const locationId = eventLocation.locationId
     const locationInfo = data.location[locationId]
@@ -177,6 +178,7 @@ export async function GetLocationsWithEventsAndTitle(id, eventIds) {
     const eventId = eventLocation.eventId
     const date = eventLocation.date
     const eventCategory = eventLocation.categories
+    const eventTitle = eventLocation.title
 
     if (title && coordinates) {
       if (!locationMap[locationId]) {
@@ -185,7 +187,6 @@ export async function GetLocationsWithEventsAndTitle(id, eventIds) {
           title,
           coordinates: [coordinates[1], coordinates[0]],
           eventInfo: [],
-          parents: parents || [],
           categories: categories || [],
         }
       }
@@ -194,12 +195,14 @@ export async function GetLocationsWithEventsAndTitle(id, eventIds) {
           eventId,
           date,
           eventCategory,
+          eventTitle,
         })
       } else {
         locationMap[locationId].eventInfo.push({
           eventId: null,
           date,
           eventCategory,
+          eventTitle,
         })
       }
     }
