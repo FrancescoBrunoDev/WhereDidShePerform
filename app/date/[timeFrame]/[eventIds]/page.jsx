@@ -94,10 +94,11 @@ export default function Dates() {
 
   useEffect(() => {
     async function fetchData() {
-      const eventIdsArray = eventIds.split("|")
+      const eventIdsArray = eventIds.split("-")
+      const uidString = eventIdsArray.join("|")
       const batches = []
-      for (let i = 0; i < eventIdsArray.length; i += 1000) {
-        const batch = eventIdsArray.slice(i, i + 1000)
+      for (let i = 0; i < uidString.length; i += 1000) {
+        const batch = uidString.slice(i, i + 1000)
         batches.push(batch)
       }
       const fetchPromises = batches.map((batch) => GetEventsDetails(batch))

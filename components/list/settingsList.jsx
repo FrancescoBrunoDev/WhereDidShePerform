@@ -134,7 +134,7 @@ export function SettingsList({
               }}
               checked={expandedLocations}
             >
-              {searchData ? "Who was performed?" : "How did s(he) performed?"}
+              {searchData ? "Who was performed?" : "How did s.he performed?"}
             </Toggle>
           )}
         </div>

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -14,7 +15,7 @@ interface ResultFoundProps {
 
 export default function ResultFound(props: ResultFoundProps) {
   const uids = props.dateUids.map((dateUids) => dateUids.uid)
-  const uidString = uids.join("|")
+  const uidString = uids.join("-")
   const timeFrame = `${props.startDate}|${props.endDate}`
 
   return (
@@ -38,7 +39,7 @@ export default function ResultFound(props: ResultFoundProps) {
             <div className="rounded-lg bg-secondary p-3">
               <span className="text-3xl">😰</span>
               <p className="pb-2">
-                Oh boy, {uids.length} events are a lot! Sorry but I can't handle
+                Oh boy, {uids.length} events are a lot! Sorry but I can&apos;t handle
                 it at the moment.
               </p>
 
