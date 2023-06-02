@@ -39,7 +39,7 @@ export function SettingsList({
     isSeasonAvailable
 
   return (
-    <div className="container flex justify-center lg:justify-end">
+    <div className=" flex justify-center lg:justify-end">
       <m.div
         layout
         initial={{ x: 5, opacity: 0 }}
