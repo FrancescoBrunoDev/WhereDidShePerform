@@ -38,7 +38,7 @@ export default function PerformanceSearchResults({ results }) {
     } else {
       return (
         <m.div key={person.uid} variants={item}>
-          <Link href={`/${person.uid}/`}>
+          <Link href={`/perfomer/${person.uid}/`}>
             <Card key={person.uid}>
               <CardHeader>{person.title}</CardHeader>
               <CardFooter className="gap-x-1">
