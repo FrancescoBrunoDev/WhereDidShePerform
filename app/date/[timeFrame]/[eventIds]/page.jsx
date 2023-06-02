@@ -90,6 +90,7 @@ export default function Dates() {
     isMusicTheaterCategoryAvailable,
     isReligiousEventCategoryAvailable,
     isSeasonCategoryAvailable,
+    handleFilterChange,
   ])
 
   useEffect(() => {
@@ -187,7 +188,7 @@ export default function Dates() {
       selectedComposerNames,
       locationsWithComposer,
       filterLowestYear,
-      filterHighestYear
+      filterHighestYear,
     )
 
     const seasonAvailable = checkCategoryAvailability(locationsData, 1)

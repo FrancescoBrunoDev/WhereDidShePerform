@@ -20,7 +20,7 @@ export default function ResultFound(props: ResultFoundProps) {
 
   return (
     <>
-      <CardHeader className={props.searchData ? "px-0 py-0" : "flex"}>
+      <CardHeader className={props.searchData ? "p-0" : "flex"}>
         <CardTitle className="text-center text-2xl font-black">
           {props.searchData ? null : (
             <h1>{uids.length > 1100 ? "Upsy" : "Good news!"}</h1>

@@ -80,6 +80,7 @@ export default function Composer({ params }) {
     isMusicTheaterCategoryAvailable,
     isReligiousEventCategoryAvailable,
     isSeasonCategoryAvailable,
+    handleFilterChange,
   ])
 
   const { performerId } = params
