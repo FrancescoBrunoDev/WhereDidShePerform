@@ -23,7 +23,7 @@ export default function ResultFound(props: ResultFoundProps) {
       <CardHeader className={props.searchData ? "p-0" : "flex"}>
         <CardTitle className="text-center text-2xl font-black">
           {props.searchData ? null : (
-            <h1>{uids.length > 1100 ? "Upsy" : "Good news!"}</h1>
+            <h1>{props.dateUids.length > 1000 ? "Upsy" : "Good news!"}</h1>
           )}
         </CardTitle>
       </CardHeader>
@@ -34,7 +34,7 @@ export default function ResultFound(props: ResultFoundProps) {
             : "flex h-28 items-center justify-center p-0"
         }
       >
-        {uids.length > 1100 ? (
+        {props.dateUids.length > 1000 ? (
           <div className="px-5 text-center text-sm font-bold">
             <div className="rounded-lg bg-secondary p-3">
               <span className="text-3xl">😰</span>
