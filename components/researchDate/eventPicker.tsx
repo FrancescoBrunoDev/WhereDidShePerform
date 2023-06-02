@@ -95,7 +95,7 @@ export function DatePicker(props: DatePickerProps) {
         className={
           props.searchData
             ? "h-full border-0 bg-transparent pb-0 shadow-none"
-            : "relative h-64 w-[350px] shrink-0"
+            : "relative h-64 w-[350px] shrink-0 shadow-lg"
         }
       >
         <AnimatePresence initial={false} mode="wait">

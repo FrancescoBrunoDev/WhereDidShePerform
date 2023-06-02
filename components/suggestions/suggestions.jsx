@@ -1,19 +1,13 @@
-import { useEffect, useState } from "react"
 import { motion as m } from "framer-motion"
 
-import { DatePicker } from "@/components/researchDate/eventPicker"
 import { Icons } from "@/components/icons"
+import { DatePicker } from "@/components/researchDate/eventPicker"
 
 import RandomCard from "./randomCard"
-import main from "./statisticGenerator"
 import TopPerfomers from "./topPerformers"
 import { TopPersons } from "./topPersons"
 
 export default function Suggestions() {
-  const handleButtonClick = () => {
-    main()
-  }
-
   return (
     <>
       <m.div
@@ -49,7 +43,6 @@ export default function Suggestions() {
           <TopPersons />
           <TopPerfomers />
           <RandomCard />
-          {/* <Button onClick={handleButtonClick}>More</Button> */}
         </div>
       </m.div>
     </>
