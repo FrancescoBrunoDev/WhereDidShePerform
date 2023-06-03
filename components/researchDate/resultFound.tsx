@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -14,9 +14,20 @@ interface ResultFoundProps {
 }
 
 export default function ResultFound(props: ResultFoundProps) {
+  const [encodedUids, setEncodedUids] = useState("")
+  const { compress } = require("shrink-string")
   const uids = props.dateUids.map((dateUids) => dateUids.uid)
   const uidString = uids.join("-")
   const timeFrame = `${props.startDate}|${props.endDate}`
+
+  useEffect(() => {
+    async function compressUid() {
+      const compressed = await compress(uidString)
+      const encodedUids = encodeURIComponent(compressed)
+      setEncodedUids(encodedUids);
+    }
+    compressUid()
+  }, [])
 
   return (
     <>
@@ -34,13 +45,13 @@ export default function ResultFound(props: ResultFoundProps) {
             : "flex h-28 items-center justify-center p-0"
         }
       >
-        {props.dateUids.length > 1000 ? (
+        {props.dateUids.length > 2500 ? (
           <div className="px-5 text-center text-sm font-bold">
             <div className="rounded-lg bg-secondary p-3">
               <span className="text-3xl">😰</span>
               <p className="pb-2">
-                Oh boy, {uids.length} events are a lot! Sorry but I can&apos;t handle
-                it at the moment.
+                Oh boy, {uids.length} events are a lot! Sorry but I can&apos;t
+                handle it at the moment.
               </p>
 
               <Button
@@ -60,7 +71,7 @@ export default function ResultFound(props: ResultFoundProps) {
             </div>
           </div>
         ) : (
-          <Link href={`/date/${timeFrame}/${uidString}`}>
+          <Link href={`/date/${timeFrame}/${encodedUids}`}>
             <div className="flex gap-2">
               <Button size={"sm"}>
                 I&apos;ve found {props.dateUids.length} events for you!

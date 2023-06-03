@@ -26,8 +26,10 @@ const geoUrl =
   "https://raw.githubusercontent.com/leakyMirror/map-of-europe/27a335110674ae5b01a84d3501b227e661beea2b/TopoJSON/europe.topojson"
 
 export default function Dates() {
+  const { decompress } = require("shrink-string")
   const params = useParams()
   const eventIds = params.eventIds
+  const [dencodedUids, setDencodedUids] = useState("")
   const timeFrame = params.timeFrame
   const [startDateString, endDateString] = timeFrame.split("%7C")
   const startDate = parseISO(startDateString)
@@ -96,8 +98,17 @@ export default function Dates() {
   ])
 
   useEffect(() => {
+    async function decompressUid() {
+      const dencoded = decodeURIComponent(eventIds)
+      const decompressed = await decompress(dencoded)
+      setDencodedUids(decompressed)
+    }
+    decompressUid()
+  }, [])
+
+  useEffect(() => {
     async function fetchData() {
-      const eventIdsArray = eventIds.split("-")
+      const eventIdsArray = dencodedUids.split("-")
       const uidString = eventIdsArray.join("|")
       const batches = []
       for (let i = 0; i < uidString.length; i += 1000) {
@@ -106,12 +117,18 @@ export default function Dates() {
       }
       const fetchPromises = batches.map((batch) => GetEventsDetails(batch))
       const fetchResults = await Promise.all(fetchPromises)
+      console.log(fetchResults, "fetchResults")
       const events = []
       for (const fetchResult of fetchResults) {
-        const batchEvents = Object.values(fetchResult).map(({ uid }) => ({
-          event: uid,
-        }))
-        events.push(...batchEvents)
+        if (fetchResult !== null) {
+          const validObjects = Object.values(fetchResult).filter(
+            (obj) => obj !== null
+          )
+          const batchEvents = validObjects.map(({ uid }) => ({
+            event: uid,
+          }))
+          events.push(...batchEvents)
+        }
       }
       let id = {
         events: events,
@@ -122,10 +139,10 @@ export default function Dates() {
       setSearchData(true)
     }
 
-    if (eventIds) {
+    if (dencodedUids != null) {
       fetchData()
     }
-  }, [eventIds])
+  }, [dencodedUids])
 
   let highestYear = null
   let lowestYear = null

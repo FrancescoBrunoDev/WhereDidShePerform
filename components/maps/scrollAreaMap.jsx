@@ -48,7 +48,7 @@ export default function ScrollAreaMap({
                 {searchData ? "Pick new dates" : "Career Timeline"}
               </m.div>
               <Switch
-                isChecked={isTimeVisible}
+                checked={isTimeVisible}
                 onCheckedChange={() => setIsTimeVisible(!isTimeVisible)}
               ></Switch>
             </m.div>

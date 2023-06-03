@@ -4,7 +4,6 @@ import { Suspense, useEffect, useState } from "react"
 import { useViewportSize } from "@mantine/hooks"
 import { LayoutGroup, motion as m } from "framer-motion"
 
-import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToastAction } from "@/components/ui/toast"
 import { Toaster } from "@/components/ui/toaster"
@@ -90,8 +89,7 @@ export default function Composer({ params }) {
 
   useEffect(() => {
     async function fetchData() {
-      const eventIds = null
-      const data = await GetLocationsWithEventsAndTitle(id, eventIds)
+      const data = await GetLocationsWithEventsAndTitle(id)
       setLocationsData(data)
     }
 

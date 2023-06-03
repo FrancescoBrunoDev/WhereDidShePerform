@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
-import { AnimatePresence, motion as m, useInView } from "framer-motion"
 import { linkMaker } from "@/utils/linkMaker"
+import { AnimatePresence, motion as m, useInView } from "framer-motion"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardDescription, CardHeader } from "@/components/ui/card"
@@ -28,7 +28,6 @@ export function CardItemMoreLeft({ location, remainingCount }) {
     const year = date.getFullYear()
     return `${day}-${month}-${year}`
   }
-
   return (
     <Card
       key="remaining-events"
@@ -82,7 +81,7 @@ export default function CardList({ locationsData, areAllFiltersDeactivated }) {
       </div>
     )
   }
-
+  console.log(locationsData, "locationsData")
   return (
     <div className="container -z-10 mx-auto pt-72">
       {locationsData.map((city) => {
@@ -123,14 +122,15 @@ export default function CardList({ locationsData, areAllFiltersDeactivated }) {
                   >
                     {location.eventInfo.map((event, index) => {
                       if (index < 20) {
-                        return <CardItem event={event} />
+                        return <CardItem key={event.eventId} event={event} />
                       } else if (index === 20) {
                         const remainingCount = location.eventInfo.length - 20
                         if (remainingCount < 20) {
-                          return <CardItem event={event} />
+                          return <CardItem key={event.eventId} event={event} />
                         } else {
                           return (
                             <CardItemMoreLeft
+                              key={event.eventId}
                               location={location}
                               remainingCount={remainingCount}
                             />

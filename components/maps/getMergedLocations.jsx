@@ -115,6 +115,10 @@ export async function GetLocationsWithEventsAndTitle(id) {
   // get event
   const event = await GetListOfEvent(id)
 
+  if (!event) {
+    const locationUid = []
+    return locationUid 
+  }
   // make a string of unique locationUids
   const locationUid = [
     ...new Set(

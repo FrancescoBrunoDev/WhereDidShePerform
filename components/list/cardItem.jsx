@@ -12,7 +12,6 @@ export function CardItem({ event }) {
 
   return (
     <m.div
-      key={event.eventId}
       variants={item}
       initial="hidden"
       animate="visible"
