@@ -81,11 +81,9 @@ export default function CardList({ locationsData, areAllFiltersDeactivated }) {
       </div>
     )
   }
-  console.log(locationsData, "locationsData")
   return (
     <div className="container -z-10 mx-auto pt-72">
       {locationsData.map((city) => {
-        console.log(city, "city")
         const hasEvents = city.locations.some(
           (location) => location.eventInfo.length > 0
         )

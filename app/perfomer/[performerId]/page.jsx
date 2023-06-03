@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react"
 import { useViewportSize } from "@mantine/hooks"
 import { LayoutGroup, motion as m } from "framer-motion"
 
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToastAction } from "@/components/ui/toast"
 import { Toaster } from "@/components/ui/toaster"
@@ -89,14 +90,20 @@ export default function Composer({ params }) {
 
   useEffect(() => {
     async function fetchData() {
-      const data = await GetLocationsWithEventsAndTitle(id)
+      const res = await fetch(`/api/getMergedLocations?performerId=${performerId}`);
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data");
+      }
+    
+      const data = await res.json();
       setLocationsData(data)
     }
 
-    if (id) {
+    if (performerId) {
       fetchData()
     }
-  }, [id])
+  }, [performerId])
 
   useEffect(() => {
     async function getData() {
