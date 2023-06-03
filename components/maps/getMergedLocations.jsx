@@ -25,13 +25,10 @@ export async function GetListOfEvent(id, usePerformances = false) {
 
     const chunkEvents = await Promise.all(eventPromises)
 
-    event = chunkEvents.reduce(
-      (mergedEvent, chunkEvent) => ({
-        ...mergedEvent,
-        ...chunkEvent.event,
-      }),
-      {}
-    )
+    event = chunkEvents.reduce((mergedEvent, chunkEvent) => {
+      Object.assign(mergedEvent, chunkEvent.event) // Use Object.assign() to merge objects efficiently
+      return mergedEvent
+    }, {})
   } else {
     const result = await (usePerformances
       ? GetPerformances(eventsNumbers.join("|"))
@@ -68,13 +65,13 @@ export async function GetExpandedEventWithPerformances(id, locationsData) {
   expandedLocationsPerformance.forEach((location) => {
     location.locations.forEach((locationObj) => {
       locationObj.eventInfo.forEach((eventInfo) => {
-        eventInfo.eventData.performances?.forEach((performance) => {
-          performance.composers?.forEach((composer) => {
+        for (const performance of eventInfo.eventData.performances || []) {
+          for (const composer of performance.composers || []) {
             if (composer.person) {
               composerNumbers.push(composer.person)
             }
-          })
-        })
+          }
+        }
       })
     })
   })
@@ -117,8 +114,9 @@ export async function GetLocationsWithEventsAndTitle(id) {
 
   if (!event) {
     const locationUid = []
-    return locationUid 
+    return locationUid
   }
+
   // make a string of unique locationUids
   const locationUid = [
     ...new Set(
@@ -144,22 +142,25 @@ export async function GetLocationsWithEventsAndTitle(id) {
           (locationObj) => locationObj && locationObj.location !== undefined
         )
         .forEach((locationObj) => {
-          eventLocations.push({
+          const locationId = locationObj.location
+          const eventLocation = {
             eventId: parseInt(eventId),
-            locationId: locationObj.location,
-            date: date,
-            categories: categories,
-            title: title,
-          })
+            locationId,
+            date,
+            categories,
+            title,
+          }
+          eventLocations.push(eventLocation)
         })
     } else {
-      eventLocations.push({
+      const eventLocation = {
         eventId: parseInt(eventId),
         locationId: 0,
-        date: date,
-        categories: categories,
-        title: title,
-      })
+        date,
+        categories,
+        title,
+      }
+      eventLocations.push(eventLocation)
     }
   })
 
@@ -211,7 +212,9 @@ export async function GetLocationsWithEventsAndTitle(id) {
       }
     }
   }
+
   // Convert the map to an array of locations with event counts and dates
+
   const locationsWithCount = Object.values(locationMap).map((location) => {
     return {
       ...location,
@@ -219,67 +222,87 @@ export async function GetLocationsWithEventsAndTitle(id) {
     }
   })
 
+  // organise by city
   const titlesWithSameCity = {}
   const locationsWithSameCity = []
   let key = 1
+  const coordinatePairs = []
 
   for (const location of locationsWithCount) {
-    const { title, coordinates } = location
-    const match = title.match(/\((.*?)\)/) // Find text within parentheses
+    const { coordinates } = location
+    coordinatePairs.push(`${coordinates[1]},${coordinates[0]}`)
+  }
 
-    if (match && match[1]) {
-      const city = match[1]
+  const batchSize = 100 // Define the size of each batch
+  const batchedCoordinatePairs = []
+  let currentBatch = []
 
-      if (!titlesWithSameCity[city]) {
-        titlesWithSameCity[city] = {
+  for (let i = 0; i < coordinatePairs.length; i++) {
+    currentBatch.push(coordinatePairs[i])
+
+    if (currentBatch.length === batchSize || i === coordinatePairs.length - 1) {
+      batchedCoordinatePairs.push(currentBatch.join("|"))
+      currentBatch = []
+    }
+  }
+
+  for (const batch of batchedCoordinatePairs) {
+    const cityData = await getCityNameFromCoordinatesAPI(batch)
+    
+    for (let i = 0; i < cityData.length; i++) {
+      const cityName = cityData[i]
+      const location = locationsWithCount[i]
+
+      if (!titlesWithSameCity[cityName.name]) {
+        titlesWithSameCity[cityName.name] = {
           count: 0, // Updated property name to count
           locations: [],
-          coordinates: [0, 0],
+          coordinates: [cityName.longitude, cityName.latitude],
+          country: cityName.country?.name,
+          continent: cityName.country?.continent,
         }
       }
 
-      titlesWithSameCity[city].locations.push(location)
-      titlesWithSameCity[city].count += location.count // Updated property name to count
-      titlesWithSameCity[city].coordinates[0] += coordinates[0]
-      titlesWithSameCity[city].coordinates[1] += coordinates[1]
-    } else {
-      // Handle locations without a city match
-      const newCity = location.title
-
-      if (!titlesWithSameCity[newCity]) {
-        titlesWithSameCity[newCity] = {
-          count: 0, // Updated property name to count
-          locations: [],
-          coordinates: [0, 0],
-        }
-      }
-
-      titlesWithSameCity[newCity].locations.push(location)
-      titlesWithSameCity[newCity].count += location.count // Updated property name to count
-      titlesWithSameCity[newCity].coordinates[0] += coordinates[0]
-      titlesWithSameCity[newCity].coordinates[1] += coordinates[1]
-
+      titlesWithSameCity[cityName.name].locations.push(location)
+      titlesWithSameCity[cityName.name].count += location.count // Updated property name to count
+      titlesWithSameCity[cityName.name].coordinates = [
+        cityName.longitude,
+        cityName.latitude,
+      ]
+      titlesWithSameCity[cityName.name].country = cityName.country?.name
+      titlesWithSameCity[cityName.name].continent = cityName.country?.continent
       key++
     }
   }
 
   for (const city in titlesWithSameCity) {
-    const { count, locations, coordinates } = titlesWithSameCity[city]
+    const { count, locations, coordinates, country, continent } =
+      titlesWithSameCity[city]
     const countLocations = locations.length
-    const averageCoordinates = [
-      coordinates[0] / countLocations,
-      coordinates[1] / countLocations,
-    ]
     locationsWithSameCity.push({
       key,
       city,
       count, // Updated property name to count
       countLocations,
       locations,
-      coordinates: averageCoordinates,
+      coordinates: coordinates,
+      country,
+      continent,
     })
     key++
   }
 
+  // Now you can use the `locationsWithSameCity` array in your user interface as needed.
   return locationsWithSameCity
+}
+
+async function getCityNameFromCoordinatesAPI(coordinatePairs) {
+  const res = await fetch(`/api/getCountryName/getLargerCityByCoordinates?coordinates=${coordinatePairs}`);
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  const data = await res.json();
+  return data;
 }
