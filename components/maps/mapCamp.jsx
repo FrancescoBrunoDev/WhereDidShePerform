@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react"
 import { AnimatePresence, motion as m } from "framer-motion"
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  ZoomableGroup,
-} from "react-simple-maps"
+import { ComposableMap, Geographies, Geography } from "react-simple-maps"
 
 import MarksMap from "./marksMarp"
 import MenuMap from "./menuMap"
@@ -38,7 +33,6 @@ export default function MapCamp({
   const [mapConfig, setMapConfig] = useState({
     scale: isEuropeMap ? 850 : 150,
     center: isEuropeMap ? [-3, 0] : [-60, 0],
-    maxZoom: isEuropeMap ? 1 : 2,
     maxRadius: isEuropeMap ? 10 : 5,
   })
 
@@ -61,12 +55,10 @@ export default function MapCamp({
         if (screenWidth < 768) {
           newScale = 900
           newCenter = [6, 0]
-          newMaxZoom = 1.5
           newMaxRadius = 20
         } else if (screenWidth < 1024) {
           newScale = 850
           newCenter = [6, 3]
-          newMaxZoom = 1.5
           newMaxRadius = 8
         } else if (screenWidth < 1280) {
           newScale = 600
@@ -74,7 +66,6 @@ export default function MapCamp({
         } else if (screenWidth < 1536) {
           newScale = 850
           newCenter = [-5, 2]
-          newMaxZoom = 1
           newMaxRadius = 10
         } else {
           newScale = 850
@@ -95,12 +86,10 @@ export default function MapCamp({
           newScale = 150
           newCenter = [0, 0]
           newMaxRadius = 8
-          newMaxZoom = 2
         } else if (screenWidth < 1024) {
           newScale = 150
           newCenter = [0, 0]
           newMaxRadius = 7
-          newMaxZoom = 2
         } else if (screenWidth < 1280) {
           newScale = 110
           newCenter = [-100, 0]
@@ -112,7 +101,6 @@ export default function MapCamp({
         } else {
           newScale = 150
           newCenter = [-60, 0]
-          newMaxZoom = 2
           newMaxRadius = 5
         }
       }
@@ -121,7 +109,6 @@ export default function MapCamp({
       setMapConfig({
         scale: newScale,
         center: newCenter,
-        maxZoom: newMaxZoom,
         maxRadius: newMaxRadius,
       })
       setIsHighQuality(newIsHighQuality)
@@ -137,7 +124,7 @@ export default function MapCamp({
     }
   }, [isEuropeMap, locationsData?.length, mapConfig.maxRadius])
 
-  const { scale, center, maxZoom } = mapConfig
+  const { scale, center } = mapConfig
 
   return (
     <>
@@ -177,28 +164,40 @@ export default function MapCamp({
                 scale: scale,
               }}
             >
-{/*               <ZoomableGroup zoom={1} maxZoom={maxZoom}> */}
-                <Geographies
-                  geography={mapUrl}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  {({ geographies }) =>
-                    geographies.map((geo) => (
-                      <Geography
-                        key={geo.rsmKey}
-                        fill="transparent"
-                        stroke="currentColor"
-                        strokeWidth="0.7"
-                        geography={geo}
-                      />
-                    ))
-                  }
-                </Geographies>{" "}
-                {isByCity ? (
+              <Geographies
+                geography={mapUrl}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                {({ geographies }) =>
+                  geographies.map((geo) => (
+                    <Geography
+                      key={geo.rsmKey}
+                      fill="transparent"
+                      stroke="currentColor"
+                      strokeWidth="0.7"
+                      geography={geo}
+                    />
+                  ))
+                }
+              </Geographies>{" "}
+              {isByCity ? (
+                <MarksMap
+                  locationsData={locationsData}
+                  isByCity={isByCity}
+                  isHighQuality={isHighQuality}
+                  selectedLocationId={selectedLocationId}
+                  setSelectedLocationId={setSelectedLocationId}
+                  isHover={isHover}
+                  setIsHover={setIsHover}
+                  mapConfig={mapConfig}
+                />
+              ) : (
+                locationsData.map(({ locations }) => (
                   <MarksMap
-                    locationsData={locationsData}
+                    key={locations}
+                    locationsData={locations}
                     isByCity={isByCity}
                     isHighQuality={isHighQuality}
                     selectedLocationId={selectedLocationId}
@@ -207,22 +206,8 @@ export default function MapCamp({
                     setIsHover={setIsHover}
                     mapConfig={mapConfig}
                   />
-                ) : (
-                  locationsData.map(({ locations }) => (
-                    <MarksMap
-                      key={locations}
-                      locationsData={locations}
-                      isByCity={isByCity}
-                      isHighQuality={isHighQuality}
-                      selectedLocationId={selectedLocationId}
-                      setSelectedLocationId={setSelectedLocationId}
-                      isHover={isHover}
-                      setIsHover={setIsHover}
-                      mapConfig={mapConfig}
-                    />
-                  ))
-                )}
-{/*               </ZoomableGroup> */}
+                ))
+              )}
             </ComposableMap>
           </m.div>
         </AnimatePresence>
