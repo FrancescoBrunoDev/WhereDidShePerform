@@ -7,6 +7,7 @@ import { DateRange } from "react-day-picker"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardFooter } from "@/components/ui/card"
+import { main } from "@/components/researchDate/EventByDateFinder"
 import animationData from "@/components/researchDate/calendarAnimation.json"
 
 import ResultFound from "./resultFound"
@@ -78,16 +79,18 @@ export function DatePicker(props: DatePickerProps) {
     if (startDateString && endDateString) {
       setLoading(true) // Start the loading animation
 
-      const res = await fetch(
-        `/api/getEventByDate?startDateString=${fromValue}&endDateString=${toValue}`
-      )
+      /*       
+      const res = await fetch(`/api/getEventByDate?startDateString${fromValue}&endDateString=${toValue}`);
+      console.log(res, "filteredEventsForDate")
       if (!res.ok) {
-        throw new Error("Failed to fetch data")
+        throw new Error("Failed to fetch data");
       }
+    
+      const data = await res.json(); */
 
-      const data = await res.json()
+      const filteredEventsForDate = await main(fromValue, toValue)
 
-      setResults(data) // Set the results if not empty
+      setResults(filteredEventsForDate) // Set the results if not empty
 
       setLoading(false) // Stop the loading animation
     } else {
