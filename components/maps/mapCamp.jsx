@@ -177,7 +177,7 @@ export default function MapCamp({
                 scale: scale,
               }}
             >
-              <ZoomableGroup zoom={1} maxZoom={maxZoom}>
+{/*               <ZoomableGroup zoom={1} maxZoom={maxZoom}> */}
                 <Geographies
                   geography={mapUrl}
                   initial={{ opacity: 0 }}
@@ -222,7 +222,7 @@ export default function MapCamp({
                     />
                   ))
                 )}
-              </ZoomableGroup>
+{/*               </ZoomableGroup> */}
             </ComposableMap>
           </m.div>
         </AnimatePresence>
