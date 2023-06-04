@@ -23,6 +23,12 @@ export default function List({
   setSelectedComposerNames,
   selectedComposerNames,
   searchData,
+  activeContinents,
+  setActiveContinents,
+  activeCountries,
+  setActiveCountries,
+  filteredDataContinent,
+  filteredDataCountry,
 }) {
   return (
     <>
@@ -52,6 +58,12 @@ export default function List({
           <CardList
             locationsData={filteredLocationsData}
             areAllFiltersDeactivated={areAllFiltersDeactivated}
+            activeContinents={activeContinents}
+            setActiveContinents={setActiveContinents}
+            activeCountries={activeCountries}
+            setActiveCountries={setActiveCountries}
+            filteredDataContinent={filteredDataContinent}
+            filteredDataCountry={filteredDataCountry}
           />
         </Suspense>
 

@@ -1,4 +1,5 @@
 import { AnimatePresence, motion as m } from "framer-motion"
+import { groupBy } from "lodash"
 import { Marker } from "react-simple-maps"
 
 export default function MarksMap({
@@ -9,6 +10,7 @@ export default function MarksMap({
   isHover,
   setIsHover,
   mapConfig,
+  filteredDataCountry,
 }) {
   const sigmoid = (x) => {
     return 1 / (1 + Math.exp(-x))
@@ -34,7 +36,7 @@ export default function MarksMap({
 
   return (
     <>
-      {locationsData.map(({ key, coordinates, count }) => {
+      {filteredDataCountry.map(({ key, coordinates, count }) => {
         const transitionDuration = Math.floor(Math.random() * 900 + 100) / 2000 // Generate a random value between 0.1 and 1
         return (
           <Marker

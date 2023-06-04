@@ -64,9 +64,12 @@ export default function Dashboard({ params }) {
   const [locationsWithComposer, setlocationsWithComposer] = useState([])
 
   const { width } = useViewportSize()
-
+  //select and show accordingly the map
   const [thereIsMoreInWorld, setThereIsMoreInWorld] = useState(false)
   const [thereIsMoreInWorldPopup, setThereIsMoreInWorldPopup] = useState(false)
+  // filter from list 
+  const [activeContinents, setActiveContinents] = useState([])
+  const [activeCountries, setActiveCountries] = useState([])
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -251,6 +254,15 @@ export default function Dashboard({ params }) {
     filterHighestYear,
   ])
 
+  // filter list
+  const filteredDataContinent = locationsData.filter(
+    (location) => !activeContinents.includes(location.continent)
+  )
+
+  const filteredDataCountry = filteredDataContinent.filter(
+    (location) => !activeCountries.includes(location.country)
+  )
+
   const { toast } = useToast()
   return (
     <m.section
@@ -323,6 +335,8 @@ export default function Dashboard({ params }) {
               searchData={searchData}
               thereIsMoreInWorld={thereIsMoreInWorld}
               thereIsMoreInWorldPopup={thereIsMoreInWorldPopup}
+              filteredDataContinent={filteredDataContinent}
+              filteredDataCountry={filteredDataCountry}
             />
           </TabsContent>
           <TabsContent value="list">
@@ -351,6 +365,12 @@ export default function Dashboard({ params }) {
                 setSelectedComposerNames={setSelectedComposerNames}
                 selectedComposerNames={selectedComposerNames}
                 searchData={searchData}
+                activeContinents={activeContinents}
+                setActiveContinents={setActiveContinents}
+                activeCountries={activeCountries}
+                setActiveCountries={setActiveCountries}
+                filteredDataContinent={filteredDataContinent}
+                filteredDataCountry={filteredDataCountry}
               />
             )}
           </TabsContent>

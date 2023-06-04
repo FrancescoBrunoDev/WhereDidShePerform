@@ -27,6 +27,7 @@ export default function MapCamp({
   setMapUrl,
   thereIsMoreInWorld,
   thereIsMoreInWorldPopup,
+  filteredDataCountry,
 }) {
   // handle map switch
   // map size based on screen size
@@ -191,6 +192,7 @@ export default function MapCamp({
                 isHover={isHover}
                 setIsHover={setIsHover}
                 mapConfig={mapConfig}
+                filteredDataCountry={filteredDataCountry}
               />
             </ComposableMap>
           </m.div>

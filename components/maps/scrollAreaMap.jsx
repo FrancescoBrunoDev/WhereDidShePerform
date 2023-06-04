@@ -21,6 +21,8 @@ export default function ScrollAreaMap({
   searchData,
   thereIsMoreInWorld,
   isEuropeMap,
+  filteredDataContinent,
+  filteredDataCountry,
 }) {
   const [isTimeVisible, setIsTimeVisible] = useState(false)
   const handleAccordionHover = useCallback(
@@ -91,6 +93,9 @@ export default function ScrollAreaMap({
                   locationsData={locationsData}
                   handleAccordionHover={handleAccordionHover}
                   setIsHover={setIsHover}
+                  filteredDataContinent={filteredDataContinent}
+                  filteredDataCountry={filteredDataCountry}
+                  isEuropeMap={isEuropeMap}
                 />
               </Accordion>
             </ScrollArea>

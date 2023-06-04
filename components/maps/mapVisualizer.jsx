@@ -23,6 +23,8 @@ export default function MapVisualizer({
   searchData,
   thereIsMoreInWorld,
   thereIsMoreInWorldPopup,
+  filteredDataContinent,
+  filteredDataCountry,
 }) {
   const [selectedLocationId, setSelectedLocationId] = useState(null)
   const [isHover, setIsHover] = useState(false)
@@ -42,6 +44,8 @@ export default function MapVisualizer({
         searchData={searchData}
         thereIsMoreInWorld={thereIsMoreInWorld}
         isEuropeMap={isEuropeMap}
+        filteredDataContinent={filteredDataContinent}
+        filteredDataCountry={filteredDataCountry}
       />
 
       <div>
@@ -61,6 +65,7 @@ export default function MapVisualizer({
           setMapUrl={setMapUrl}
           thereIsMoreInWorld={thereIsMoreInWorld}
           thereIsMoreInWorldPopup={thereIsMoreInWorldPopup}
+          filteredDataCountry={filteredDataCountry}
         />
       </div>
     </section>
