@@ -14,10 +14,9 @@ import {
   filterLocationsData,
 } from "@/components/list/filterLocationsData"
 import List from "@/components/list/list"
-import { GetExpandedEventWithPerformances } from "@/components/maps/getMergedLocations"
+import { GetExpandedEventWithPerformances } from "@/components/maps/getExpandedLocations"
 import MapVisualizer from "@/components/maps/mapVisualizer"
 import { GetInfoPerson } from "@/app/api/musiconn"
-import { set } from "lodash"
 
 const geoUrl =
   "https://raw.githubusercontent.com/leakyMirror/map-of-europe/27a335110674ae5b01a84d3501b227e661beea2b/TopoJSON/europe.topojson"

@@ -20,7 +20,7 @@ export default function ScrollAreaMap({
   expandedLocations,
   searchData,
   thereIsMoreInWorld,
-  isEuropeMap,  
+  isEuropeMap,
 }) {
   const [isTimeVisible, setIsTimeVisible] = useState(false)
   const handleAccordionHover = useCallback(
@@ -83,6 +83,7 @@ export default function ScrollAreaMap({
           <m.div layout>
             <h4 className="mb-4 text-2xl font-black leading-none">
               Locations {thereIsMoreInWorld && isEuropeMap ? "in Europe" : null}
+              {thereIsMoreInWorld && !isEuropeMap ? "all over the world" : null}
             </h4>
             <ScrollArea className="h-[30rem] w-full rounded-lg pr-2">
               <Accordion collapsible>

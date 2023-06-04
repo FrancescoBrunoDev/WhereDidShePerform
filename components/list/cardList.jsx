@@ -5,48 +5,10 @@ import { AnimatePresence, motion as m, useInView } from "framer-motion"
 import { groupBy } from "lodash"
 
 import { Badge } from "@/components/ui/badge"
-import { Card, CardDescription, CardHeader } from "@/components/ui/card"
+import { Switch } from "@/components/ui/switch"
 import { list } from "@/components/animationConst/animationConst"
-import { CardItem } from "@/components/list/cardItem"
+import { CardItem, CardItemMoreLeft } from "@/components/list/cardItem"
 import getRandomSentenceList from "@/components/list/randomSencences"
-
-export function CardItemMoreLeft({ location, remainingCount }) {
-  // Find the highest and lowest dates
-  const dates = location.eventInfo.map((event) => new Date(event.date))
-  const minDate = dates.reduce(
-    (min, date) => (date < min ? date : min),
-    dates[0]
-  )
-  const maxDate = dates.reduce(
-    (max, date) => (date > max ? date : max),
-    dates[0]
-  )
-
-  // Format the dates as "dd-mm-yyyy"
-  const formatDate = (date) => {
-    const day = date.getDate().toString().padStart(2, "0")
-    const month = (date.getMonth() + 1).toString().padStart(2, "0")
-    const year = date.getFullYear()
-    return `${day}-${month}-${year}`
-  }
-  return (
-    <Card
-      key="remaining-events"
-      className="col-span-2 flex items-center justify-center bg-secondary shadow-lg"
-    >
-      <CardHeader className="flex gap-y-2">
-        <div className=" text-sm font-bold">
-          There are {remainingCount} more{" "}
-          {remainingCount === 1 ? "event" : "events"} remaining. I recommend
-          using filters for more effective search.
-        </div>
-        <CardDescription className="text-xs">
-          Events from {formatDate(minDate)} to {formatDate(maxDate)}
-        </CardDescription>
-      </CardHeader>
-    </Card>
-  )
-}
 
 export default function CardList({ locationsData, areAllFiltersDeactivated }) {
   const [sentence, setSentence] = useState(getRandomSentenceList())
@@ -61,6 +23,20 @@ export default function CardList({ locationsData, areAllFiltersDeactivated }) {
       clearInterval(interval) // Clean up the interval on component unmount
     }
   }, [])
+
+  const [activeContinents, setActiveContinents] = useState([])
+
+  const handleSwitchToggle = (continent) => {
+    setActiveContinents((prev) =>
+      prev.includes(continent)
+        ? prev.filter((c) => c !== continent)
+        : [...prev, continent]
+    )
+  }
+
+  const filteredData = locationsData.filter(
+    (location) => !activeContinents.includes(location.continent)
+  )
 
   if (locationsData.length === 0 && areAllFiltersDeactivated) {
     return (
@@ -82,97 +58,118 @@ export default function CardList({ locationsData, areAllFiltersDeactivated }) {
       </div>
     )
   }
+
+  const continentsShortNames = {
+    AF: "AF",
+    AS: "AS",
+    EU: "EU",
+    NA: "NA",
+    OC: "OC",
+    SA: "SA",
+    AN: "Antarctica",
+  }
+
   return (
-    <div className="container -z-10 mx-auto pt-72">
-      {Object.entries(groupBy(locationsData, "continent")).map(
-        ([continent, continentCities]) => (
-          <div key={continent}>
-            <h1 className="text-6xl font-black">{continent}</h1>
-            {Object.entries(groupBy(continentCities, "country")).map(
-              ([country, countryCities]) => (
-                <div key={country} className="pt-10">
-                  <h2 className="text-4xl font-black pb-5">{country}</h2>
-                  {countryCities.map((city) => {
-                    const hasEvents = city.locations.some(
-                      (location) => location.eventInfo.length > 0
-                    )
-                    if (!hasEvents) {
-                      return null // Skip rendering the city if it has no events
-                    }
-                    return (
-                      <m.div variants={list} key={city.key} className="mb-12">
-                        <div className="flex items-center space-x-2">
-                          <h1 className="text-2xl font-black leading-none">
-                            {city.city}
-                          </h1>{" "}
-                        </div>
-                        {city.locations.map((location) => {
-                          if (location.eventInfo.length === 0) {
-                            return null // Skip rendering the location if it has no events
-                          }
-                          const locationTitleLink = linkMaker(location.title)
-                          return (
-                            <m.div variants={list} key={location.locationId}>
-                              <div className="pb-5 pt-3 flex items-center space-x-2">
-                                <h1 className="text-lg font-black leading-none">
-                                  {location.title}
-                                </h1>{" "}
-                                <Link
-                                  href={`https://performance.musiconn.de/location/${locationTitleLink}`}
-                                  target="_blank"
-                                >
-                                  <Badge className="flex h-6 w-14 justify-center">
-                                    {location.locationId}
-                                  </Badge>
-                                </Link>
-                              </div>
-                              <m.div
-                                variants={list}
-                                className="grid grid-flow-row grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
-                              >
-                                {location.eventInfo.map((event, index) => {
-                                  if (index < 20) {
-                                    return (
-                                      <CardItem
-                                        key={event.eventId}
-                                        event={event}
-                                      />
-                                    )
-                                  } else if (index === 20) {
-                                    const remainingCount =
-                                      location.eventInfo.length - 20
-                                    if (remainingCount < 20) {
-                                      return (
-                                        <CardItem
-                                          key={event.eventId}
-                                          event={event}
-                                        />
-                                      )
-                                    } else {
-                                      return (
-                                        <CardItemMoreLeft
-                                          key={event.eventId}
-                                          location={location}
-                                          remainingCount={remainingCount}
-                                        />
-                                      )
-                                    }
-                                  }
-                                  return null
-                                })}
-                              </m.div>
-                            </m.div>
-                          )
-                        })}
-                      </m.div>
-                    )
-                  })}
-                </div>
-              )
-            )}
+    <div className="container -z-10 mx-auto pt-80">
+      {Object.entries(
+        groupBy(locationsData, (location) => location.continent)
+      ).map(([continent]) => (
+        <div key={continent}>
+          <div className="flex items-center pt-5">
+            <div className="flex items-center space-x-2 rounded-lg bg-secondary px-5 py-2">
+              <h1 className="w-24 text-6xl font-black">{continent}</h1>
+              <Switch
+                className=""
+                onCheckedChange={() => handleSwitchToggle(continent)}
+                name={continent}
+                checked={!activeContinents.includes(continent)}
+              />
+            </div>
           </div>
-        )
-      )}
+          {Object.entries(
+            groupBy(
+              filteredData.filter((city) => city.continent === continent),
+              "country"
+            )
+          ).map(([country, countryCities]) => (
+            <div key={country} className="mt-5 rounded-lg bg-secondary p-5">
+              <h2 className="pb-5 text-4xl font-black">{country}</h2>
+              {countryCities.map((city) => {
+                const hasEvents = city.locations.some(
+                  (location) => location.eventInfo.length > 0
+                )
+                if (!hasEvents) {
+                  return null // Skip rendering the city if it has no events
+                }
+                return (
+                  <m.div variants={list} key={city.key} className="pb-12">
+                    <div className="flex items-center space-x-2">
+                      <h1 className="text-2xl font-black leading-none">
+                        {city.city}
+                      </h1>{" "}
+                    </div>
+                    {city.locations.map((location) => {
+                      if (location.eventInfo.length === 0) {
+                        return null // Skip rendering the location if it has no events
+                      }
+                      const locationTitleLink = linkMaker(location.title)
+                      return (
+                        <m.div variants={list} key={location.locationId} className="">
+                          <div className="flex items-center space-x-2 pb-5 pt-3">
+                            <h1 className="text-lg font-black leading-none">
+                              {location.title}
+                            </h1>{" "}
+                            <Link
+                              href={`https://performance.musiconn.de/location/${locationTitleLink}`}
+                              target="_blank"
+                            >
+                              <Badge className="flex h-6 w-14 justify-center">
+                                {location.locationId}
+                              </Badge>
+                            </Link>
+                          </div>
+                          <m.div
+                            variants={list}
+                            className="grid grid-flow-row grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+                          >
+                            {location.eventInfo.map((event, index) => {
+                              if (index < 20) {
+                                return (
+                                  <CardItem key={event.eventId} event={event} />
+                                )
+                              } else if (index === 20) {
+                                const remainingCount =
+                                  location.eventInfo.length - 20
+                                if (remainingCount < 20) {
+                                  return (
+                                    <CardItem
+                                      key={event.eventId}
+                                      event={event}
+                                    />
+                                  )
+                                } else {
+                                  return (
+                                    <CardItemMoreLeft
+                                      key={event.eventId}
+                                      location={location}
+                                      remainingCount={remainingCount}
+                                    />
+                                  )
+                                }
+                              }
+                              return null
+                            })}
+                          </m.div>
+                        </m.div>
+                      )
+                    })}
+                  </m.div>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   )
 }
