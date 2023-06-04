@@ -45,7 +45,7 @@ export default function RandomCard() {
   return (
     <Suspense fallback={<Loading />}>
       {person && (
-        <Link href={`/perfomer/${person.uid}/`}>
+        <Link href={`/query/perfomer/${person.uid}/`}>
           <m.div
             whileHover={{
               scale: 1.02,

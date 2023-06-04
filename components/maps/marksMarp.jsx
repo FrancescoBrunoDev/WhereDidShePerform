@@ -3,7 +3,6 @@ import { Marker } from "react-simple-maps"
 
 export default function MarksMap({
   locationsData,
-  isByCity,
   isHighQuality,
   selectedLocationId,
   setSelectedLocationId,
@@ -35,16 +34,13 @@ export default function MarksMap({
 
   return (
     <>
-      {locationsData.map(({ key, locationId, coordinates, count }) => {
+      {locationsData.map(({ key, coordinates, count }) => {
         const transitionDuration = Math.floor(Math.random() * 900 + 100) / 2000 // Generate a random value between 0.1 and 1
-        {
-          isByCity ? key : locationId
-        }
         return (
           <Marker
-            id={isByCity ? key : locationId}
+            id={key}
             coordinates={coordinates}
-            key={isByCity ? key : locationId}
+            key={key}
             className={isHighQuality ? "drop-shadow" : ""}
           >
             <AnimatePresence mode={"wait"}>
@@ -53,11 +49,7 @@ export default function MarksMap({
                 initial={{ scale: 0 }}
                 animate={
                   isHover
-                    ? (
-                        isByCity
-                          ? selectedLocationId === key
-                          : selectedLocationId === locationId
-                      )
+                    ? selectedLocationId === key
                       ? { scale: 1.5 }
                       : { scale: 0.2 }
                     : { scale: 1 }
@@ -66,20 +58,14 @@ export default function MarksMap({
                   duration: transitionDuration,
                   delay: transitionDuration,
                 }}
-                key={isByCity ? key : locationId}
+                key={key}
                 exit={{ scale: 0 }}
                 r={scaleRadius(count)}
                 fill={
-                  isByCity
-                    ? selectedLocationId === key
-                      ? "currentColor"
-                      : "currentColor"
-                    : selectedLocationId === locationId
-                    ? "currentColor"
-                    : "currentColor"
+                  selectedLocationId === key ? "currentColor" : "currentColor"
                 }
                 onMouseEnter={() => {
-                  setSelectedLocationId(isByCity ? key : locationId)
+                  setSelectedLocationId(key)
                   setIsHover(true)
                 }}
                 onMouseLeave={() => {

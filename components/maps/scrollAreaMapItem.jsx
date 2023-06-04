@@ -14,14 +14,13 @@ export default function ScrollAreaItem({
   locationsData,
   handleAccordionHover,
   setIsHover,
-  isByCity,
 }) {
   const [visibleItems, setVisibleItems] = useState(20)
 
   return (
     <div>
-      {locationsData?.map(({ city, locations, key, locationId }) => (
-        <div key={isByCity ? key : locationId}>
+      {locationsData?.map(({ city, locations, key }) => (
+        <div key={key}>
           <h2 className="font-black">{city}</h2>
           {locations.map(({ locationId, title, count, eventInfo }) => {
             const locationTitleLink = linkMaker(title)
@@ -32,7 +31,7 @@ export default function ScrollAreaItem({
                 key={locationId}
                 id={locationId}
                 onMouseEnter={() => {
-                  handleAccordionHover(isByCity ? key : locationId)
+                  handleAccordionHover(key)
                   setIsHover(true)
                 }}
                 onMouseLeave={() => {
@@ -57,7 +56,7 @@ export default function ScrollAreaItem({
                   </div>
                   <p
                     className="mx-1 flex w-full justify-self-start rounded-lg p-2 text-left  hover:bg-secondary hover:text-primary"
-                    key={isByCity ? key : locationId}
+                    key={key}
                   >
                     {title} for {count} {count === 1 ? "time" : "times"}
                   </p>

@@ -1,9 +1,10 @@
 import {
   GetCoordinates,
+  GetEventsDetails,
+  GetInfoPerson,
   GetLocations,
   GetNameComposer,
   GetPerformances,
-  GetInfoPerson,
 } from "@/app/api/musiconn"
 
 import { getCityNameByCoordinates } from "../getCountryName/getCountry"
@@ -11,8 +12,8 @@ import { getCityNameByCoordinates } from "../getCountryName/getCountry"
 export async function GetListOfEvent(id, usePerformances = false) {
   let event = {}
   const eventsNumbers = id.events.map((event) => event.event)
-  if (eventsNumbers.length > 500) {
-    const chunkSize = 500
+  if (eventsNumbers.length > 1300) {
+    const chunkSize = 1300
     const chunks = []
 
     for (let i = 0; i < eventsNumbers.length; i += chunkSize) {
@@ -111,10 +112,47 @@ export async function GetExpandedEventWithPerformances(id, locationsData) {
   return expandedLocationsPerformance
 }
 
-export async function GetLocationsWithEventsAndTitle(performerId) {
-  // get event
-  const id = await GetInfoPerson(performerId)
-  const event = await GetListOfEvent(id[performerId])
+export async function GetLocationsWithEventsAndTitle(performerId, eventIds) {
+  const { decompress } = require("shrink-string")
+  let id = null
+
+  if (performerId) {
+    // fetch info person and event
+    id = await GetInfoPerson(performerId)
+    id = id[performerId]
+  } else if (eventIds) {
+    // decode eventIds
+    const dencoded = decodeURIComponent(eventIds)
+    const decompressed = await decompress(dencoded)
+    const eventIdsArray = decompressed.split("-")
+    const uidString = eventIdsArray.join("|")
+    const batches = []
+    for (let i = 0; i < uidString.length; i += 1000) {
+      const batch = uidString.slice(i, i + 1000)
+      batches.push(batch)
+    }
+    const fetchPromises = batches.map((batch) => GetEventsDetails(batch))
+    const fetchResults = await Promise.all(fetchPromises)
+
+    const events = []
+    for (const fetchResult of fetchResults) {
+      if (fetchResult !== null) {
+        const validObjects = Object.values(fetchResult).filter(
+          (obj) => obj !== null
+        )
+        const batchEvents = validObjects.map(({ uid }) => ({
+          event: uid,
+        }))
+        events.push(...batchEvents)
+      }
+    }
+    id = {
+      events: events,
+    }
+  }
+
+  const event = await GetListOfEvent(id)
+
   if (!event) {
     const locationUid = []
     return locationUid
@@ -250,7 +288,7 @@ export async function GetLocationsWithEventsAndTitle(performerId) {
   }
   for (const batch of batchedCoordinatePairs) {
     const cityData = await getCityNameFromCoordinatesAPI(batch)
-    
+
     for (let i = 0; i < cityData.length; i++) {
       const cityName = cityData[i]
       const location = locationsWithCount[i]
@@ -294,8 +332,10 @@ export async function GetLocationsWithEventsAndTitle(performerId) {
     key++
   }
 
-  // Now you can use the `locationsWithSameCity` array in your user interface as needed.
-  return locationsWithSameCity
+  // find composers
+  const locationsWithSameCityAndComposer = GetExpandedEventWithPerformances(id, locationsWithSameCity)
+
+  return locationsWithSameCityAndComposer
 }
 
 async function getCityNameFromCoordinatesAPI(coordinates) {

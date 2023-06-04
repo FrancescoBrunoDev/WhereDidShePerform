@@ -17,8 +17,6 @@ export default function MapCamp({
   setIsHover,
   selectedLocationId,
   setSelectedLocationId,
-  setIsByCity,
-  isByCity,
   isHighQuality,
   setIsHighQuality,
   isEuropeMap,
@@ -27,6 +25,8 @@ export default function MapCamp({
   setChangeMap,
   mapUrl,
   setMapUrl,
+  thereIsMoreInWorld,
+  thereIsMoreInWorldPopup,
 }) {
   // handle map switch
   // map size based on screen size
@@ -140,8 +140,8 @@ export default function MapCamp({
             setIsHighQuality={setIsHighQuality}
             isHighQuality={isHighQuality}
             isEuropeMap={isEuropeMap}
-            setIsByCity={setIsByCity}
-            isByCity={isByCity}
+            thereIsMoreInWorld={thereIsMoreInWorld}
+            thereIsMoreInWorldPopup={thereIsMoreInWorldPopup}
           />
         </div>
       </div>
@@ -182,32 +182,16 @@ export default function MapCamp({
                   ))
                 }
               </Geographies>{" "}
-              {isByCity ? (
-                <MarksMap
-                  locationsData={locationsData}
-                  isByCity={isByCity}
-                  isHighQuality={isHighQuality}
-                  selectedLocationId={selectedLocationId}
-                  setSelectedLocationId={setSelectedLocationId}
-                  isHover={isHover}
-                  setIsHover={setIsHover}
-                  mapConfig={mapConfig}
-                />
-              ) : (
-                locationsData.map(({ locations }) => (
-                  <MarksMap
-                    key={locations}
-                    locationsData={locations}
-                    isByCity={isByCity}
-                    isHighQuality={isHighQuality}
-                    selectedLocationId={selectedLocationId}
-                    setSelectedLocationId={setSelectedLocationId}
-                    isHover={isHover}
-                    setIsHover={setIsHover}
-                    mapConfig={mapConfig}
-                  />
-                ))
-              )}
+              
+              <MarksMap
+                locationsData={locationsData}
+                isHighQuality={isHighQuality}
+                selectedLocationId={selectedLocationId}
+                setSelectedLocationId={setSelectedLocationId}
+                isHover={isHover}
+                setIsHover={setIsHover}
+                mapConfig={mapConfig}
+              />
             </ComposableMap>
           </m.div>
         </AnimatePresence>

@@ -1,13 +1,11 @@
 import { Suspense, useCallback, useState } from "react"
 import { AnimatePresence, motion as m } from "framer-motion"
 
-import {
-  Accordion,
-} from "@/components/ui/accordion"
+import { Accordion } from "@/components/ui/accordion"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Switch } from "@/components/ui/switch"
-import { DatePicker } from "@/components/researchDate/eventPicker"
 import CarrerTimeline from "@/components/maps/careerTimeline"
+import { DatePicker } from "@/components/researchDate/eventPicker"
 
 import ScrollAreaItem from "./scrollAreaMapItem"
 
@@ -19,9 +17,10 @@ export default function ScrollAreaMap({
   updateFilterHighestYear,
   setIsHover,
   filterHighestYear,
-  isByCity,
   expandedLocations,
   searchData,
+  thereIsMoreInWorld,
+  isEuropeMap,  
 }) {
   const [isTimeVisible, setIsTimeVisible] = useState(false)
   const handleAccordionHover = useCallback(
@@ -80,16 +79,17 @@ export default function ScrollAreaMap({
               )}
             </AnimatePresence>
           </m.div>
-          
+
           <m.div layout>
-            <h4 className="mb-4 text-2xl font-black leading-none">Locations</h4>
+            <h4 className="mb-4 text-2xl font-black leading-none">
+              Locations {thereIsMoreInWorld && isEuropeMap ? "in Europe" : null}
+            </h4>
             <ScrollArea className="h-[30rem] w-full rounded-lg pr-2">
               <Accordion collapsible>
                 <ScrollAreaItem
                   locationsData={locationsData}
                   handleAccordionHover={handleAccordionHover}
                   setIsHover={setIsHover}
-                  isByCity={isByCity}
                 />
               </Accordion>
             </ScrollArea>

@@ -71,7 +71,7 @@ export default function ResultFound(props: ResultFoundProps) {
             </div>
           </div>
         ) : (
-          <Link href={`/date/${timeFrame}/${encodedUids}`}>
+          <Link href={`/query/date/${timeFrame}/${encodedUids}`}>
             <div className="flex gap-2">
               <Button size={"sm"}>
                 I&apos;ve found {props.dateUids.length} events for you!

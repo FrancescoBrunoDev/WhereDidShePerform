@@ -79,7 +79,8 @@ export function DatePicker(props: DatePickerProps) {
     if (startDateString && endDateString) {
       setLoading(true) // Start the loading animation
 
-      /*       
+      /* 
+      I can't use API becaue the request is too long      
       const res = await fetch(`/api/getEventByDate?startDateString${fromValue}&endDateString=${toValue}`);
       console.log(res, "filteredEventsForDate")
       if (!res.ok) {

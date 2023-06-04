@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
 import { useViewportSize } from "@mantine/hooks"
 import { format, parseISO } from "date-fns"
 import { LayoutGroup, motion as m } from "framer-motion"
@@ -15,32 +14,28 @@ import {
   filterLocationsData,
 } from "@/components/list/filterLocationsData"
 import List from "@/components/list/list"
-import {
-  GetExpandedEventWithPerformances,
-  GetLocationsWithEventsAndTitle,
-} from "@/components/maps/getMergedLocations"
+import { GetExpandedEventWithPerformances } from "@/components/maps/getMergedLocations"
 import MapVisualizer from "@/components/maps/mapVisualizer"
-import { GetEventsDetails } from "@/app/api/musiconn"
+import { GetInfoPerson } from "@/app/api/musiconn"
+import { set } from "lodash"
 
 const geoUrl =
   "https://raw.githubusercontent.com/leakyMirror/map-of-europe/27a335110674ae5b01a84d3501b227e661beea2b/TopoJSON/europe.topojson"
 
-export default function Dates() {
-  const { decompress } = require("shrink-string")
-  const params = useParams()
-  const eventIds = params.eventIds
-  const [dencodedUids, setDencodedUids] = useState("")
-  const timeFrame = params.timeFrame
-  const [startDateString, endDateString] = timeFrame.split("%7C")
-  const startDate = parseISO(startDateString)
-  const endDate = parseISO(endDateString)
-  const formattedStartDate = format(startDate, "do MMM, yyyy")
-  const formattedEndDate = format(endDate, "do MMM, yyyy")
-  const [searchData, setSearchData] = useState(true)
-
+export default function Dashboard({ params }) {
   const [locationsData, setLocationsData] = useState([])
   const [id, setId] = useState(null)
-  const [isByCity, setIsByCity] = useState(true) // Track the current map type
+  const { timeFrame } = params
+  const [searchData, setSearchData] = useState(timeFrame !== undefined)
+  let startDate, endDate, formattedStartDate, formattedEndDate
+
+  if (timeFrame !== undefined) {
+    const [startDateString, endDateString] = timeFrame.split("%7C")
+    startDate = parseISO(startDateString)
+    endDate = parseISO(endDateString)
+    formattedStartDate = format(startDate, "do MMM, yyyy")
+    formattedEndDate = format(endDate, "do MMM, yyyy")
+  }
 
   const [mapUrl, setMapUrl] = useState(geoUrl) // Initial map URL is geoUrl
   const [isHighQuality, setIsHighQuality] = useState(true) // Track the current map type
@@ -68,7 +63,41 @@ export default function Dates() {
   const [filteredLocationsData, setFilteredLocationsData] = useState()
   const [selectedComposerNames, setSelectedComposerNames] = useState([])
   const [locationsWithComposer, setlocationsWithComposer] = useState([])
+
   const { width } = useViewportSize()
+
+  const [thereIsMoreInWorld, setThereIsMoreInWorld] = useState(false)
+  const [thereIsMoreInWorldPopup, setThereIsMoreInWorldPopup] = useState(false)
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setThereIsMoreInWorldPopup(false);
+    }, 5000);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  const filteredLocationsDataViewMap = isEuropeMap
+    ? filteredLocationsData?.filter((location) => location.continent === "EU")
+    : filteredLocationsData
+
+  useEffect(() => {
+    if (filteredLocationsData && filteredLocationsData.length > 0) {
+      const nonEuLocations = locationsData.filter(
+        (location) => location.continent !== "EU"
+      )
+      if (nonEuLocations.length > 0) {
+        setThereIsMoreInWorld(true)
+        setThereIsMoreInWorldPopup(true)
+        setTimeout(() => {
+          setThereIsMoreInWorldPopup(false);
+        }, 5000);
+        
+      } else {
+        setThereIsMoreInWorld(false)
+      }
+    }
+  }, [filteredLocationsData])
 
   const handleFilterChange = () => {
     if (
@@ -97,52 +126,40 @@ export default function Dates() {
     handleFilterChange,
   ])
 
-  useEffect(() => {
-    async function decompressUid() {
-      const dencoded = decodeURIComponent(eventIds)
-      const decompressed = await decompress(dencoded)
-      setDencodedUids(decompressed)
-    }
-    decompressUid()
-  }, [])
+  const { performerId } = params
+  const { eventIds } = params
 
+  const searchId = performerId ? performerId : eventIds
+  const searchKind = performerId ? "performerId" : "eventIds"
   useEffect(() => {
     async function fetchData() {
-      const eventIdsArray = dencodedUids.split("-")
-      const uidString = eventIdsArray.join("|")
-      const batches = []
-      for (let i = 0; i < uidString.length; i += 1000) {
-        const batch = uidString.slice(i, i + 1000)
-        batches.push(batch)
+      const res = await fetch(
+        `/api/getMergedLocations?${searchKind}=${searchId}`
+      )
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch data")
       }
-      const fetchPromises = batches.map((batch) => GetEventsDetails(batch))
-      const fetchResults = await Promise.all(fetchPromises)
-      console.log(fetchResults, "fetchResults")
-      const events = []
-      for (const fetchResult of fetchResults) {
-        if (fetchResult !== null) {
-          const validObjects = Object.values(fetchResult).filter(
-            (obj) => obj !== null
-          )
-          const batchEvents = validObjects.map(({ uid }) => ({
-            event: uid,
-          }))
-          events.push(...batchEvents)
-        }
-      }
-      let id = {
-        events: events,
-      }
-      const data = await GetLocationsWithEventsAndTitle(id)
-      setId(id)
+
+      const data = await res.json()
       setLocationsData(data)
-      setSearchData(true)
     }
 
-    if (dencodedUids != null) {
+    if (performerId || eventIds) {
       fetchData()
     }
-  }, [dencodedUids])
+  }, [performerId, eventIds])
+  console.log(locationsData, "locationsData")
+
+  useEffect(() => {
+    async function getData() {
+      const data = await GetInfoPerson(performerId)
+      setId(data[performerId])
+    }
+    if (performerId) {
+      getData()
+    }
+  }, [performerId])
 
   let highestYear = null
   let lowestYear = null
@@ -236,16 +253,19 @@ export default function Dates() {
   ])
 
   const { toast } = useToast()
-
   return (
     <m.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.75, ease: "easeInOut" }}
-      className="relative"
     >
       <div className="container">
-        {startDateString && endDateString && (
+        {id && (
+          <div className="fixed top-16 z-10 w-fit text-3xl font-black md:text-4xl lg:top-32 lg:w-96">
+            <h1>{id.title}</h1>
+          </div>
+        )}
+        {timeFrame && (
           <h1 className="fixed top-16 z-10 w-fit text-3xl font-black md:text-4xl lg:top-32 lg:w-96">
             From {formattedStartDate}
             <br />
@@ -287,13 +307,11 @@ export default function Dates() {
         <LayoutGroup>
           <TabsContent value="map">
             <MapVisualizer
-              locationsData={filteredLocationsData}
+              locationsData={filteredLocationsDataViewMap}
               lowestYear={lowestYear}
               highestYear={highestYear}
               filterHighestYear={filterHighestYear}
               updateFilterHighestYear={updateFilterHighestYear}
-              isByCity={isByCity}
-              setIsByCity={setIsByCity}
               isHighQuality={isHighQuality}
               setIsHighQuality={setIsHighQuality}
               isEuropeMap={isEuropeMap}
@@ -304,6 +322,8 @@ export default function Dates() {
               setMapUrl={setMapUrl}
               expandedLocations={expandedLocations}
               searchData={searchData}
+              thereIsMoreInWorld={thereIsMoreInWorld}
+              thereIsMoreInWorldPopup={thereIsMoreInWorldPopup}
             />
           </TabsContent>
           <TabsContent value="list">

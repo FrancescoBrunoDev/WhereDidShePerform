@@ -40,7 +40,7 @@ export default function PerformanceSearchResults({ results }) {
     } else if (event > 0) {
       return (
         <m.div key={person.uid} variants={item}>
-          <Link href={`/perfomer/${person.uid}/`}>
+          <Link href={`/query/perfomer/${person.uid}/`}>
             <Card key={person.uid}>
               <CardHeader>{person.title}</CardHeader>
               <CardFooter className="gap-x-1">
@@ -71,7 +71,7 @@ export default function PerformanceSearchResults({ results }) {
 
     content.unshift(
       <m.div variants={item} key={person.uid} className="col-span-2">
-        <Link href={`/perfomer/${person.uid}/`}>
+        <Link href={`/query/perfomer/${person.uid}/`}>
           <Card key={person.uid} className="border-0 bg-accent shadow-lg">
             <CardHeader>
               <span>{sentenceWithEmoji}</span>
