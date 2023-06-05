@@ -45,8 +45,6 @@ export default function MarksMap({
             className={isHighQuality ? "drop-shadow" : ""}
           >
             <circle
-              layout
-              initial={{ scale: 0 }}
               style={{
                 transition: `transform ${transitionDuration}s ease-in-out`,
                 transform: isHover
@@ -55,7 +53,6 @@ export default function MarksMap({
                     : "scale(0.2)"
                   : "scale(1)",
               }}
-              key={key}
               exit={{ scale: 0 }}
               r={scaleRadius(count)}
               fill={
