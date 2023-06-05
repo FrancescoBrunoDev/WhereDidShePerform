@@ -48,7 +48,7 @@ export default function ResultFound(props: ResultFoundProps) {
         {props.dateUids.length > 2500 ? (
           <div className="px-5 text-center text-sm font-bold">
             <div className="rounded-lg bg-secondary p-3">
-              <span className="text-3xl">😰</span>
+              <span className="text-3xl">😥</span>
               <p className="pb-2">
                 Oh boy, {uids.length} events are a lot! Sorry but I can&apos;t
                 handle it at the moment.

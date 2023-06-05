@@ -193,6 +193,7 @@ export default function MapCamp({
                 setIsHover={setIsHover}
                 mapConfig={mapConfig}
                 filteredDataCountry={filteredDataCountry}
+                isEuropeMap={isEuropeMap}
               />
             </ComposableMap>
           </m.div>

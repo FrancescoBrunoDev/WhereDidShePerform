@@ -7,6 +7,8 @@ import {
 
 import { getCityNameByCoordinates } from "../getCountryName/getCountry"
 
+const countryCodeCoordinates = require("./country-codes-coordinates.json")
+
 export async function GetListOfEvent(id) {
   let event = {}
   const eventsNumbers = id.events.map((event) => event.event)
@@ -211,13 +213,21 @@ export async function GetLocationsWithEventsAndTitle(performerId, eventIds) {
     for (let i = 0; i < cityData.length; i++) {
       const cityName = cityData[i]
       const location = locationsWithCount[i]
-
+      const coordinatesCountry = [
+        countryCodeCoordinates.ref_country_codes.find(
+          (country) => country.alpha3 === cityName.country?.countryCode3
+        )?.longitude,
+        countryCodeCoordinates.ref_country_codes.find(
+          (country) => country.alpha3 === cityName.country?.countryCode3
+        )?.latitude,
+      ]
       if (!titlesWithSameCity[cityName.name]) {
         titlesWithSameCity[cityName.name] = {
           count: 0, // Updated property name to count
           locations: [],
           coordinates: [cityName.longitude, cityName.latitude],
           country: cityName.country?.name,
+          coordinatesCountry,
           continent: cityName.country?.continent,
         }
       }
@@ -230,13 +240,20 @@ export async function GetLocationsWithEventsAndTitle(performerId, eventIds) {
       ]
       titlesWithSameCity[cityName.name].country = cityName.country?.name
       titlesWithSameCity[cityName.name].continent = cityName.country?.continent
+      titlesWithSameCity[cityName.name].coordinatesCountry = coordinatesCountry
       key++
     }
   }
 
   for (const city in titlesWithSameCity) {
-    const { count, locations, coordinates, country, continent } =
-      titlesWithSameCity[city]
+    const {
+      count,
+      locations,
+      coordinates,
+      country,
+      continent,
+      coordinatesCountry,
+    } = titlesWithSameCity[city]
     const countLocations = locations.length
     locationsWithSameCity.push({
       key,
@@ -246,6 +263,7 @@ export async function GetLocationsWithEventsAndTitle(performerId, eventIds) {
       locations,
       coordinates: coordinates,
       country,
+      coordinatesCountry,
       continent,
     })
     key++

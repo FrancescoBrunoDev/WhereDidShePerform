@@ -10,17 +10,18 @@ export default function MarksMap({
   setIsHover,
   mapConfig,
   filteredDataCountry,
+  isEuropeMap,
 }) {
   const sigmoid = (x) => {
     return 1 / (1 + Math.exp(-x))
   }
 
   const scaleRadius = (count) => {
-    const minRadius = 1
-    const maxRadius = mapConfig?.maxRadius || 10 // Use optional chaining to access maxRadius
-    const scaleFactor = 5
-    const x = (count - scaleFactor) / scaleFactor
-    const radius = sigmoid(x) * (maxRadius - minRadius) + minRadius
+    const minRadius = 2 // Minimum radius value
+    const maxRadius = mapConfig.maxRadius || 30 // Maximum radius value (default is 30)
+    const scaleFactor = 2 // Scaling factor (adjust as needed)
+    const logCount = Math.log10(count + 1) // Logarithm of count value (add 1 to avoid taking log of 0)
+    const radius = (logCount / scaleFactor) * (maxRadius - minRadius) + minRadius // Map log count value to radius range
     return radius
   }
 
@@ -35,12 +36,12 @@ export default function MarksMap({
 
   return (
     <>
-      {filteredDataCountry.map(({ key, coordinates, count }) => {
+      {filteredDataCountry.map(({ key, coordinates, count, coordinatesCountry }) => {
         const transitionDuration = Math.floor(Math.random() * 900 + 100) / 2000 // Generate a random value between 0.1 and 1
         return (
           <Marker
             id={key}
-            coordinates={coordinates}
+            coordinates={isEuropeMap ? coordinates : coordinatesCountry}
             key={key}
             className={isHighQuality ? "drop-shadow" : ""}
           >

@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react"
+import { isValidDate } from "iso-datestring-validator"
+import { set } from "lodash"
+
 import { Button } from "@/components/ui/button"
 import {
   CardContent,
@@ -6,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Icons } from "@/components/icons"
 
 interface SearchDatesProps {
   handleFromChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -24,6 +29,25 @@ export default function SearchDates({
   toValue,
   searchData,
 }: SearchDatesProps) {
+  const [fromValueIsValid, setFromValueIsValid] = useState(true)
+  const [toValueIsValid, setToValueIsValid] = useState(true)
+
+  useEffect(() => {
+    if (isValidDate(fromValue)) {
+      setFromValueIsValid(true)
+    } else {
+      setFromValueIsValid(false)
+    }
+  }, [fromValue])
+
+  useEffect(() => {
+    if (isValidDate(toValue)) {
+      setToValueIsValid(true)
+    } else {
+      setToValueIsValid(false)
+    }
+  }, [toValue])
+
   return (
     <>
       {searchData ? null : (
@@ -33,30 +57,37 @@ export default function SearchDates({
         </CardHeader>
       )}
       <CardContent
-        className={
-          searchData
-            ? "grid max-w-sm content-center gap-1.5 p-0"
-            : "grid max-w-sm items-center gap-1.5"
-        }
+        className={`grid max-w-sm gap-1.5
+          ${searchData ? "content-center p-0" : "items-center"}
+            `}
       >
         {" "}
         <div className="grid grid-cols-2 gap-1">
-          <Input
-            className="col-span-1"
-            placeholder="From Date"
-            value={fromValue}
-            onChange={handleFromChange}
-          />
-          <Input
-            className="col-span-1"
-            placeholder="From Date"
-            value={toValue}
-            onChange={handleToChange}
-          />
+          <div className="col-span-1 grid grid-cols-1 space-y-1">
+            <CardDescription className="flex items-center justify-start">
+              start date{" "}
+              {fromValueIsValid && (
+                <Icons.check className="h-4 text-green-600" />
+              )}
+            </CardDescription>
+            <Input
+              placeholder="yyyy-MM-dd"
+              value={fromValue}
+              onChange={handleFromChange}
+            />
+          </div>
+          <div className="col-span-1 grid grid-cols-1 space-y-1">
+            <CardDescription className="flex items-center justify-start">
+              end date{" "}
+              {toValueIsValid && <Icons.check className="h-4 text-green-600" />}
+            </CardDescription>
+            <Input
+              placeholder="yyyy-MM-dd"
+              value={toValue}
+              onChange={handleToChange}
+            />
+          </div>
         </div>
-        <CardDescription>
-          use the format yyyy-MM-dd
-        </CardDescription>
         <Button className="col-span-1" type="submit" onClick={handleDateSubmit}>
           Search
         </Button>
