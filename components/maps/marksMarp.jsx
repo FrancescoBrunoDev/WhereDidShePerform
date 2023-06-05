@@ -1,5 +1,4 @@
 import { AnimatePresence, motion as m } from "framer-motion"
-import { groupBy } from "lodash"
 import { Marker } from "react-simple-maps"
 
 export default function MarksMap({
@@ -45,37 +44,32 @@ export default function MarksMap({
             key={key}
             className={isHighQuality ? "drop-shadow" : ""}
           >
-            <AnimatePresence mode={"wait"}>
-              <m.circle
-                layout
-                initial={{ scale: 0 }}
-                animate={
-                  isHover
-                    ? selectedLocationId === key
-                      ? { scale: 1.5 }
-                      : { scale: 0.2 }
-                    : { scale: 1 }
-                }
-                transition={{
-                  duration: transitionDuration,
-                  delay: transitionDuration,
-                }}
-                key={key}
-                exit={{ scale: 0 }}
-                r={scaleRadius(count)}
-                fill={
-                  selectedLocationId === key ? "currentColor" : "currentColor"
-                }
-                onMouseEnter={() => {
-                  setSelectedLocationId(key)
-                  setIsHover(true)
-                }}
-                onMouseLeave={() => {
-                  setSelectedLocationId(null)
-                  setIsHover(false)
-                }}
-              />
-            </AnimatePresence>
+            <circle
+              layout
+              initial={{ scale: 0 }}
+              style={{
+                transition: `transform ${transitionDuration}s ease-in-out`,
+                transform: isHover
+                  ? selectedLocationId === key
+                    ? "scale(1.5)"
+                    : "scale(0.2)"
+                  : "scale(1)",
+              }}
+              key={key}
+              exit={{ scale: 0 }}
+              r={scaleRadius(count)}
+              fill={
+                selectedLocationId === key ? "currentColor" : "currentColor"
+              }
+              onMouseEnter={() => {
+                setSelectedLocationId(key)
+                setIsHover(true)
+              }}
+              onMouseLeave={() => {
+                setSelectedLocationId(null)
+                setIsHover(false)
+              }}
+            />
           </Marker>
         )
       })}
