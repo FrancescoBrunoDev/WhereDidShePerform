@@ -1,5 +1,3 @@
-import { Suspense } from "react"
-
 import CardList from "@/components/list/cardList"
 import { SettingsList } from "@/components/list/settingsList"
 
