@@ -23,6 +23,10 @@ export default function ScrollAreaMap({
   isEuropeMap,
   filteredDataContinent,
   filteredDataCountry,
+  handleSwitchToggleContinent,
+  handleSwitchToggleCountry,
+  activeContinents,
+  activeCountries,
 }) {
   const [isTimeVisible, setIsTimeVisible] = useState(false)
   const handleAccordionHover = useCallback(
@@ -83,11 +87,11 @@ export default function ScrollAreaMap({
           </m.div>
 
           <m.div layout>
-            <h4 className="mb-4 text-2xl font-black leading-none">
+            <h4 className="mb-2 mt-4 text-2xl font-black leading-none">
               Locations {thereIsMoreInWorld && isEuropeMap ? "in Europe" : null}
               {thereIsMoreInWorld && !isEuropeMap ? "all over the world" : null}
             </h4>
-            <ScrollArea className="h-[30rem] w-full rounded-lg pr-2">
+            <ScrollArea className="h-[30rem] w-full rounded-lg pr-3">
               <Accordion collapsible>
                 <ScrollAreaItem
                   locationsData={locationsData}
@@ -96,6 +100,10 @@ export default function ScrollAreaMap({
                   filteredDataContinent={filteredDataContinent}
                   filteredDataCountry={filteredDataCountry}
                   isEuropeMap={isEuropeMap}
+                  handleSwitchToggleContinent={handleSwitchToggleContinent}
+                  handleSwitchToggleCountry={handleSwitchToggleCountry}
+                  activeContinents={activeContinents}
+                  activeCountries={activeCountries}
                 />
               </Accordion>
             </ScrollArea>

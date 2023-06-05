@@ -24,11 +24,11 @@ export default function List({
   selectedComposerNames,
   searchData,
   activeContinents,
-  setActiveContinents,
   activeCountries,
-  setActiveCountries,
   filteredDataContinent,
   filteredDataCountry,
+  handleSwitchToggleContinent,
+  handleSwitchToggleCountry,
 }) {
   return (
     <>
@@ -59,11 +59,11 @@ export default function List({
             locationsData={filteredLocationsData}
             areAllFiltersDeactivated={areAllFiltersDeactivated}
             activeContinents={activeContinents}
-            setActiveContinents={setActiveContinents}
             activeCountries={activeCountries}
-            setActiveCountries={setActiveCountries}
             filteredDataContinent={filteredDataContinent}
             filteredDataCountry={filteredDataCountry}
+            handleSwitchToggleContinent={handleSwitchToggleContinent}
+            handleSwitchToggleCountry={handleSwitchToggleCountry}
           />
         </Suspense>
 

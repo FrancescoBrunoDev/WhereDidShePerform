@@ -1,4 +1,5 @@
 import {
+  GetEventsDetails,
   GetNameComposer,
   GetPerformances,
 } from "@/app/api/musiconn"
@@ -10,7 +11,7 @@ export async function GetListOfEvent(id) {
   const chunkSize = 1200
   const chunks = []
 
-  for (let i = 0; i < eventsNumbers.length; i += chunkSize) {
+  for (let i = 0; i < eventsNumbers?.length; i += chunkSize) {
     const chunk = eventsNumbers.slice(i, i + chunkSize)
     chunks.push(chunk)
   }
@@ -27,8 +28,48 @@ export async function GetListOfEvent(id) {
   return event
 }
 
-export async function GetExpandedEventWithPerformances(id, locationsData) {
-  const event = await GetListOfEvent(id)
+export async function GetExpandedEventWithPerformances(
+  id,
+  locationsData,
+  eventIds
+) {
+  const { decompress } = require("shrink-string")
+  let _id = null
+
+  if (id !== null) {
+    _id = id
+  } else if (eventIds) {
+    // decode eventIds
+    const dencoded = decodeURIComponent(eventIds)
+    const decompressed = await decompress(dencoded)
+    const eventIdsArray = decompressed.split("-")
+    const uidString = eventIdsArray.join("|")
+    const batches = []
+    for (let i = 0; i < uidString.length; i += 1000) {
+      const batch = uidString.slice(i, i + 1000)
+      batches.push(batch)
+    }
+    const fetchPromises = batches.map((batch) => GetEventsDetails(batch))
+    const fetchResults = await Promise.all(fetchPromises)
+
+    const events = []
+    for (const fetchResult of fetchResults) {
+      if (fetchResult !== null) {
+        const validObjects = Object.values(fetchResult).filter(
+          (obj) => obj !== null
+        )
+        const batchEvents = validObjects.map(({ uid }) => ({
+          event: uid,
+        }))
+        events.push(...batchEvents)
+      }
+    }
+    _id = {
+      events: events,
+    }
+  }
+
+  const event = await GetListOfEvent(_id)
 
   const expandedLocationsPerformance = locationsData.map((location) => {
     return {

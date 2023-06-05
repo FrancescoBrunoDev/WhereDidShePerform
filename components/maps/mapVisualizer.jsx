@@ -25,6 +25,10 @@ export default function MapVisualizer({
   thereIsMoreInWorldPopup,
   filteredDataContinent,
   filteredDataCountry,
+  handleSwitchToggleContinent,
+  handleSwitchToggleCountry,
+  activeContinents,
+  activeCountries,
 }) {
   const [selectedLocationId, setSelectedLocationId] = useState(null)
   const [isHover, setIsHover] = useState(false)
@@ -46,6 +50,10 @@ export default function MapVisualizer({
         isEuropeMap={isEuropeMap}
         filteredDataContinent={filteredDataContinent}
         filteredDataCountry={filteredDataCountry}
+        handleSwitchToggleContinent={handleSwitchToggleContinent}
+        handleSwitchToggleCountry={handleSwitchToggleCountry}
+        activeContinents={activeContinents}
+        activeCountries={activeCountries}
       />
 
       <div>

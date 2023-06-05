@@ -67,17 +67,32 @@ export default function Dashboard({ params }) {
   //select and show accordingly the map
   const [thereIsMoreInWorld, setThereIsMoreInWorld] = useState(false)
   const [thereIsMoreInWorldPopup, setThereIsMoreInWorldPopup] = useState(false)
-  // filter from list 
+  // filter from list
   const [activeContinents, setActiveContinents] = useState([])
   const [activeCountries, setActiveCountries] = useState([])
 
+  const handleSwitchToggleContinent = (continent) => {
+    setActiveContinents((prev) =>
+      prev.includes(continent)
+        ? prev.filter((c) => c !== continent)
+        : [...prev, continent]
+    )
+  }
+  const handleSwitchToggleCountry = (country) => {
+    setActiveCountries((prev) =>
+      prev.includes(country)
+        ? prev.filter((c) => c !== country)
+        : [...prev, country]
+    )
+  }
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setThereIsMoreInWorldPopup(false);
-    }, 5000);
+      setThereIsMoreInWorldPopup(false)
+    }, 5000)
 
-    return () => clearTimeout(timeoutId);
-  }, []);
+    return () => clearTimeout(timeoutId)
+  }, [])
 
   const filteredLocationsDataViewMap = isEuropeMap
     ? filteredLocationsData?.filter((location) => location.continent === "EU")
@@ -85,16 +100,15 @@ export default function Dashboard({ params }) {
 
   useEffect(() => {
     if (filteredLocationsData && filteredLocationsData.length > 0) {
-      const nonEuLocations = locationsData.filter(
+      const nonEuLocations = filteredLocationsData.filter(
         (location) => location.continent !== "EU"
       )
       if (nonEuLocations.length > 0) {
         setThereIsMoreInWorld(true)
         setThereIsMoreInWorldPopup(true)
         setTimeout(() => {
-          setThereIsMoreInWorldPopup(false);
-        }, 5000);
-        
+          setThereIsMoreInWorldPopup(false)
+        }, 5000)
       } else {
         setThereIsMoreInWorld(false)
       }
@@ -133,6 +147,7 @@ export default function Dashboard({ params }) {
 
   const searchId = performerId ? performerId : eventIds
   const searchKind = performerId ? "performerId" : "eventIds"
+
   useEffect(() => {
     async function fetchData() {
       const res = await fetch(
@@ -151,7 +166,6 @@ export default function Dashboard({ params }) {
       fetchData()
     }
   }, [performerId, eventIds])
-  console.log(locationsData, "locationsData")
 
   useEffect(() => {
     async function getData() {
@@ -161,7 +175,7 @@ export default function Dashboard({ params }) {
     if (performerId) {
       getData()
     }
-  }, [performerId])
+  }, [performerId, eventIds])
 
   let highestYear = null
   let lowestYear = null
@@ -204,7 +218,8 @@ export default function Dashboard({ params }) {
     async function fetchData() {
       const locationsWithComposer = await GetExpandedEventWithPerformances(
         id,
-        locationsData
+        locationsData,
+        eventIds
       )
       setlocationsWithComposer(locationsWithComposer)
     }
@@ -255,9 +270,13 @@ export default function Dashboard({ params }) {
   ])
 
   // filter list
-  const filteredDataContinent = locationsData.filter(
-    (location) => !activeContinents.includes(location.continent)
-  )
+  const filteredDataContinent = filteredLocationsData
+    ? filteredLocationsData.filter(
+        (location) => !activeContinents.includes(location.continent)
+      )
+    : locationsData.filter(
+        (location) => !activeContinents.includes(location.continent)
+      )
 
   const filteredDataCountry = filteredDataContinent.filter(
     (location) => !activeCountries.includes(location.country)
@@ -337,6 +356,10 @@ export default function Dashboard({ params }) {
               thereIsMoreInWorldPopup={thereIsMoreInWorldPopup}
               filteredDataContinent={filteredDataContinent}
               filteredDataCountry={filteredDataCountry}
+              handleSwitchToggleContinent={handleSwitchToggleContinent}
+              handleSwitchToggleCountry={handleSwitchToggleCountry}
+              activeContinents={activeContinents}
+              activeCountries={activeCountries}
             />
           </TabsContent>
           <TabsContent value="list">
@@ -366,11 +389,11 @@ export default function Dashboard({ params }) {
                 selectedComposerNames={selectedComposerNames}
                 searchData={searchData}
                 activeContinents={activeContinents}
-                setActiveContinents={setActiveContinents}
                 activeCountries={activeCountries}
-                setActiveCountries={setActiveCountries}
                 filteredDataContinent={filteredDataContinent}
                 filteredDataCountry={filteredDataCountry}
+                handleSwitchToggleContinent={handleSwitchToggleContinent}
+                handleSwitchToggleCountry={handleSwitchToggleCountry}
               />
             )}
           </TabsContent>
