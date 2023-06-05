@@ -89,7 +89,7 @@ export default function Dashboard({ params }) {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setThereIsMoreInWorldPopup(false)
-    }, 5000)
+    }, 10000)
 
     return () => clearTimeout(timeoutId)
   }, [])
