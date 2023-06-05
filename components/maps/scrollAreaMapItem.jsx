@@ -57,8 +57,11 @@ export default function ScrollAreaItem({
               <div key={country} className="">
                 <div className="rounded-lg bg-background">
                   <Toggle
-                    className="flex w-full justify-start px-2 py-1 text-xl 
-              font-black"
+                    className={`flex w-full justify-start px-2 py-1 text-xl 
+              font-black ${
+                activeCountries.includes(country) &&
+                "data-[state=off]:bg-secondary"
+              }`}
                     onPressedChange={() => handleSwitchToggleCountry(country)}
                     pressed={!activeCountries.includes(country)}
                   >

@@ -22,7 +22,7 @@ export default function MenuMap({
 }) {
   return (
     <div className="flex">
-      {thereIsMoreInWorld && thereIsMoreInWorldPopup ? (
+      {thereIsMoreInWorld && thereIsMoreInWorldPopup && isEuropeMap ? (
         <AnimatePresence>
           <m.div
             initial={{ opacity: 0 }}
@@ -54,7 +54,7 @@ export default function MenuMap({
             <div className="grid grid-cols-2 items-center space-x-2 ">
               <Label>{isEuropeMap ? "World Map" : "Europe Map"}</Label>
               <Switch
-                disabled={!thereIsMoreInWorld}
+                disabled={!thereIsMoreInWorld && isEuropeMap}
                 className="data-[state=checked]:bg-input"
                 onCheckedChange={() => {
                   setChangeMap(changeMap + 1)
