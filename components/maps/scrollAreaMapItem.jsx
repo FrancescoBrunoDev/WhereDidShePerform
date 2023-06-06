@@ -26,7 +26,7 @@ export default function ScrollAreaItem({
   activeCountries,
 }) {
   const [visibleItems, setVisibleItems] = useState(20)
-
+  console.log("locationsData", locationsData)
   return (
     <div className={!isEuropeMap ? "sflex flex-col space-y-2" : ""}>
       {Object.entries(
@@ -54,7 +54,7 @@ export default function ScrollAreaItem({
                 "country"
               )
             ).map(([country]) => (
-              <div key={country} className="">
+              <div key={country}>
                 <div className="rounded-lg bg-background">
                   <Toggle
                     className={`flex w-full justify-start px-2 py-1 text-xl 
@@ -115,7 +115,7 @@ export default function ScrollAreaItem({
                                         </Badge>
                                       </Link>
                                     </div>
-                                    <p className="mx-1 flex w-full justify-self-start rounded-lg p-2 text-left  hover:bg-background hover:text-primary">
+                                    <p className="ml-1 flex w-full justify-self-start rounded-lg px-2 py-1 text-left  hover:bg-background hover:text-primary">
                                       {title} for {count}{" "}
                                       {count === 1 ? "time" : "times"}
                                     </p>

@@ -110,7 +110,7 @@ export default function CardList({
                           {city.city}
                         </h3>
                       </div>
-                      <div className="">
+                      <div>
                         {city.locations.map((location) => {
                           if (location.eventInfo.length === 0) {
                             return null // Skip rendering the location if it has no events
@@ -118,10 +118,10 @@ export default function CardList({
                           const locationTitleLink = linkMaker(location.title)
                           return (
                             <m.div variants={list} key={location.locationId}>
-                              <div className="">
+                              <div>
                                 <div className="flex items-center space-x-2 pb-5 pt-3">
                                   <h1 className="text-lg font-black leading-none">
-                                    {location.title}
+                                    {location.title} 
                                   </h1>{" "}
                                   <Link
                                     href={`https://performance.musiconn.de/location/${locationTitleLink}`}

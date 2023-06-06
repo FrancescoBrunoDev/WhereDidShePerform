@@ -195,55 +195,43 @@ export async function GetLocationsWithEventsAndTitle(performerId, eventIds) {
     coordinatePairs.push(`${coordinates[1]},${coordinates[0]}`)
   }
 
-  const batchSize = 100 // Define the size of each batch
-  const batchedCoordinatePairs = []
-  let currentBatch = []
+  const cityData = await getCityNameFromCoordinatesAPI(coordinatePairs)
 
-  for (let i = 0; i < coordinatePairs.length; i++) {
-    currentBatch.push(coordinatePairs[i])
-
-    if (currentBatch.length === batchSize || i === coordinatePairs.length - 1) {
-      batchedCoordinatePairs.push(currentBatch.join("|"))
-      currentBatch = []
-    }
-  }
-  for (const batch of batchedCoordinatePairs) {
-    const cityData = await getCityNameFromCoordinatesAPI(batch)
-
-    for (let i = 0; i < cityData.length; i++) {
-      const cityName = cityData[i]
-      const location = locationsWithCount[i]
-      const coordinatesCountry = [
-        countryCodeCoordinates.ref_country_codes.find(
-          (country) => country.alpha3 === cityName.country?.countryCode3
-        )?.longitude,
-        countryCodeCoordinates.ref_country_codes.find(
-          (country) => country.alpha3 === cityName.country?.countryCode3
-        )?.latitude,
-      ]
-      if (!titlesWithSameCity[cityName.name]) {
-        titlesWithSameCity[cityName.name] = {
-          count: 0, // Updated property name to count
-          locations: [],
-          coordinates: [cityName.longitude, cityName.latitude],
-          country: cityName.country?.name,
-          coordinatesCountry,
-          continent: cityName.country?.continent,
-        }
+  for (let i = 0; i < cityData.length; i++) {
+    const cityName = cityData[i]
+    const location = locationsWithCount[i]
+    const coordinatesCountry = [
+      countryCodeCoordinates.ref_country_codes.find(
+        (country) => country.alpha3 === cityName.country?.countryCode3
+      )?.longitude,
+      countryCodeCoordinates.ref_country_codes.find(
+        (country) => country.alpha3 === cityName.country?.countryCode3
+      )?.latitude,
+    ]
+    if (!titlesWithSameCity[cityName.name]) {
+      titlesWithSameCity[cityName.name] = {
+        count: 0, // Updated property name to count
+        locations: [],
+        coordinates: [cityName.longitude, cityName.latitude],
+        country: cityName.country?.name,
+        coordinatesCountry,
+        continent: cityName.country?.continent,
       }
-
-      titlesWithSameCity[cityName.name].locations.push(location)
-      titlesWithSameCity[cityName.name].count += location.count // Updated property name to count
-      titlesWithSameCity[cityName.name].coordinates = [
-        cityName.longitude,
-        cityName.latitude,
-      ]
-      titlesWithSameCity[cityName.name].country = cityName.country?.name
-      titlesWithSameCity[cityName.name].continent = cityName.country?.continent
-      titlesWithSameCity[cityName.name].coordinatesCountry = coordinatesCountry
-      key++
     }
+
+    titlesWithSameCity[cityName.name].locations.push(location)
+    titlesWithSameCity[cityName.name].count += location.count // Updated property name to count
+    titlesWithSameCity[cityName.name].coordinates = [
+      cityName.longitude,
+      cityName.latitude,
+    ]
+    titlesWithSameCity[cityName.name].country = cityName.country?.name
+    titlesWithSameCity[cityName.name].continent = cityName.country?.continent
+    titlesWithSameCity[cityName.name].coordinatesCountry = coordinatesCountry
+    key++
   }
+
+  /*   console.log(titlesWithSameCity) */
 
   for (const city in titlesWithSameCity) {
     const {
@@ -254,6 +242,7 @@ export async function GetLocationsWithEventsAndTitle(performerId, eventIds) {
       continent,
       coordinatesCountry,
     } = titlesWithSameCity[city]
+
     const countLocations = locations.length
     locationsWithSameCity.push({
       key,
@@ -273,10 +262,9 @@ export async function GetLocationsWithEventsAndTitle(performerId, eventIds) {
 }
 
 async function getCityNameFromCoordinatesAPI(coordinates) {
-  const coordinatePairs = coordinates.split("|")
   const cities = []
 
-  for (const pair of coordinatePairs) {
+  for (const pair of coordinates) {
     const [longitude, latitude] = pair.split(",").map(parseFloat)
     const city = getCityNameByCoordinates(longitude, latitude)
 

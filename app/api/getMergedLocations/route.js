@@ -8,7 +8,6 @@ export async function GET(request) {
   const eventIds = searchParams.get("eventIds")
 
   const data = await GetLocationsWithEventsAndTitle(performerId, eventIds)
-  console.log(data, "data")
   const responseBody = JSON.stringify(data)
 
   return new Response(responseBody, {
