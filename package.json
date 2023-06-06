@@ -44,7 +44,6 @@
     "framer-motion": "^10.12.12",
     "fs": "^0.0.1-security",
     "geolib": "^3.3.4",
-    "iso-datestring-validator": "^2.2.2",
     "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
     "lottie-web": "^5.12.0",

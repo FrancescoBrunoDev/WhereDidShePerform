@@ -1,7 +1,3 @@
-import { useEffect, useState } from "react"
-import { isValidDate } from "iso-datestring-validator"
-import { set } from "lodash"
-
 import { Button } from "@/components/ui/button"
 import {
   CardContent,
@@ -11,6 +7,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
+import getRandomSentenceList from "@/components/researchDate/randomSentences"
 
 interface SearchDatesProps {
   handleFromChange: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -19,6 +16,9 @@ interface SearchDatesProps {
   fromValue: string
   toValue: string
   searchData: boolean
+  fromValueIsValid: boolean
+  toValueIsValid: boolean
+  fromValueIsAfterToValue: boolean
 }
 
 export default function SearchDates({
@@ -28,41 +28,25 @@ export default function SearchDates({
   fromValue,
   toValue,
   searchData,
+  fromValueIsValid,
+  toValueIsValid,
+  fromValueIsAfterToValue,
 }: SearchDatesProps) {
-  const [fromValueIsValid, setFromValueIsValid] = useState(true)
-  const [toValueIsValid, setToValueIsValid] = useState(true)
-
-  useEffect(() => {
-    if (isValidDate(fromValue)) {
-      setFromValueIsValid(true)
-    } else {
-      setFromValueIsValid(false)
-    }
-  }, [fromValue])
-
-  useEffect(() => {
-    if (isValidDate(toValue)) {
-      setToValueIsValid(true)
-    } else {
-      setToValueIsValid(false)
-    }
-  }, [toValue])
-
   return (
     <>
       {searchData ? null : (
         <CardHeader>
           <CardTitle>Search by Dates</CardTitle>
-          <CardDescription>pick a date</CardDescription>
         </CardHeader>
       )}
+
       <CardContent
-        className={`grid max-w-sm gap-1.5
-          ${searchData ? "content-center p-0" : "items-center"}
+        className={`grid max-w-sm space-y-1
+          ${searchData ? "content-center p-1 rounded-lg bg-background" : "items-center"}
             `}
       >
-        {" "}
-        <div className="grid grid-cols-2 gap-1">
+        <CardDescription></CardDescription>
+        <div className="grid grid-cols-2 gap-1 mt-0">
           <div className="col-span-1 grid grid-cols-1 space-y-1">
             <CardDescription className="flex items-center justify-start">
               start date{" "}
@@ -88,8 +72,33 @@ export default function SearchDates({
             />
           </div>
         </div>
-        <Button className="col-span-1" type="submit" onClick={handleDateSubmit}>
-          Search
+        <Button
+          className={`col-span-1 ${
+            fromValueIsValid && toValueIsValid && !fromValueIsAfterToValue
+              ? ""
+              : "cursor-no-drop"
+          }`}
+          variant={
+            fromValueIsValid && toValueIsValid && !fromValueIsAfterToValue
+              ? "default"
+              : "secondary"
+          }
+          type="submit"
+          onClick={() => {
+            if (
+              fromValueIsValid &&
+              toValueIsValid &&
+              !fromValueIsAfterToValue
+            ) {
+              handleDateSubmit()
+            }
+          }}
+        >
+          {fromValueIsAfterToValue ? (
+            <span className="text-xs">{getRandomSentenceList()}</span>
+          ) : (
+            "Search"
+          )}
         </Button>
       </CardContent>
     </>
