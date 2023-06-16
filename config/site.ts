@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Where did s.he performed?",
+  name: "Where did s.he perform?",
   description:
     "Explore the extensive catalogue of Musiconn Performance with interactive maps.",
   mainNav: [
