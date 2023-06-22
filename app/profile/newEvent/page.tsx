@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 
+import { NewEventPayload } from "@/lib/validators/newEvent"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -14,6 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import InputAutosuggest from "@/components/create/inputAutosuggest"
+
+interface Person {
+  title: string
+  mUid: string
+}
 
 const Page = () => {
   const router = useRouter()
@@ -22,13 +30,15 @@ const Page = () => {
     category: "",
     date: "",
     location: "",
-    persons: "",
+    persons: [] as Person[],
     program: "",
   })
 
-  const {} = useMutation({
+  console.log(formData, "formData")
+
+  const { mutate: createEvent, isLoading } = useMutation({
     mutationFn: async () => {
-      const payload = {
+      const payload: NewEventPayload = {
         title: formData.title,
         category: formData.category,
         date: formData.date,
@@ -37,14 +47,41 @@ const Page = () => {
         program: formData.program,
       }
 
-      const { data } = await axios.post("/api/createEvent", payload)
+      const { data } = await axios.post("/api/create/createEvent", payload)
+      return data as String
     },
   })
 
-  console.log(formData, "input")
+  const [person, setPerson] = useState([])
+
+  const handleAddPerson = (value: [string, string, string]) => {
+    const newMUid = value[2]
+    const mUidExists = formData.persons.some(
+      (person) => person.mUid === newMUid
+    )
+    if (!mUidExists) {
+      const newPerson = { title: value[0], mUid: newMUid }
+      const newPersons = [...formData.persons, newPerson]
+      setFormData({
+        ...formData,
+        persons: newPersons,
+      })
+    }
+  }
+
+  const handleRemovePerson = (title: string) => {
+    const newPersons = formData.persons.filter(
+      (person) => person.title !== title
+    )
+    setFormData({
+      ...formData,
+      persons: newPersons,
+    })
+  }
+
   return (
     <div>
-      <form id="formEvent" className="mx-4 flex w-full flex-col gap-16">
+      <div className="mx-4 flex w-full flex-col gap-16">
         <Input
           className="-mx-4 h-20 w-full border-none text-7xl font-black"
           placeholder="Event Name"
@@ -89,13 +126,16 @@ const Page = () => {
                 }
               />
             </div>
-            <div className="flex shrink-0 items-center gap-4">
+            <div className="flex h-20 shrink-0 items-center gap-4">
               <span className="text-7xl font-black">3</span>
               <span className="text-lg font-bold uppercase">location</span>
-              <Input
-                placeholder="location"
-                onChange={(e) =>
-                  setFormData({ ...formData, location: e.target.value })
+              <InputAutosuggest
+                paramsAPI={"location"}
+                setFormData={(locationData) =>
+                  setFormData({
+                    ...formData,
+                    location: locationData[2],
+                  })
                 }
               />
             </div>
@@ -107,13 +147,27 @@ const Page = () => {
             <div className="flex shrink-0 items-center gap-4">
               <span className="text-7xl font-black">4</span>
               <span className="text-lg font-bold uppercase">Persons</span>
-              <Input
-                placeholder="person"
-                onChange={(e) =>
-                  setFormData({ ...formData, persons: e.target.value })
-                }
-              />
+              <div className="flex flex-col space-y-2">
+                <div className="flex shrink-0 items-center gap-4">
+                  <InputAutosuggest
+                    paramsAPI={"person"}
+                    setFormData={handleAddPerson}
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {formData.persons.map((person, index) => (
+                    <Badge
+                      className="cursor-pointer hover:bg-destructive hover:text-primary"
+                      onClick={() => handleRemovePerson(person.title)}
+                      key={index}
+                    >
+                      {person.title}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
             </div>
+
             <div className="flex shrink-0 items-center gap-4">
               <span className="text-7xl font-black">5</span>
               <span className="text-lg font-bold uppercase">Program</span>
@@ -126,12 +180,26 @@ const Page = () => {
             </div>
           </div>
         </div>
-      </form>
+      </div>
       <div className="mt-10 flex justify-center gap-4">
         <Button variant="subtle" onClick={() => router.back()}>
           Back
         </Button>
-        <Button>Create a new Event</Button>
+        <Button
+          isLoading={isLoading}
+          disabled={
+            formData.title === "" ||
+            formData.date === "" ||
+            formData.location.length === 0 ||
+            formData.persons.length === 0 ||
+            formData.program === ""
+          }
+          onClick={() => {
+            createEvent()
+          }}
+        >
+          Create a new Event
+        </Button>
       </div>
     </div>
   )

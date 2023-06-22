@@ -52,30 +52,48 @@ model User {
   Event    Event[]
   Person   Person[]
   Work     Work[]
+  test     Test[]
 }
 
 model Event {
   uid          String    @id @unique @default(cuid())
+  mUid         String?
   title        String
-  slug         String
+  slug         String?
   categories   category?
-  dates        DateTime
+  dates        DateTime?
   persons      Person?   @relation(fields: [personUid], references: [uid])
-  locations    Location? @relation(fields: [locationUid], references: [uid])
+  location     Location? @relation(fields: [locationUid], references: [uid])
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   author       User?     @relation(fields: [userId], references: [id])
   performances Work?     @relation(fields: [workUid], references: [uid])
   personUid    String    @unique
   locationUid  String    @unique
-  userId       String
+  userId       String?
   workUid      String?   @unique
+}
+
+model Test {
+  uid         String    @id @unique @default(cuid())
+  title       String
+  location    Location? @relation(fields: [locationUid], references: [mUid])
+  locationUid String?
+  persons     String
+  program     String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  creatorId   String?
+  Creator     User?     @relation(fields: [creatorId], references: [id])
+
+  @@index([title])
 }
 
 model Person {
   uid       String   @id @unique @default(cuid())
+  mUid      String?
   title     String
-  biography Json
+  biography Json?
   works     Work?    @relation(fields: [workUid], references: [uid])
   events    Event?
   createdAt DateTime @default(now())
@@ -87,18 +105,21 @@ model Person {
 
 model Location {
   uid        String  @id @unique @default(cuid())
+  mUid       String? @unique
   title      String
-  slug       String
+  slug       String?
   geometries Json?
   events     Event?
   works      Work?   @relation(fields: [workUid], references: [uid])
   workUid    String? @unique
+  test       Test[]
 }
 
 model Work {
   uid         String    @id @unique @default(cuid())
+  mUid        String?
   title       String
-  slug        String
+  slug        String?
   category    Json?
   dates       String?
   description String?
