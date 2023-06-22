@@ -81,7 +81,7 @@ export default function SearchDates({
           variant={
             fromValueIsValid && toValueIsValid && !fromValueIsAfterToValue
               ? "default"
-              : "secondary"
+              : "ghost"
           }
           type="submit"
           onClick={() => {

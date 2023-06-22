@@ -11,11 +11,6 @@ datasource db {
   relationMode = "prisma"
 }
 
-enum VoteType {
-  UP
-  DOWN
-}
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -54,4 +49,71 @@ model User {
   image    String?
   accounts Account[]
   sessions Session[]
+  Event    Event[]
+  Person   Person[]
+  Work     Work[]
+}
+
+model Event {
+  uid          String    @id @unique @default(cuid())
+  title        String
+  slug         String
+  categories   category?
+  dates        DateTime
+  persons      Person?   @relation(fields: [personUid], references: [uid])
+  locations    Location? @relation(fields: [locationUid], references: [uid])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  author       User?     @relation(fields: [userId], references: [id])
+  performances Work?     @relation(fields: [workUid], references: [uid])
+  personUid    String    @unique
+  locationUid  String    @unique
+  userId       String
+  workUid      String?   @unique
+}
+
+model Person {
+  uid       String   @id @unique @default(cuid())
+  title     String
+  biography Json
+  works     Work?    @relation(fields: [workUid], references: [uid])
+  events    Event?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User?    @relation(fields: [userId], references: [id])
+  workUid   String   @unique
+  userId    String
+}
+
+model Location {
+  uid        String  @id @unique @default(cuid())
+  title      String
+  slug       String
+  geometries Json?
+  events     Event?
+  works      Work?   @relation(fields: [workUid], references: [uid])
+  workUid    String? @unique
+}
+
+model Work {
+  uid         String    @id @unique @default(cuid())
+  title       String
+  slug        String
+  category    Json?
+  dates       String?
+  description String?
+  events      Event?
+  persons     Person?
+  locations   Location?
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+  author      User      @relation(fields: [userId], references: [id])
+  userId      String
+}
+
+enum category {
+  Season
+  Concert
+  Religious_Event
+  Music_Theater
 }

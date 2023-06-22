@@ -51,6 +51,7 @@ export function SiteHeader() {
             </Link>
             <InfoSection />
             <ThemeToggle />
+            {/* @ts-expect-error Server Component */}
             <Profile />
           </nav>
         </div>

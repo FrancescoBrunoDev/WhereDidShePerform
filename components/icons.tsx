@@ -15,6 +15,7 @@ import {
   Home,
   CheckCircle2,
   LogIn,
+  User,
   type Icon as LucideIcon,
 } from "lucide-react"
 import { TbBrandNextjs, TbBrandTailwind } from "react-icons/tb"
@@ -22,6 +23,7 @@ import { TbBrandNextjs, TbBrandTailwind } from "react-icons/tb"
 export type Icon = LucideIcon
 
 export const Icons = {
+  user: User,
   login: LogIn,
   sun: SunMedium,
   moon: Moon,

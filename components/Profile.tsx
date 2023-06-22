@@ -1,19 +1,16 @@
 import Link from "next/link"
-import { getAuthSession } from "@/lib/auth"
+import { authOptions } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
 import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
+import { UserAccountNav } from "@/components/UserAccountNav"
 
-/**
- * Asynchronous function that renders the user profile page based on the authentication session.
- *
- * @return {JSX.Element} The JSX.Element that represents the rendered profile page or the login button.
- */
 const Profile = async (): Promise<JSX.Element> => {
-  const session = await getAuthSession()
+  const session = await getServerSession(authOptions)
   return (
     <>
       {!session?.user ? (
-        <Link href="/sign-in" target="_blank" rel="noreferrer">
+        <Link href="/sign-in">
           <div
             className={buttonVariants({
               size: "sm",
@@ -24,7 +21,7 @@ const Profile = async (): Promise<JSX.Element> => {
             <span className="sr-only">Login</span>
           </div>
         </Link>
-      ) : <div>sei dentro</div>}
+      ) : <UserAccountNav user={session.user} />}
     </>
   )
 }

@@ -30,7 +30,7 @@ interface RootLayoutProps {
   children: React.ReactNode
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({ children, authModal }: {children: React.ReactNode, authModal: React.ReactNode}) {
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -44,6 +44,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <SiteHeader />
+            {authModal}
             {children}
             {/* <TailwindIndicator /> */}
           </ThemeProvider>
