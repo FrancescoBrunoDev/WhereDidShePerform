@@ -49,44 +49,26 @@ model User {
   image    String?
   accounts Account[]
   sessions Session[]
-  Event    Event[]
-  Person   Person[]
-  Work     Work[]
-  test     Test[]
+  event    Event[]
+  person   Person[]
+  work     Work[]
 }
 
 model Event {
-  uid          String    @id @unique @default(cuid())
-  mUid         String?
-  title        String
-  slug         String?
-  categories   category?
-  dates        DateTime?
-  persons      Person?   @relation(fields: [personUid], references: [uid])
-  location     Location? @relation(fields: [locationUid], references: [uid])
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  author       User?     @relation(fields: [userId], references: [id])
-  performances Work?     @relation(fields: [workUid], references: [uid])
-  personUid    String    @unique
-  locationUid  String    @unique
-  userId       String?
-  workUid      String?   @unique
-}
-
-model Test {
-  uid         String    @id @unique @default(cuid())
-  title       String
-  location    Location? @relation(fields: [locationUid], references: [mUid])
-  locationUid String?
-  persons     String
-  program     String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  creatorId   String?
-  Creator     User?     @relation(fields: [creatorId], references: [id])
+  uid        String    @id @unique @default(cuid())
+  title      String
+  locationsM Json?
+  date       DateTime?
+  category   Category?
+  personsM   Json?
+  worksM     Json?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  Creator    User?     @relation(fields: [creatorId], references: [id])
+  creatorId  String?
 
   @@index([title])
+  @@index([creatorId])
 }
 
 model Person {
@@ -95,7 +77,6 @@ model Person {
   title     String
   biography Json?
   works     Work?    @relation(fields: [workUid], references: [uid])
-  events    Event?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   author    User?    @relation(fields: [userId], references: [id])
@@ -109,10 +90,8 @@ model Location {
   title      String
   slug       String?
   geometries Json?
-  events     Event?
   works      Work?   @relation(fields: [workUid], references: [uid])
   workUid    String? @unique
-  test       Test[]
 }
 
 model Work {
@@ -123,7 +102,6 @@ model Work {
   category    Json?
   dates       String?
   description String?
-  events      Event?
   persons     Person?
   locations   Location?
   createdAt   DateTime? @default(now())
@@ -132,7 +110,7 @@ model Work {
   userId      String
 }
 
-enum category {
+enum Category {
   Season
   Concert
   Religious_Event

@@ -21,13 +21,16 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json()
-
-    const { title, locationsM, personsM, worksM, date, category } =
+    console.log(body, "body")
+    const { title, locationsM, personsM, worksM, date, category, uid } =
       newEventValidator.parse(body)
 
     const categoryValue = Category[category as keyof typeof Category]
 
-    const event = await prisma.event.create({
+    const event = await prisma.event.update({
+      where: {
+        uid: uid,
+      },
       data: {
         title: title,
         date: date,

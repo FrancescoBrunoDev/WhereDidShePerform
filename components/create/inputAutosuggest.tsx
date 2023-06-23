@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { useClickOutside } from "@mantine/hooks"
 import { AnimatePresence, motion as m } from "framer-motion"
-import { set } from "lodash"
 
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -45,7 +44,6 @@ export default function InputAutosuggest({
   }
 
   function handleSuggestionClick(suggestion: [string, number]) {
-    console.log(suggestion)
     setSearchTerm(suggestion[0])
     setSuggestions([])
     setOpened(false)
@@ -53,7 +51,7 @@ export default function InputAutosuggest({
   }
 
   return (
-    <div className="relative top-0 w-96">
+    <div className="relative top-0 w-full">
       <Input
         className="w-full"
         type="text"
@@ -75,10 +73,9 @@ export default function InputAutosuggest({
               ref={ref}
               className="mt-3 h-full rounded-md border bg-background shadow-lg"
             >
-              <m.div className="p-4">
+              <div className="p-4">
                 {suggestions.map((suggestion, index) => (
-                  <m.div
-                    layout
+                  <div
                     className="rounded-lg p-2 text-sm hover:bg-secondary"
                     key={index}
                     onClick={() => handleSuggestionClick(suggestion)}
@@ -87,9 +84,9 @@ export default function InputAutosuggest({
                     }}
                   >
                     {suggestion[0]}
-                  </m.div>
+                  </div>
                 ))}
-              </m.div>
+              </div>
             </ScrollArea>
           </m.div>
         )}

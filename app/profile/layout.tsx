@@ -3,5 +3,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <div className="container mt-32">{children}</div>
+  return <div className="container my-32">{children}</div>
 }
