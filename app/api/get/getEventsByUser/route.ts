@@ -14,9 +14,9 @@ export async function POST(req: Request) {
     const body = await req.json()
 
     const { uid } = body
-    const event = await prisma.event.findUnique({
+    const event = await prisma.event.findMany({
       where: {
-        uid: uid,
+        creatorId: uid,
       },
     })
 

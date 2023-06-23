@@ -39,36 +39,49 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-
-  username String? @unique
-
-  image    String?
-  accounts Account[]
-  sessions Session[]
-  event    Event[]
-  person   Person[]
-  work     Work[]
+  id                 String                  @id @default(cuid())
+  name               String?
+  email              String?                 @unique
+  emailVerified      DateTime?
+  username           String?                 @unique
+  role               Role                    @default(USER)
+  image              String?
+  accounts           Account[]
+  sessions           Session[]
+  eventVerifications UserEventVerification[]
+  event              Event[]
+  person             Person[]
+  work               Work[]
 }
 
 model Event {
-  uid        String    @id @unique @default(cuid())
-  title      String
-  locationsM Json?
-  date       DateTime?
-  category   Category?
-  personsM   Json?
-  worksM     Json?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  Creator    User?     @relation(fields: [creatorId], references: [id])
-  creatorId  String?
+  uid                   String                  @id @unique @default(cuid())
+  title                 String
+  locationsM            Json?
+  date                  DateTime?
+  category              Category?
+  personsM              Json?
+  stateVerification     StateVerification?      @default(PENDING)
+  worksM                Json?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  Creator               User?                   @relation(fields: [creatorId], references: [id])
+  creatorId             String?
+  UserEventVerification UserEventVerification[]
 
   @@index([title])
   @@index([creatorId])
+}
+
+model UserEventVerification {
+  id                String             @id @default(cuid())
+  user              User               @relation(fields: [userId], references: [id])
+  userId            String
+  event             Event              @relation(fields: [eventId], references: [uid])
+  eventId           String
+  stateVerification StateVerification?
+
+  @@index([userId, eventId])
 }
 
 model Person {
@@ -115,4 +128,15 @@ enum Category {
   Concert
   Religious_Event
   Music_Theater
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum StateVerification {
+  PENDING
+  VERIFIED
+  REJECTED
 }

@@ -11,17 +11,14 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 401 })
     }
 
-    const body = await req.json()
+    const users = await prisma.user.findMany()
+    console.log(users, "users")
 
-    const { uid } = body
-    const event = await prisma.event.findUnique({
-      where: {
-        uid: uid,
-      },
+    return new Response(JSON.stringify(users), {
+      headers: { "Content-Type": "application/json" },
     })
-
-    return new Response(JSON.stringify(event))
   } catch (error) {
-    return new Response("cannot get event", { status: 500 })
+    console.error(error)
+    return new Response("Unable to retrieve users", { status: 500 })
   }
 }

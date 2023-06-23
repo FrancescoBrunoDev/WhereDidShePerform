@@ -5,10 +5,10 @@ import { useViewportSize } from "@mantine/hooks"
 import { format, parseISO } from "date-fns"
 import { LayoutGroup, motion as m } from "framer-motion"
 
+import { useToast } from "@/hooks/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToastAction } from "@/components/ui/toast"
 import { Toaster } from "@/components/ui/toaster"
-import { useToast } from "@/hooks/use-toast"
 import {
   checkCategoryAvailability,
   filterLocationsData,
@@ -18,8 +18,7 @@ import { GetExpandedEventWithPerformances } from "@/components/maps/getExpandedL
 import MapVisualizer from "@/components/maps/mapVisualizer"
 import { GetInfoPerson } from "@/app/api/musiconn"
 
-const geoUrl =
-  "/maps/europe.json"
+const geoUrl = "/maps/europe.json"
 
 export default function Dashboard({ params }) {
   const [locationsData, setLocationsData] = useState([])
@@ -115,20 +114,19 @@ export default function Dashboard({ params }) {
     }
   }, [filteredLocationsData])
 
-  const handleFilterChange = () => {
-    if (
-      (!concerts || !isConcertCategoryAvailable) &&
-      (!musicTheater || !isMusicTheaterCategoryAvailable) &&
-      (!religiousEvent || !isReligiousEventCategoryAvailable) &&
-      (!season || !isSeasonCategoryAvailable)
-    ) {
-      setAreAllFiltersDeactivated(true)
-    } else {
-      setAreAllFiltersDeactivated(false)
-    }
-  }
-
   useEffect(() => {
+    const handleFilterChange = () => {
+      if (
+        (!concerts || !isConcertCategoryAvailable) &&
+        (!musicTheater || !isMusicTheaterCategoryAvailable) &&
+        (!religiousEvent || !isReligiousEventCategoryAvailable) &&
+        (!season || !isSeasonCategoryAvailable)
+      ) {
+        setAreAllFiltersDeactivated(true)
+      } else {
+        setAreAllFiltersDeactivated(false)
+      }
+    }
     handleFilterChange()
   }, [
     concerts,
@@ -139,7 +137,6 @@ export default function Dashboard({ params }) {
     isMusicTheaterCategoryAvailable,
     isReligiousEventCategoryAvailable,
     isSeasonCategoryAvailable,
-    handleFilterChange,
   ])
 
   const { performerId } = params

@@ -2,12 +2,9 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useMutation } from "@tanstack/react-query"
-import axios from "axios"
 import { format } from "date-fns"
 
-import { EventDeletePayload } from "@/lib/validators/deleteEvent"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import {
   HoverCard,
   HoverCardContent,
@@ -15,6 +12,7 @@ import {
 } from "@/components/ui/hover-card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import DeleteButton from "@/components/DeleteButton"
 import { Icons } from "@/components/icons"
 
 import { Badge } from "../ui/badge"
@@ -25,27 +23,11 @@ interface TableProfileProps {
 
 const TableProfile: React.FC<TableProfileProps> = ({ events }) => {
   const [eventList, setEventList] = useState(events) // Use state to manage the events array
-
-  const { mutate: deleteEvent, isLoading } = useMutation({
-    mutationFn: async (eventId) => {
-      const payload: EventDeletePayload = {
-        eventId: eventId,
-      }
-
-      const { data } = await axios.post("/api/create/deleteEvent", payload)
-      return data as String
-    },
-    onSuccess: (response, eventId) => {
-      // Remove the deleted event from the event list
-      setEventList((prevEvents) =>
-        prevEvents.filter((event) => event.uid !== eventId)
-      )
-    },
-  })
-
   return (
     <div className="max-w-3xl">
-      <h2 className="mt-2 text-xl font-black">Events</h2>
+      <h2 className="my-2 w-fit rounded-lg bg-secondary p-2 text-xl font-black">
+        Events
+      </h2>
       {events.length > 0 && (
         <div className="rounded-lg bg-secondary p-1">
           <div className="mb-2 grid grid-cols-5 rounded-lg bg-background p-2 font-bold">
@@ -63,12 +45,9 @@ const TableProfile: React.FC<TableProfileProps> = ({ events }) => {
               const formattedDate = format(date, "MM/dd/yyyy")
 
               return (
-                <>
-                  <HoverCard key={event.uid}>
-                    <div
-                      className="grid h-fit grid-cols-5 items-center gap-2 rounded-lg p-2 text-sm"
-                      key={event.uid}
-                    >
+                <div key={event.uid}>
+                  <HoverCard>
+                    <div className="grid h-fit grid-cols-5 items-center gap-2 rounded-lg p-2 text-sm">
                       <div className="flex items-center gap-2">
                         <HoverCardTrigger>
                           <Icons.info className="h-4 w-4 stroke-primary" />
@@ -78,20 +57,15 @@ const TableProfile: React.FC<TableProfileProps> = ({ events }) => {
                       <div>{formattedDateCreatedAt}</div>
                       <div>{event.category}</div>
                       <div>
-                        <Badge className="text bg-orange-500">verifing</Badge>
+                        <Badge className="text bg-orange-500 hover:bg-none">
+                          {event.stateVerification}
+                        </Badge>
                       </div>
                       <div className="flex space-x-2">
-                        <Button
-                          isLoading={isLoading}
-                          onClick={() => {
-                            deleteEvent(event.uid)
-                          }}
-                          className="py-2"
-                          size={"xs"}
-                          variant={"destructive"}
-                        >
-                          delete
-                        </Button>
+                        <DeleteButton
+                          event={event}
+                          setEventList={setEventList}
+                        />
                         <Link
                           href={`/profile/eventInfo/${event.uid}`}
                           className={buttonVariants({
@@ -109,7 +83,7 @@ const TableProfile: React.FC<TableProfileProps> = ({ events }) => {
                     </HoverCardContent>
                   </HoverCard>
                   <Separator className="border-primary" />
-                </>
+                </div>
               )
             })}
           </ScrollArea>

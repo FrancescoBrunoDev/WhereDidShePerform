@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/select"
 import InputAutosuggest from "@/components/create/inputAutosuggest"
 import { Icons } from "@/components/icons"
-import { set } from "lodash"
 
 interface Person {
   title: string
@@ -69,7 +68,6 @@ const Page = ({}) => {
             worksM: data.worksM,
             uid: params.uid,
           })
-
         } catch (error) {
           // Handle error
         }
