@@ -2,7 +2,6 @@ import {
   ExternalLink,
   Github,
   Info,
-  Laptop,
   LucideProps,
   Moon,
   SunMedium,
@@ -16,6 +15,7 @@ import {
   CheckCircle2,
   LogIn,
   User,
+  Circle,
   type Icon as LucideIcon,
 } from "lucide-react"
 import { TbBrandNextjs, TbBrandTailwind } from "react-icons/tb"
@@ -23,6 +23,7 @@ import { TbBrandNextjs, TbBrandTailwind } from "react-icons/tb"
 export type Icon = LucideIcon
 
 export const Icons = {
+  status: Circle,
   user: User,
   login: LogIn,
   sun: SunMedium,

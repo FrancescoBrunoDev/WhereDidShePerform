@@ -4,11 +4,21 @@ import { getAuthSession } from "@/lib/auth"
 
 const prisma = new PrismaClient()
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
     const session = await getAuthSession()
     if (!session) {
       return new Response("Unauthorized", { status: 401 })
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: session?.user?.id,
+      },
+    })
+
+    if (user?.role === "USER") {
+      return new Response("Unauthorized. You must be admin to use this API", { status: 401 })
     }
 
     const body = await req.json()

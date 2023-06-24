@@ -1,6 +1,5 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
-import { Provider } from "@radix-ui/react-toast"
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
@@ -28,9 +27,6 @@ export const metadata: Metadata = {
   },
 }
 
-interface RootLayoutProps {
-  children: React.ReactNode
-}
 
 export default function RootLayout({
   children,
@@ -53,8 +49,9 @@ export default function RootLayout({
           <Providers>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
               <SiteHeader />
-              {authModal}
               {children}
+              {authModal}
+
               {/* <TailwindIndicator /> */}
             </ThemeProvider>
             <Toaster />

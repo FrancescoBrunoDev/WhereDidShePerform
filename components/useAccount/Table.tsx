@@ -57,7 +57,17 @@ const TableProfile: React.FC<TableProfileProps> = ({ events }) => {
                       <div>{formattedDateCreatedAt}</div>
                       <div>{event.category}</div>
                       <div>
-                        <Badge className="text bg-orange-500 hover:bg-none">
+                        <Badge
+                          className={
+                            event.stateVerification === "VERIFIED"
+                              ? "bg-green-500"
+                              : event.stateVerification === "REJECTED"
+                              ? "bg-destructive"
+                              : event.stateVerification === "PENDING"
+                              ? "bg-orange-500"
+                              : ""
+                          }
+                        >
                           {event.stateVerification}
                         </Badge>
                       </div>

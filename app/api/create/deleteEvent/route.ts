@@ -32,6 +32,12 @@ export async function POST(req: Request) {
       return new Response("Forbidden", { status: 403 })
     }
 
+    await prisma.userEventVerification.deleteMany({
+      where: {
+        eventId: eventId,
+      },
+    })
+
     await prisma.event.delete({
       where: {
         uid: eventId,

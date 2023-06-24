@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, StateVerification } from "@prisma/client"
 import { z } from "zod"
 
 import { getAuthSession } from "@/lib/auth"
@@ -36,6 +36,14 @@ export async function POST(req: Request) {
         creatorId: session.user.id,
         personsM: personsM,
         worksM: worksM,
+      },
+    })
+
+    const userEventVerification = await prisma.userEventVerification.create({
+      data: {
+        user: { connect: { id: session.user.id } },
+        event: { connect: { uid: event.uid } },
+        stateVerification: StateVerification.PENDING,
       },
     })
 
