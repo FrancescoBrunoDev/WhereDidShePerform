@@ -74,31 +74,28 @@ const DashboardAdmin = () => {
                   </div>
                   <div className="col-span-2">{user.email}</div>
                 </AccordionTrigger>
-                {howManyPending > 0 && (
-                  <AccordionContent>
-                    <div className="flex flex-col gap-2 pt-2">
-                      {user.eventVerifications.map((verification, index) => {
-                        return (
-                          <div className="grid w-full grid-cols-2 items-center">
-                            <Link
-                              href={`/profile/eventInfo/${verification.eventId}`}
-                              className="flex w-fit gap-2 rounded-lg p-1 px-4 hover:bg-secondary"
-                            >
-                              <div className="font-black">{index + 1}</div>
-                              <div>{verification.eventId}</div>
-                            </Link>
-                            <ModifierVerificationEvent
-                              eventId={verification.eventId}
-                              verificationStatus={
-                                verification.stateVerification
-                              }
-                            />
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </AccordionContent>
-                )}
+
+                <AccordionContent>
+                  <div className="flex flex-col gap-2 pt-2">
+                    {user.eventVerifications.map((verification, index) => {
+                      return (
+                        <div className="grid w-full grid-cols-2 items-center">
+                          <Link
+                            href={`/profile/eventInfo/${verification.eventId}`}
+                            className="flex w-fit gap-2 rounded-lg p-1 px-4 hover:bg-secondary"
+                          >
+                            <div className="font-black">{index + 1}</div>
+                            <div>{verification.eventId}</div>
+                          </Link>
+                          <ModifierVerificationEvent
+                            eventId={verification.eventId}
+                            verificationStatus={verification.stateVerification}
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
+                </AccordionContent>
               </AccordionItem>
             )
           })}
