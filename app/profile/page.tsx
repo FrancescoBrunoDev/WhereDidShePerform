@@ -27,6 +27,7 @@ const ProfilePage = async () => {
   if (!session) {
     redirect("/sign-in")
   } else {
+    
     const user = await prisma.user.findUnique({
       where: {
         id: session?.user?.id,

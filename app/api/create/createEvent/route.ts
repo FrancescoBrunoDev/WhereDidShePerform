@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     const body = await req.json()
 
-    const { title, locationsM, personsM, worksM, date, category } =
+    const { title, locationsM, personsM, worksM, date, category, link } =
       newEventValidator.parse(body)
 
     const categoryValue = Category[category as keyof typeof Category]
@@ -36,10 +36,11 @@ export async function POST(req: Request) {
         creatorId: session.user.id,
         personsM: personsM,
         worksM: worksM,
+        link: link,
       },
     })
 
-    const userEventVerification = await prisma.userEventVerification.create({
+    await prisma.userEventVerification.create({
       data: {
         user: { connect: { id: session.user.id } },
         event: { connect: { uid: event.uid } },

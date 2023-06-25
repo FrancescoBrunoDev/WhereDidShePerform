@@ -25,25 +25,11 @@ export const newEventValidator = z.object({
       path: ["date"],
     }
   ),
-  locationsM: z.array(
-    z.object({
-      title: z.string(),
-      mUid: z.string(),
-    })
-  ),
-  personsM: z.array(
-    z.object({
-      title: z.string(),
-      mUid: z.string(),
-    })
-  ),
-  worksM: z.array(
-    z.object({
-      title: z.string(),
-      mUid: z.string(),
-    })
-  ),
+  locationsM: z.array(z.string()),
+  personsM: z.array(z.string()),
+  worksM: z.array(z.string()),
   uid: z.string(),
+  link: z.string(),
 })
 
 export type NewEventPayload = z.infer<typeof newEventValidator>

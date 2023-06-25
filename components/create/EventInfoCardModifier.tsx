@@ -5,10 +5,13 @@ import { useParams, useRouter } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { isValid } from "date-fns"
+import { is } from "date-fns/locale"
+import { set } from "lodash"
 
 import { NewEventPayload } from "@/lib/validators/newEvent"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -19,6 +22,8 @@ import {
 } from "@/components/ui/select"
 import InputAutosuggest from "@/components/create/inputAutosuggest"
 import { Icons } from "@/components/icons"
+
+import { Label } from "../ui/label"
 
 interface Person {
   title: string
@@ -39,6 +44,8 @@ const EventInfoCardModifier = ({}) => {
   const params = useParams()
   const router = useRouter()
   const [dataFormat, setDataFormat] = useState<boolean>()
+  const [isLinkVisible, setIsLinkVisible] = useState<boolean>(false)
+  const [isImgVisible, setIsImgVisible] = useState<boolean>(false)
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -47,6 +54,7 @@ const EventInfoCardModifier = ({}) => {
     personsM: [] as Person[],
     worksM: [] as Work[],
     uid: params.uid,
+    link: "",
   })
 
   useEffect(() => {
@@ -67,7 +75,11 @@ const EventInfoCardModifier = ({}) => {
             personsM: data.personsM,
             worksM: data.worksM,
             uid: params.uid,
+            link: data.link,
           })
+          if (data.link !== "") {
+            setIsLinkVisible(true)
+          }
         } catch (error) {
           // Handle error
         }
@@ -80,15 +92,24 @@ const EventInfoCardModifier = ({}) => {
   const { mutate: manageEvent, isLoading } = useMutation({
     mutationFn: async () => {
       const dateValue: string = formData.date ? formData.date.toISOString() : "" // Use an empty string as the default value
+      const personMUidString = formData.personsM.map((person) => person.mUid)
+      const workMUidString = formData.worksM.map((work) => work.mUid)
+      const locationMUidString = formData.locationsM.map(
+        (location) => location.mUid
+      )
+      if (!isLinkVisible) {
+        formData.link = ""
+      }
 
       const payload: NewEventPayload = {
         title: formData.title,
         category: formData.category,
         date: dateValue,
-        locationsM: formData.locationsM,
-        personsM: formData.personsM,
-        worksM: formData.worksM,
+        locationsM: locationMUidString,
+        personsM: personMUidString,
+        worksM: workMUidString,
         uid: formData.uid,
+        link: formData.link,
       }
 
       const url =
@@ -96,11 +117,9 @@ const EventInfoCardModifier = ({}) => {
           ? "/api/create/createEvent"
           : "/api/create/updateEvent"
 
-      console.log(url, "url")
-
       const { data } = await axios.post(url, payload)
 
-      router.push(`/profile`)
+      router.back()
       return data as string
     },
   })
@@ -166,7 +185,7 @@ const EventInfoCardModifier = ({}) => {
 
   return (
     <>
-      <div className="mx-4 flex w-full flex-col gap-16 z-50">
+      <div className="z-50 mx-4 flex w-fit flex-col gap-16">
         <Input
           className="-mx-4 h-20 w-full border-none text-7xl font-black"
           placeholder={params.uid === "newEvent" ? "Event Name" : ""}
@@ -311,6 +330,61 @@ const EventInfoCardModifier = ({}) => {
                       </Badge>
                     </div>
                   ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-8 lg:grid lg:grid-cols-10">
+          <h2 className="col-span-3 text-5xl font-black ">Sources</h2>
+          <div className="col-span-7 flex max-w-xl flex-col gap-4">
+            <div className="flex w-full shrink-0 gap-4">
+              <span className="text-7xl font-black">6</span>
+              <span className="mt-6 text-lg font-bold uppercase">Import</span>
+              <div className="mt-[0.85rem] flex w-full flex-col space-y-2">
+                <div className="flex h-6 items-center space-x-2 py-6">
+                  <Checkbox
+                    checked={isLinkVisible}
+                    onCheckedChange={() => setIsLinkVisible(!isLinkVisible)}
+                  />
+                  <Label className="shrink-0">link to a trustable source</Label>
+                  {isLinkVisible && (
+                    <Input
+                      placeholder="https://www.example.com"
+                      value={formData.link}
+                      onChange={(e) => {
+                        const linkValue = e.target.value
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          link: linkValue,
+                        }))
+                      }}
+                    />
+                  )}
+                </div>
+                <div className="flex h-6 items-center space-x-2 py-6">
+                  <Checkbox
+                    onCheckedChange={() => setIsImgVisible(!isImgVisible)}
+                  />
+                  <Label className="shrink-0">upload an image</Label>
+                  {isImgVisible && (
+                    <Input
+                      placeholder="https://www.example.com"
+                      value={formData.img}
+                      onChange={(e) => {
+                        const imglinkValue = e.target.value
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          img: imglinkValue,
+                        }))
+
+                        if (imglinkValue === "") {
+                          setIsLinkVisible(false)
+                        }
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>

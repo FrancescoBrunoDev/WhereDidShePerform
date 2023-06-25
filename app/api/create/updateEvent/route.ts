@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     const body = await req.json()
     console.log(body, "body")
-    const { title, locationsM, personsM, worksM, date, category, uid } =
+    const { title, locationsM, personsM, worksM, date, category, uid, link } =
       newEventValidator.parse(body)
 
     const categoryValue = Category[category as keyof typeof Category]
@@ -39,6 +39,7 @@ export async function POST(req: Request) {
         creatorId: session.user.id,
         personsM: personsM,
         worksM: worksM,
+        link: link,
       },
     })
 

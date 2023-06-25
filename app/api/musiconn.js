@@ -35,6 +35,18 @@ async function GetLocations(eventIud) {
 
 export { GetLocations }
 
+async function GetTitle(MUid, getWhat) {
+  const url = `https://performance.musiconn.de/api?action=get&${getWhat}=${MUid}&props=title&format=json`
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+
+  return res.json()
+}
+
+export { GetTitle }
+
 async function GetPerformances(eventIud) {
   const url = `https://performance.musiconn.de/api?action=get&event=${eventIud}&props=|performances|uid&format=json`
   const res = await fetch(url)

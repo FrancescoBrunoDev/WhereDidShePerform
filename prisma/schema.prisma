@@ -68,6 +68,7 @@ model Event {
   Creator               User?                   @relation(fields: [creatorId], references: [id])
   creatorId             String?
   UserEventVerification UserEventVerification[]
+  link                 String?
 
   @@index([title])
   @@index([creatorId])
