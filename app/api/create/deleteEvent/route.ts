@@ -12,6 +12,14 @@ export async function POST(req: Request) {
 
     const session = await getServerSession(authOptions)
 
+    const user = await db.user.findUnique({
+      where: {
+        id: session?.user?.id,
+      },
+    })
+
+    console.log("user", user)
+
     if (!session) {
       return new Response("Unauthorized", { status: 401 })
     }
@@ -26,8 +34,10 @@ export async function POST(req: Request) {
       return new Response("Event not found", { status: 404 })
     }
 
-    if (event.creatorId !== session.user.id) {
-      return new Response("Forbidden", { status: 403 })
+    if (user?.role === "USER") {
+      if (event.creatorId !== session.user.id) {
+        return new Response("Forbidden", { status: 403 })
+      }
     }
 
     await db.userEventVerification.deleteMany({

@@ -30,6 +30,7 @@ export const newEventValidator = z.object({
   worksM: z.array(z.string()),
   uid: z.string(),
   link: z.string(),
+  comment: z.string(),
 })
 
 export type NewEventPayload = z.infer<typeof newEventValidator>

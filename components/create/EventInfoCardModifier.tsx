@@ -39,6 +39,7 @@ const EventInfoCardModifier = ({}) => {
     worksM: [] as WorkM[],
     uid: params.uid,
     link: "",
+    comment: "",
   })
 
   useEffect(() => {
@@ -60,6 +61,7 @@ const EventInfoCardModifier = ({}) => {
             worksM: data.worksM,
             uid: params.uid,
             link: data.link,
+            comment: data.comments,
           })
           if (data.link !== "") {
             setIsLinkVisible(true)
@@ -94,6 +96,7 @@ const EventInfoCardModifier = ({}) => {
         worksM: workMUidString,
         uid: formData.uid,
         link: formData.link,
+        comment: formData.comment,
       }
 
       const url =

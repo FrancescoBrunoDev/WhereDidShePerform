@@ -25,7 +25,7 @@ const ModifierVerificationEventAdmin = ({
     eventId: ModifierVerificationEventProps
   ) => {
     try {
-      const response = await axios.put(`api/create/updateVerificationEvent`, {
+      const response = await axios.put(`/api/create/updateVerificationEvent`, {
         stateVerification: value,
         eventId: eventId,
       })
