@@ -1,17 +1,10 @@
-import { PrismaClient, StateVerification } from "@prisma/client"
+import { StateVerification } from "@prisma/client"
 import { z } from "zod"
 
+import { Category } from "@/types/database"
 import { getAuthSession } from "@/lib/auth"
+import { db } from "@/lib/db"
 import { newEventValidator } from "@/lib/validators/newEvent"
-
-const prisma = new PrismaClient()
-
-enum Category {
-  Season = "Season",
-  Concert = "Concert",
-  Religious_Event = "Religious_Event",
-  Music_Theater = "Music_Theater",
-}
 
 export async function POST(req: Request) {
   try {
@@ -27,7 +20,7 @@ export async function POST(req: Request) {
 
     const categoryValue = Category[category as keyof typeof Category]
 
-    const event = await prisma.event.create({
+    const event = await db.event.create({
       data: {
         title: title,
         date: date,
@@ -40,11 +33,11 @@ export async function POST(req: Request) {
       },
     })
 
-    await prisma.userEventVerification.create({
+    await db.userEventVerification.create({
       data: {
         user: { connect: { id: session.user.id } },
         event: { connect: { uid: event.uid } },
-        stateVerification: StateVerification.PENDING,
+        stateVerification: StateVerification.NONE,
       },
     })
 

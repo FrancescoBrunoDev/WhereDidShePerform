@@ -1,9 +1,6 @@
-import { PrismaClient } from "@prisma/client"
-
 import { getAuthSession } from "@/lib/auth"
+import { db } from "@/lib/db"
 import { GetTitle } from "@/app/api/musiconn"
-
-const prisma = new PrismaClient()
 
 interface JsonObject {
   [key: string]: any
@@ -19,7 +16,7 @@ export async function POST(req: Request) {
     const body = await req.json()
 
     const { uid } = body
-    const event = await prisma.event.findUnique({
+    const event = await db.event.findUnique({
       where: {
         uid: uid,
       },
@@ -53,7 +50,9 @@ export async function POST(req: Request) {
     const personMUidList = event.personsM.join("|")
     const data: JsonObject = await GetTitle(personMUidList, "person")
 
-    const personsMArray = Array.isArray(event.personsM) ? event.personsM : [event.personsM]
+    const personsMArray = Array.isArray(event.personsM)
+      ? event.personsM
+      : [event.personsM]
     const personsWithTitle = personsMArray.map((personMUid) => {
       const title = data.person[personMUid as string].title
       return { title, mUid: personMUid }

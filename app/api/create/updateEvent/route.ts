@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client"
 import { z } from "zod"
 
 import { getAuthSession } from "@/lib/auth"
+import { db } from "@/lib/db"
 import { newEventValidator } from "@/lib/validators/newEvent"
-
-const prisma = new PrismaClient()
 
 enum Category {
   Season = "Season",
@@ -27,7 +25,7 @@ export async function POST(req: Request) {
 
     const categoryValue = Category[category as keyof typeof Category]
 
-    const event = await prisma.event.update({
+    const event = await db.event.update({
       where: {
         uid: uid,
       },

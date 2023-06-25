@@ -1,21 +1,19 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { PrismaClient } from "@prisma/client"
 import { getServerSession } from "next-auth"
 
 import { authOptions } from "@/lib/auth"
+import { db } from "@/lib/db"
 import { buttonVariants } from "@/components/ui/button"
 import { UserAvatar } from "@/components/UserAvatar"
-import DashboardAdmin from "@/components/admin/DashboardAdmin"
-import TableProfile from "@/components/useAccount/Table"
-
-const prisma = new PrismaClient()
+import TableEvents from "@/components/tables/TableEvents"
+import TableUsers from "@/components/tables/TableUsers"
 
 const ProfilePage = async () => {
   const session = await getServerSession(authOptions)
 
-  const events = await prisma.event.findMany({
+  const events = await db.event.findMany({
     where: {
       creatorId: session?.user?.id,
     },
@@ -27,8 +25,7 @@ const ProfilePage = async () => {
   if (!session) {
     redirect("/sign-in")
   } else {
-    
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: {
         id: session?.user?.id,
       },
@@ -49,13 +46,16 @@ const ProfilePage = async () => {
         </div>
         <div className=" flex w-full flex-col gap-4 lg:w-2/3">
           {user?.role === "ADMIN" && (
-            <Suspense fallback={"loading"}>
-              <DashboardAdmin />
-            </Suspense>
+            <>
+              <h2 className="text-3xl font-black">Admin Dashboard</h2>
+              <Suspense fallback={"loading"}>
+                <TableUsers />
+              </Suspense>
+            </>
           )}
           <div>
             <h2 className="text-3xl font-black">Your contributions</h2>
-            <TableProfile events={events} />
+            <TableEvents events={events} />
             <Link
               href={`/profile/eventInfo/newEvent`}
               className={buttonVariants({ className: "mt-4" })}

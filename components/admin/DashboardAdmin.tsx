@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import ModifierVerificationEvent from "@/components/ModifierVerificationEvent"
+import ModifierVerificationEvent from "@/components/ModifierVerificationEventAdmin"
 import { Icons } from "@/components/icons"
 
 interface User {
@@ -19,7 +19,7 @@ interface User {
   name: string
   role: string
   email: string
-  eventVerifications: [{ stateVerification: string; eventId: number }]
+  eventVerifications: [{ stateVerification: StateVerification; eventId: number }]
 }
 
 const DashboardAdmin = () => {

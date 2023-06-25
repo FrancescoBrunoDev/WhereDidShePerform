@@ -61,25 +61,24 @@ model Event {
   date                  DateTime?
   category              Category?
   personsM              Json?
-  stateVerification     StateVerification?      @default(PENDING)
+  stateVerification     StateVerification?      @default(NONE)
   worksM                Json?
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
   Creator               User?                   @relation(fields: [creatorId], references: [id])
   creatorId             String?
   UserEventVerification UserEventVerification[]
-  link                 String?
+  link                  String?
 
   @@index([title])
   @@index([creatorId])
 }
 
 model UserEventVerification {
-  id                String             @id @default(cuid())
+  event             Event              @relation(fields: [eventId], references: [uid])
+  eventId           String             @id @unique
   user              User               @relation(fields: [userId], references: [id])
   userId            String
-  event             Event              @relation(fields: [eventId], references: [uid])
-  eventId           String
   stateVerification StateVerification?
 
   @@index([userId, eventId])
@@ -140,4 +139,5 @@ enum StateVerification {
   PENDING
   VERIFIED
   REJECTED
+  NONE
 }

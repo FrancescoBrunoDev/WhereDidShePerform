@@ -17,7 +17,7 @@ import {
 import { buttonVariants } from "./ui/button"
 
 interface DeleteButtonProps {
-  event: any
+  uid: any
   isLoading?: boolean
   setEventList?: any
 }
@@ -26,7 +26,8 @@ interface TableProfileProps {
   events: any[]
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ event, setEventList }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = (uid, setEventList) => {
+  console.log(uid.uid, setEventList)
   const { mutate: deleteEvent, isLoading } = useMutation({
     mutationFn: async (eventId) => {
       const payload: EventDeletePayload = {
@@ -44,39 +45,37 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ event, setEventList }) => {
     },
   })
   return (
-    <>
-      <AlertDialog>
-        <AlertDialogTrigger
-          className={buttonVariants({
-            className: " py-2",
-            size: "xs",
-            variant: "destructive",
-          })}
-        >
-          Delete
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete this
-              event.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive"
-              onClick={() => {
-                deleteEvent(event.uid)
-              }}
-            >
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+    <AlertDialog>
+      <AlertDialogTrigger
+        className={buttonVariants({
+          className: "w-full py-2",
+          size: "xs",
+          variant: "destructive",
+        })}
+      >
+        Delete
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete this
+            event.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            className="bg-destructive"
+            onClick={() => {
+              deleteEvent(uid.uid)
+            }}
+          >
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }
 

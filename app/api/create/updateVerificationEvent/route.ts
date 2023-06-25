@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client"
 import { z } from "zod"
 
 import { getAuthSession } from "@/lib/auth"
-
-const prisma = new PrismaClient()
+import { db } from "@/lib/db"
 
 export async function PUT(req: Request) {
   try {
@@ -12,7 +10,7 @@ export async function PUT(req: Request) {
       return new Response("Unauthorized", { status: 401 })
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: {
         id: session?.user?.id,
       },
@@ -27,7 +25,7 @@ export async function PUT(req: Request) {
     const body = await req.json()
     console.log(body, "body")
 
-    const updatedEvent = await prisma.event.update({
+    const updatedEvent = await db.event.update({
       where: {
         uid: body.eventId,
       },
@@ -37,7 +35,7 @@ export async function PUT(req: Request) {
     })
 
     const updateUserEventVerification =
-      await prisma.userEventVerification.updateMany({
+      await db.userEventVerification.updateMany({
         where: {
           eventId: body.eventId,
         },

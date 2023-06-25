@@ -5,8 +5,6 @@ import { useParams, useRouter } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { isValid } from "date-fns"
-import { is } from "date-fns/locale"
-import { set } from "lodash"
 
 import { NewEventPayload } from "@/lib/validators/newEvent"
 import { Badge } from "@/components/ui/badge"
@@ -24,21 +22,7 @@ import InputAutosuggest from "@/components/create/inputAutosuggest"
 import { Icons } from "@/components/icons"
 
 import { Label } from "../ui/label"
-
-interface Person {
-  title: string
-  mUid: string
-}
-
-interface Work {
-  title: string
-  mUid: string
-}
-
-interface Location {
-  title: string
-  mUid: string
-}
+import { LocationM, PersonM, WorkM } from "@/types/database"
 
 const EventInfoCardModifier = ({}) => {
   const params = useParams()
@@ -50,9 +34,9 @@ const EventInfoCardModifier = ({}) => {
     title: "",
     category: "",
     date: null as Date | null,
-    locationsM: [] as Location[],
-    personsM: [] as Person[],
-    worksM: [] as Work[],
+    locationsM: [] as LocationM[],
+    personsM: [] as PersonM[],
+    worksM: [] as WorkM[],
     uid: params.uid,
     link: "",
   })

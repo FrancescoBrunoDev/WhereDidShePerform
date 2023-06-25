@@ -1,37 +1,40 @@
-import { PrismaClient } from "@prisma/client"
-
 import { getAuthSession } from "@/lib/auth"
+import { db } from "@/lib/db"
 
-const prisma = new PrismaClient()
-
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   try {
+    const { userId } = await req.json()
+
+    console.log(userId, "body")
+
     const session = await getAuthSession()
     if (!session) {
       return new Response("Unauthorized", { status: 401 })
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
       where: {
         id: session?.user?.id,
       },
     })
 
     if (user?.role === "USER") {
-      return new Response("Unauthorized. You must be admin to use this API", { status: 401 })
+      return new Response("Unauthorized. You must be admin to use this API", {
+        status: 401,
+      })
     }
 
-    const body = await req.json()
-
-    const { uid } = body
-    const event = await prisma.event.findMany({
+    const users = await db.event.findMany({
       where: {
-        creatorId: uid,
+        creatorId: userId,
       },
     })
 
-    return new Response(JSON.stringify(event))
+    return new Response(JSON.stringify(users), {
+      headers: { "Content-Type": "application/json" },
+    })
   } catch (error) {
-    return new Response("cannot get event", { status: 500 })
+    console.error(error)
+    return new Response("Unable to retrieve users", { status: 500 })
   }
 }

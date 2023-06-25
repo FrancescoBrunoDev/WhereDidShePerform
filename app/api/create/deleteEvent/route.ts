@@ -1,10 +1,8 @@
-import { PrismaClient } from "@prisma/client"
 import { getServerSession } from "next-auth"
 
 import { authOptions } from "@/lib/auth"
+import { db } from "@/lib/db"
 import { eventDeleteValidator } from "@/lib/validators/deleteEvent"
-
-const prisma = new PrismaClient()
 
 export async function POST(req: Request) {
   try {
@@ -18,7 +16,7 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 401 })
     }
 
-    const event = await prisma.event.findUnique({
+    const event = await db.event.findUnique({
       where: {
         uid: eventId,
       },
@@ -32,13 +30,13 @@ export async function POST(req: Request) {
       return new Response("Forbidden", { status: 403 })
     }
 
-    await prisma.userEventVerification.deleteMany({
+    await db.userEventVerification.deleteMany({
       where: {
         eventId: eventId,
       },
     })
 
-    await prisma.event.delete({
+    await db.event.delete({
       where: {
         uid: eventId,
       },
