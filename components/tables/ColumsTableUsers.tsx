@@ -67,7 +67,6 @@ export const columns: ColumnDef<User>[] = [
     id: "actions",
     cell: ({ row }) => {
       const user = row.original
-      console.log(user.id, "event in clums")
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

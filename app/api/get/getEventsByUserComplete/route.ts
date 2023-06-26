@@ -4,12 +4,12 @@ import { db } from "@/lib/db"
 export async function POST(req: Request) {
   try {
     const { userId } = await req.json()
+    console.log(userId, "userId")
 
     const session = await getAuthSession()
     if (!session) {
       return new Response("Unauthorized", { status: 401 })
     }
-    console.log("siamo in getEventsByUser")
     const user = await db.user.findUnique({
       where: {
         id: session?.user?.id,
@@ -28,12 +28,6 @@ export async function POST(req: Request) {
     const events = await db.event.findMany({
       where: {
         creatorId: userId,
-      },
-      select: {
-        uid: true,
-        title: true,
-        createdAt: true,
-        stateVerification: true,
       },
     })
 

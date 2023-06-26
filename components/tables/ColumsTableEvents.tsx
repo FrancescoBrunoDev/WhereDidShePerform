@@ -20,10 +20,7 @@ import ModifierVerificationEventAdmin from "@/components/ModifierVerificationEve
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader"
 
 import DeleteButton from "../DeleteButton"
-import { Badge } from "../ui/badge"
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 
 export const columns: ColumnDef<EventTable>[] = [
   {

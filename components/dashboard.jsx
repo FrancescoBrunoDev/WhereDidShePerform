@@ -139,11 +139,18 @@ export default function Dashboard({ params }) {
     isSeasonCategoryAvailable,
   ])
 
+  // fetch data
+
   const { performerId } = params
   const { eventIds } = params
+  const { userId } = params
 
-  const searchId = performerId ? performerId : eventIds
-  const searchKind = performerId ? "performerId" : "eventIds"
+  const searchId = performerId ? performerId : eventIds ? eventIds : userId
+  const searchKind = performerId
+    ? "performerId"
+    : eventIds
+    ? "eventIds"
+    : "userId"
 
   useEffect(() => {
     async function fetchData() {
@@ -159,10 +166,10 @@ export default function Dashboard({ params }) {
       setLocationsData(data)
     }
 
-    if (performerId || eventIds) {
+    if (performerId || eventIds || userId) {
       fetchData()
     }
-  }, [performerId, eventIds])
+  }, [performerId, eventIds, userId])
 
   useEffect(() => {
     async function getData() {

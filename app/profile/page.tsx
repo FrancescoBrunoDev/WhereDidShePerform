@@ -1,11 +1,12 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { Role } from "@prisma/client"
 import { getServerSession } from "next-auth"
 
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { UserAvatar } from "@/components/UserAvatar"
 import TableEvents from "@/components/tables/TableEvents"
 import TableUsers from "@/components/tables/TableUsers"
@@ -13,21 +14,22 @@ import TableUsers from "@/components/tables/TableUsers"
 const ProfilePage = async () => {
   const session = await getServerSession(authOptions)
 
-  const events = await db.event.findMany({
-    where: {
-      creatorId: session?.user?.id,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  })
-
   if (!session) {
     redirect("/sign-in")
   } else {
     const user = await db.user.findUnique({
       where: {
         id: session?.user?.id,
+      },
+      include: {
+        event: {
+          select: {
+            uid: true,
+            title: true,
+            createdAt: true,
+            stateVerification: true,
+          },
+        },
       },
     })
 
@@ -40,12 +42,15 @@ const ProfilePage = async () => {
               image: session.user.image || null,
             }}
             className="hidden lg:block lg:h-20 lg:w-20"
-          ></UserAvatar>
+          />
           <h1 className="text-5xl font-black">{session?.user?.name}</h1>
           <h3 className="text-xl font-black">role: {user?.role}</h3>
+          <Link href={`/query/userMap/${user?.id}`}>
+            <Button>mappa</Button>
+          </Link>
         </div>
         <div className=" flex w-full flex-col gap-4 lg:w-2/3">
-          {user?.role === "ADMIN" && (
+          {user?.role === Role.ADMIN && (
             <>
               <h2 className="text-3xl font-black">Admin Dashboard</h2>
               <Suspense fallback={"loading"}>
@@ -55,7 +60,7 @@ const ProfilePage = async () => {
           )}
           <div>
             <h2 className="text-3xl font-black">Your contributions</h2>
-            <TableEvents events={events} />
+            <TableEvents userRole={user?.role} events={user?.event} />
             <Link
               href={`/profile/eventInfo/newEvent`}
               className={buttonVariants({ className: "mt-4" })}

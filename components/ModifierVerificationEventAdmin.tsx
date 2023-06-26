@@ -1,6 +1,9 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { Role, StateVerification } from "@prisma/client"
 import axios from "axios"
 
-import { StateVerification } from "@/types/database"
 import {
   Select,
   SelectContent,
@@ -20,20 +23,39 @@ const ModifierVerificationEventAdmin = ({
   eventId,
   verificationStatus,
 }: ModifierVerificationEventProps) => {
+  const [role, setRole] = useState<Role>("" as Role)
+  const [stateVerification, setStateVerification] = useState<StateVerification>(
+    verificationStatus as StateVerification
+  )
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      const data = await fetch("/api/get/getRoleSession")
+      const { role } = await data.json()
+      setRole(role)
+    }
+    fetchRole()
+  }, [])
+
   const handleStateChange = async (
     value: StateVerification,
     eventId: ModifierVerificationEventProps
   ) => {
     try {
-      const response = await axios.put(`/api/create/updateVerificationEvent`, {
-        stateVerification: value,
-        eventId: eventId,
-      })
+      const payload = [
+        {
+          uid: eventId,
+          stateVerification: value as StateVerification,
+        },
+      ]
+      const response = await axios.post(
+        `/api/create/updateVerificationEvent`,
+        payload
+      )
 
-      console.log("response", response)
       if (response.status === 200) {
         // Request successful
-        console.log("Event updated successfully")
+        setStateVerification(value as unknown as StateVerification)
       } else {
         // Request failed
         console.error("Failed to update event")
@@ -45,35 +67,52 @@ const ModifierVerificationEventAdmin = ({
 
   return (
     <Select
+      disabled={
+        stateVerification === StateVerification.VERIFIED && role === Role.USER
+      }
       onValueChange={(value) => {
         handleStateChange(
           value as unknown as StateVerification,
           eventId as unknown as ModifierVerificationEventProps
         )
       }}
-      defaultValue={verificationStatus as unknown as string}
+      defaultValue={stateVerification as StateVerification}
     >
       <SelectTrigger className="h-fit w-fit border-none bg-none p-0">
         <Badge
           className={
-            (verificationStatus as unknown as string) === "VERIFIED"
+            (stateVerification as StateVerification) ===
+            StateVerification.VERIFIED
               ? "bg-green-500"
-              : (verificationStatus as unknown as string) === "REJECTED"
+              : (stateVerification as StateVerification) ===
+                StateVerification.REJECTED
               ? "bg-destructive"
-              : (verificationStatus as unknown as string) === "PENDING"
+              : (stateVerification as StateVerification) ===
+                StateVerification.PENDING
               ? "bg-orange-500"
-              : (verificationStatus as unknown as string) === "NONE"
+              : (stateVerification as StateVerification) ===
+                StateVerification.NONE
               ? "bg-gray-500"
               : ""
           }
         >
-          <SelectValue placeholder="verification" />
+          <SelectValue />
         </Badge>
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="PENDING">PENDING</SelectItem>
-        <SelectItem value="VERIFIED">VERIFIED</SelectItem>
-        <SelectItem value="REJECTED">REJECTED</SelectItem>
+        <SelectItem
+          disabled={role === Role.USER ? true : false}
+          value="VERIFIED"
+        >
+          VERIFIED
+        </SelectItem>
+        <SelectItem
+          disabled={role === Role.USER ? true : false}
+          value="REJECTED"
+        >
+          REJECTED
+        </SelectItem>
         <SelectItem value="NONE">NONE</SelectItem>
       </SelectContent>
     </Select>

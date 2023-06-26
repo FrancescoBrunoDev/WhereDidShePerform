@@ -1,20 +1,13 @@
 import { z } from "zod"
 
-const validCategories = [
-  "Season",
-  "Concert",
-  "Religious_Event",
-  "Music_Theater",
-]
+import { Category } from "@prisma/client"
 
 const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/
 
 export const newEventValidator = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
-  category: z.string().refine((value) => validCategories.includes(value), {
-    message: "Invalid category",
-    path: ["category"],
-  }),
+  category: z.nativeEnum(Category),
+  
   date: z.string().refine(
     (value) => {
       const dateFormatRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/

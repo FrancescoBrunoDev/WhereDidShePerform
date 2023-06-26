@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
+import { Category, StateVerification } from "@prisma/client"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { isValid } from "date-fns"
+import { get } from "lodash"
 
+import { LocationM, PersonM, WorkM } from "@/types/database"
 import { NewEventPayload } from "@/lib/validators/newEvent"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -18,11 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import InputAutosuggest from "@/components/create/inputAutosuggest"
 import { Icons } from "@/components/icons"
+import { GetCoordinates } from "@/app/api/musiconn"
 
 import { Label } from "../ui/label"
-import { LocationM, PersonM, WorkM } from "@/types/database"
 
 const EventInfoCardModifier = ({}) => {
   const params = useParams()
@@ -30,6 +34,7 @@ const EventInfoCardModifier = ({}) => {
   const [dataFormat, setDataFormat] = useState<boolean>()
   const [isLinkVisible, setIsLinkVisible] = useState<boolean>(false)
   const [isImgVisible, setIsImgVisible] = useState<boolean>(false)
+  const [hasCoordinates, setHasCoordinates] = useState<boolean>(false)
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -40,6 +45,7 @@ const EventInfoCardModifier = ({}) => {
     uid: params.uid,
     link: "",
     comment: "",
+    stateVerification: "",
   })
 
   useEffect(() => {
@@ -52,22 +58,24 @@ const EventInfoCardModifier = ({}) => {
 
           const { data } = await axios.post(`/api/create/getEvent/`, payload)
           const dateConverted = new Date(data.date)
+          console.log(data, "data")
           setFormData({
             title: data.title,
-            category: data.category,
+            category: data.category as Category,
             date: dateConverted,
             locationsM: data.locationsM,
             personsM: data.personsM,
             worksM: data.worksM,
             uid: params.uid,
             link: data.link,
-            comment: data.comments,
+            comment: data.comment,
+            stateVerification: data.stateVerification as StateVerification,
           })
           if (data.link !== "") {
             setIsLinkVisible(true)
           }
         } catch (error) {
-          // Handle error
+          console.log(error)
         }
       }
       fetchData()
@@ -89,7 +97,7 @@ const EventInfoCardModifier = ({}) => {
 
       const payload: NewEventPayload = {
         title: formData.title,
-        category: formData.category,
+        category: formData.category as Category,
         date: dateValue,
         locationsM: locationMUidString,
         personsM: personMUidString,
@@ -105,8 +113,10 @@ const EventInfoCardModifier = ({}) => {
           : "/api/create/updateEvent"
 
       const { data } = await axios.post(url, payload)
+      const result = data as string
 
-      router.back()
+      if (result === "success") {
+      }
       return data as string
     },
   })
@@ -170,6 +180,23 @@ const EventInfoCardModifier = ({}) => {
     }
   }
 
+  useEffect(() => {
+    const hasCoordinates = async () => {
+      if (formData.locationsM.length === 0) return
+      const idLocation = formData.locationsM[0].mUid
+      const { location } = await GetCoordinates(idLocation)
+      const coordinates = location[idLocation].geometries
+      if (coordinates) {
+        setHasCoordinates(true)
+      } else {
+        setHasCoordinates(false)
+      }
+    }
+    hasCoordinates()
+  }, [formData.locationsM])
+
+  console.log(hasCoordinates, "coordinates")
+
   return (
     <>
       <div className="z-50 mx-4 flex w-fit flex-col gap-16">
@@ -180,6 +207,18 @@ const EventInfoCardModifier = ({}) => {
           name={"title"}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
         />
+        {formData.stateVerification !== StateVerification.NONE &&
+          formData.stateVerification !== "" && (
+            <div className="rounded-lg bg-secondary p-2 text-sm">
+              Hey, just wanted to give you a heads-up that this event{" "}
+              {formData.stateVerification === StateVerification.PENDING
+                ? "is still being reviewed"
+                : formData.stateVerification === StateVerification.VERIFIED
+                ? "has been already verified"
+                : null}
+              . If you make any changes, you'll need to resubmit it for review.
+            </div>
+          )}
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-10">
           <h2 className="col-span-3 pt-2 text-5xl font-black">General Data</h2>
           <div className="col-span-7 flex max-w-xl flex-col gap-4">
@@ -251,17 +290,27 @@ const EventInfoCardModifier = ({}) => {
                   }
                 />
               ) : (
-                <Badge
-                  className="max-w-[220px] cursor-pointer hover:bg-destructive hover:text-primary"
-                  onClick={() => {
-                    setFormData({
-                      ...formData,
-                      locationsM: [],
-                    })
-                  }}
-                >
-                  {formData.locationsM[0]?.title}
-                </Badge>
+                <>
+                  <Badge
+                    className="max-w-[220px] h-fit cursor-pointer hover:bg-destructive hover:text-primary"
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        locationsM: [],
+                      })
+                    }}
+                  >
+                    {formData.locationsM[0]?.title}
+                  </Badge>
+                  {hasCoordinates ? (
+                    <Icons.check className="h-4 shrink-0 text-green-600" />
+                  ) : (
+                    <span className="text-sm">
+                      mmm apparently this location doesn't have coordinates on
+                      the musiconn.performance database
+                    </span>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -373,6 +422,32 @@ const EventInfoCardModifier = ({}) => {
                     />
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-8 lg:grid lg:grid-cols-10">
+          <div className="col-span-3">
+            <h2 className="text-5xl font-black">Comment</h2>
+            <p className="text-sm font-normal">Anything else to declare?</p>
+          </div>
+          <div className="col-span-7 flex max-w-xl flex-col gap-4">
+            <div className="flex w-full shrink-0 gap-4">
+              <span className="text-7xl font-black">7</span>
+              <div className="mt-[0.85rem] flex w-full flex-col space-y-2">
+                <Textarea
+                  onChange={(e) => {
+                    const commentValue = e.target.value
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      comment: commentValue,
+                    }))
+                  }}
+                  defaultValue={
+                    params.uid !== "newEvent" ? formData.comment : ""
+                  }
+                />
               </div>
             </div>
           </div>

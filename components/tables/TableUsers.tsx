@@ -14,8 +14,6 @@ const TableEvents = () => {
       const user = await fetch("api/get/getAllUsers")
       const userJson = await user.json()
       setUsers(userJson)
-
-      console.log(users, "users table") // Moved console.log inside useEffect
     }
 
     fetchData()

@@ -60,7 +60,7 @@ model Event {
   locationsM            Json?
   comment               String?
   date                  DateTime?
-  category              Category?
+  category              Category
   personsM              Json?
   stateVerification     StateVerification?      @default(NONE)
   worksM                Json?

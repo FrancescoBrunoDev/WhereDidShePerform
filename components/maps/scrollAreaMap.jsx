@@ -91,7 +91,7 @@ export default function ScrollAreaMap({
               Locations {thereIsMoreInWorld && isEuropeMap ? "in Europe" : null}
               {thereIsMoreInWorld && !isEuropeMap ? "all over the world" : null}
             </h4>
-            <ScrollArea className="h-[30rem] w-full rounded-lg pr-3">
+            <div className="h-[30rem] overflow-y-scroll w-full rounded-lg pr-3">
               <Accordion collapsible>
                 <ScrollAreaItem
                   locationsData={locationsData}
@@ -106,7 +106,7 @@ export default function ScrollAreaMap({
                   activeCountries={activeCountries}
                 />
               </Accordion>
-            </ScrollArea>
+            </div>
           </m.div>
         </div>
       </m.div>

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Role } from "@prisma/client"
 import axios from "axios"
 
 import { EventTable } from "@/types/database"
@@ -10,11 +11,14 @@ import { DataTable } from "@/components/tables/DataTableEvents"
 export default function TableEvents({
   events,
   userId,
+  userRole,
 }: {
   events?: any
   userId?: string
+  userRole?: Role
 }) {
   const [data, setData] = useState<EventTable[]>([])
+  const [role, setRole] = useState<Role>(Role.USER)
 
   useEffect(() => {
     async function fetchData() {
@@ -22,23 +26,24 @@ export default function TableEvents({
         const payload = {
           userId: userId,
         }
-        console.log(events, "events")
         const { data } = await axios.post("/api/get/getEventsByUser", payload)
 
-        setData(data as EventTable[])
+        if (data.role) {
+          setRole(data.role as Role) // set the role in case of open as modal
+        }
+        setData(data.events as EventTable[])
       } else {
+        setRole(userRole as Role) // set the role in any case 
         setData(events)
       }
     }
 
     fetchData()
-  }, []) // Empty dependency array to run the effect only once
-
-  console.log(data, "data")
+  }, [])
 
   return (
     <div className="mx-auto">
-      <DataTable columns={columns} data={data} />
+      <DataTable userRole={role} columns={columns} data={data} />
     </div>
   )
 }

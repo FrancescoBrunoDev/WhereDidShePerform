@@ -1,10 +1,15 @@
+import { Role, StateVerification } from "@prisma/client"
 import { z } from "zod"
 
 import { getAuthSession } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { StateVerification } from "@prisma/client"
 
-export async function PUT(req: Request) {
+interface EventVerification {
+  uid: string
+  stateVerification: StateVerification
+}
+
+export async function POST(req: Request) {
   try {
     const session = await getAuthSession()
     if (!session) {
@@ -19,58 +24,67 @@ export async function PUT(req: Request) {
 
     const body = await req.json()
 
-    if (user?.role === "USER") {
-      console.log(body.stateVerification, "body.stateVerification")
-      if(body.stateVerification === StateVerification.VERIFIED || body.stateVerification === StateVerification.REJECTED) {
-        return new Response("Forbidden. You can accept or reject an event only if you are an admin", { status: 403 })
-      }
-      const updateEventUser = await db.event.updateMany({
-        where: {
-          uid: body.eventId,
-          creatorId: session.user.id,
-        },
-        data: {
-          stateVerification: body.stateVerification as StateVerification,
-        },
-      })
+    await Promise.all(
+      body.map(async (event: EventVerification) => {
 
-      const updateUserEventVerification =
-        await db.userEventVerification.updateMany({
+        console.log(event, "eventId")
+         if (user?.role === Role.USER) {
+          if (
+            event.stateVerification === StateVerification.VERIFIED ||
+            event.stateVerification === StateVerification.REJECTED
+          ) {
+            return new Response(
+              "Forbidden. You can accept or reject an event only if you are an admin",
+              { status: 403 }
+            )
+          }
+
+          await db.event.updateMany({
+            where: {
+              uid: event.uid,
+              creatorId: session.user.id,
+            },
+            data: {
+              stateVerification: event.stateVerification as StateVerification,
+            },
+          })
+
+          await db.userEventVerification.updateMany({
+            where: {
+              eventId: event.uid,
+              userId: session.user.id,
+            },
+            data: {
+              stateVerification: event.stateVerification as StateVerification,
+            },
+          })
+        }
+
+        await db.event.update({
           where: {
-            eventId: body.eventId,
-            userId: session.user.id,
+            uid: event.uid,
           },
           data: {
-            stateVerification: body.stateVerification as StateVerification,
+            stateVerification: event.stateVerification as StateVerification,
           },
         })
-        
-    }
 
-    const updatedEvent = await db.event.update({
-      where: {
-        uid: body.eventId,
-      },
-      data: {
-        stateVerification: body.stateVerification as StateVerification,
-      },
-    })
-
-    const updateUserEventVerification =
-      await db.userEventVerification.updateMany({
-        where: {
-          eventId: body.eventId,
-        },
-        data: {
-          stateVerification: body.stateVerification as StateVerification,
-        },
+        await db.userEventVerification.updateMany({
+          where: {
+            eventId: event.uid,
+          },
+          data: {
+            stateVerification: event.stateVerification as StateVerification,
+          },
+        }) 
       })
+    )
 
-    return new Response("succes", { status: 200 })
+    return new Response("success", { status: 200 })
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response(error.message, { status: 422 })
     }
-    return new Response("cannot create event", { status: 500 })
+    return new Response("cannot update validation event", { status: 500 })
   }
 }

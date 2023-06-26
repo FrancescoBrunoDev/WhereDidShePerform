@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 
-import { EventDeletePayload } from "@/lib/validators/deleteEvent"
+import { EventModifyPayload } from "@/lib/validators/modifyEvent"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,18 +22,13 @@ interface DeleteButtonProps {
   setEventList?: any
 }
 
-interface TableProfileProps {
-  events: any[]
-}
-
 const DeleteButton: React.FC<DeleteButtonProps> = (uid, setEventList) => {
-  console.log(uid.uid, setEventList)
   const { mutate: deleteEvent, isLoading } = useMutation({
     mutationFn: async (eventId) => {
-      const payload: EventDeletePayload = {
+      const payload: EventModifyPayload = {
         eventId: eventId,
       }
-
+      console.log(payload, "payload")
       const { data } = await axios.post("/api/create/deleteEvent", payload)
       return data as String
     },

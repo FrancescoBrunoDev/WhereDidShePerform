@@ -58,7 +58,7 @@ export default function ScrollAreaItem({
                   <Toggle
                     className={`flex w-full justify-start px-2 py-1 text-xl 
               font-black ${
-                activeCountries.includes(country) && 
+                activeCountries.includes(country) &&
                 "data-[state=off]:bg-secondary"
               }`}
                     onPressedChange={() => handleSwitchToggleCountry(country)}
@@ -124,7 +124,12 @@ export default function ScrollAreaItem({
                                       {eventInfo
                                         .slice(0, visibleItems)
                                         .map(
-                                          ({ eventId, date, eventTitle }) => {
+                                          ({
+                                            eventId,
+                                            date,
+                                            eventTitle,
+                                            stateVerification,
+                                          }) => {
                                             const cleanedTitleLink =
                                               linkMaker(eventTitle)
                                             return (
@@ -133,14 +138,36 @@ export default function ScrollAreaItem({
                                                 className="ml-6 flex justify-normal border-0"
                                               >
                                                 <div className="flex items-center justify-normal py-1">
-                                                  <Link
-                                                    href={`https://performance.musiconn.de/event/${cleanedTitleLink}`}
-                                                    target="_blank"
-                                                  >
-                                                    <Badge className="flex w-14 justify-center">
-                                                      {eventId}
+                                                  {stateVerification ? (
+                                                    <Badge
+                                                      className={
+                                                        stateVerification ===
+                                                        "VERIFIED"
+                                                          ? "bg-green-500"
+                                                          : stateVerification ===
+                                                            "    REJECTED"
+                                                          ? "bg-destructive"
+                                                          : stateVerification ===
+                                                            "  PENDING"
+                                                          ? "bg-orange-500"
+                                                          : stateVerification ===
+                                                            "NONE"
+                                                          ? "bg-gray-500"
+                                                          : ""
+                                                      }
+                                                    >
+                                                      {stateVerification}
                                                     </Badge>
-                                                  </Link>
+                                                  ) : (
+                                                    <Link
+                                                      href={`https://performance.musiconn.de/event/${cleanedTitleLink}`}
+                                                      target="_blank"
+                                                    >
+                                                      <Badge className="flex w-14 justify-center">
+                                                        {eventId}
+                                                      </Badge>
+                                                    </Link>
+                                                  )}
                                                 </div>
                                                 <div className="ml-2 flex items-center">
                                                   <p>{date}</p>

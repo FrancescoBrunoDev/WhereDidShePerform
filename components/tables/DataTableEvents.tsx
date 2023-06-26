@@ -25,14 +25,19 @@ import {
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOption"
 
+import { OperationOnSelectedRows } from "./OperationOnSelectedRows"
+import { Role } from "@prisma/client"
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  userRole?: Role
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  userRole,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -47,6 +52,7 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+
     state: {
       sorting,
       columnFilters,
@@ -120,6 +126,9 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="pt-4">
         <DataTablePagination table={table} />
+        {table.getFilteredSelectedRowModel().rows.length > 0 && (
+          <OperationOnSelectedRows userRole={userRole} table={table} />
+        )}
       </div>
     </>
   )
