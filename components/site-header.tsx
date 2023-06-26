@@ -11,7 +11,7 @@ import { InfoSection } from "./infoSection"
 
 export function SiteHeader() {
   return (
-    <header className="fixed top-0 z-40 w-full bg-transparent">
+    <header className="fixed top-0 z-40 w-full bg-background">
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
         <div className="hidden md:inline-block">
           <MainNav items={siteConfig.mainNav} />

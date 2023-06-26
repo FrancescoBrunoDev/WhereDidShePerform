@@ -25,7 +25,6 @@ export default function ScrollAreaItem({
   activeCountries,
 }) {
   const [visibleItems, setVisibleItems] = useState(20)
-  console.log("locationsData", locationsData)
   return (
     <div className={!isEuropeMap ? "sflex flex-col space-y-2" : ""}>
       {Object.entries(
