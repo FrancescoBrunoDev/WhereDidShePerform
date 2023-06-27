@@ -1,9 +1,10 @@
-import { FC } from "react"
-
 import CloseModal from "@/components/CloseModal"
-import EventInfoCardModifier from "@/components/create/EventInfoCardModifier"
 
-const page: FC = () => {
+export default function LayoutEventInfo({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm transition-all duration-100">
       <div className="container mx-auto flex h-full max-w-fit items-center">
@@ -12,12 +13,10 @@ const page: FC = () => {
             <CloseModal />
           </div>
           <div className="h-full overflow-y-auto p-2">
-            <EventInfoCardModifier />
+            {children}
           </div>
         </div>
       </div>
     </div>
   )
 }
-
-export default page

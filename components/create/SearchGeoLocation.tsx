@@ -2,38 +2,41 @@ import { useEffect, useState } from "react"
 import { useClickOutside } from "@mantine/hooks"
 import { AnimatePresence, motion as m } from "framer-motion"
 
+import { CoordinatesGeo, LocationGeocode } from "@/types/locationGeo"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { autocomplete } from "@/app/api/musiconn"
+import { autocompleteGeo } from "@/app/api/geoCode"
+import { Label } from "../ui/label"
 
 interface InputAutosuggestProps {
-  paramsAPI: string
-  setFormData: React.Dispatch<React.SetStateAction<any>>
+  address: string
+  setCoordinatesCandidate: (coordinates: CoordinatesGeo) => void
 }
 
 export default function InputAutosuggest({
-  paramsAPI,
-  setFormData,
+  address,
+  setCoordinatesCandidate,
 }: InputAutosuggestProps): JSX.Element {
   const [opened, setOpened] = useState(false)
-  const [searchTerm, setSearchTerm] = useState<string>("")
-  const [suggestions, setSuggestions] = useState<[string, number][]>([])
+  const [searchTerm, setSearchTerm] = useState<string>(address)
+  const [suggestionsGeo, setSuggestionsGeo] = useState<LocationGeocode[]>([])
   const ref = useClickOutside(() => setOpened(false))
 
   useEffect(() => {
     if (searchTerm) {
       const fetchSuggestions = async () => {
         try {
-          const params = paramsAPI
-          const suggestions = await autocomplete(searchTerm, params)
-          setSuggestions(suggestions || [])
+          const suggestions = await autocompleteGeo(searchTerm)
+          console.log(suggestions, "suggestions")
+          setSuggestionsGeo(suggestions || [])
         } catch (error) {
           console.error(error)
         }
       }
+
       fetchSuggestions()
     } else {
-      setSuggestions([])
+      setSuggestionsGeo([])
     }
   }, [searchTerm])
 
@@ -43,47 +46,53 @@ export default function InputAutosuggest({
     setOpened(true)
   }
 
-  function handleSuggestionClick(suggestion: [string, number]) {
-    setSearchTerm(suggestion[0])
-    setSuggestions([])
+  function handleSuggestionClick(name: string, lat: string, lon: string) {
+    setCoordinatesCandidate({ lat, lon })
+    setSearchTerm(name)
+    setSuggestionsGeo([])
     setOpened(false)
-    setFormData(suggestion)
   }
-console.log(suggestions, "suggestions")
+
   return (
-    <div className="relative top-0 w-full">
+    <div className="relative w-full">
+      <Label className="text-sm">Help me find the coordinates of this place. </Label>
       <Input
-        className="w-full"
+        className="w-full bg-background"
         type="text"
         value={searchTerm}
         onChange={handleInputChange}
-        placeholder={`Search for a ${paramsAPI}`}
       />
       <AnimatePresence>
-        {opened && suggestions.length > 0 && (
+        {opened && suggestionsGeo.length > 0 && (
           <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.1 }}
             layout
-            className="absolute top-10 z-20 h-64 w-full"
+            className="absolute top-12 z-20 h-64 w-full"
           >
             <ScrollArea
               ref={ref}
               className="mt-3 h-full rounded-md border bg-background shadow-lg"
             >
               <div className="p-4">
-                {suggestions.map((suggestion, index) => (
+                {suggestionsGeo.map((location, index) => (
                   <div
                     className="rounded-lg p-2 text-sm hover:bg-secondary"
                     key={index}
-                    onClick={() => handleSuggestionClick(suggestion)}
+                    onClick={() =>
+                      handleSuggestionClick(
+                        location.display_name,
+                        location.lat,
+                        location.lon
+                      )
+                    }
                     style={{
                       cursor: "pointer",
                     }}
                   >
-                    {suggestion[0]}
+                    {location.display_name}
                   </div>
                 ))}
               </div>

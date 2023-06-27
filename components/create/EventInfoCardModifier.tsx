@@ -1,14 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import router from "next/router"
 import { Category, StateVerification } from "@prisma/client"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { isValid } from "date-fns"
-import { get } from "lodash"
+import { set } from "lodash"
 
 import { LocationM, PersonM, WorkM } from "@/types/database"
+import { CoordinatesGeo } from "@/types/locationGeo"
 import { NewEventPayload } from "@/lib/validators/newEvent"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -27,14 +28,21 @@ import { Icons } from "@/components/icons"
 import { GetCoordinates } from "@/app/api/musiconn"
 
 import { Label } from "../ui/label"
+import SearchGeoLocation from "./SearchGeoLocation"
 
-const EventInfoCardModifier = ({}) => {
-  const params = useParams()
-  const router = useRouter()
+const EventInfoCardModifier = ({
+  uid,
+  type,
+}: {
+  uid: string
+  type: string
+}) => {
   const [dataFormat, setDataFormat] = useState<boolean>()
   const [isLinkVisible, setIsLinkVisible] = useState<boolean>(false)
   const [isImgVisible, setIsImgVisible] = useState<boolean>(false)
   const [hasCoordinates, setHasCoordinates] = useState<boolean>(false)
+  const [coordinatesCandidate, setCoordinatesCandidate] =
+    useState<CoordinatesGeo>()
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -42,18 +50,18 @@ const EventInfoCardModifier = ({}) => {
     locationsM: [] as LocationM[],
     personsM: [] as PersonM[],
     worksM: [] as WorkM[],
-    uid: params.uid,
+    uid: uid,
     link: "",
     comment: "",
     stateVerification: "",
   })
-
+  console.log(coordinatesCandidate, "coordinatesCandidate")
   useEffect(() => {
-    if (params.uid !== "newEvent") {
+    if (type === "modify") {
       const fetchData = async () => {
         try {
           const payload = {
-            uid: params.uid,
+            uid: uid,
           }
 
           const { data } = await axios.post(`/api/create/getEvent/`, payload)
@@ -66,7 +74,7 @@ const EventInfoCardModifier = ({}) => {
             locationsM: data.locationsM,
             personsM: data.personsM,
             worksM: data.worksM,
-            uid: params.uid,
+            uid: uid,
             link: data.link,
             comment: data.comment,
             stateVerification: data.stateVerification as StateVerification,
@@ -81,7 +89,7 @@ const EventInfoCardModifier = ({}) => {
       fetchData()
       setDataFormat(true)
     }
-  }, [params.uid])
+  }, [uid])
 
   const { mutate: manageEvent, isLoading } = useMutation({
     mutationFn: async () => {
@@ -108,9 +116,7 @@ const EventInfoCardModifier = ({}) => {
       }
 
       const url =
-        params.uid === "newEvent"
-          ? "/api/create/createEvent"
-          : "/api/create/updateEvent"
+        type === "new" ? "/api/create/createEvent" : "/api/create/updateEvent"
 
       const { data } = await axios.post(url, payload)
       const result = data as string
@@ -169,7 +175,7 @@ const EventInfoCardModifier = ({}) => {
 
   let formattedDate = ""
 
-  if (params.uid !== "newEvent" && formData.date) {
+  if (type !== "new" && formData.date) {
     const dateObj = new Date(formData.date)
 
     if (!isNaN(dateObj.getTime())) {
@@ -200,8 +206,8 @@ const EventInfoCardModifier = ({}) => {
       <div className="z-50 mx-4 flex w-fit flex-col gap-16">
         <Input
           className="-mx-4 h-20 w-full border-none text-7xl font-black"
-          placeholder={params.uid === "newEvent" ? "Event Name" : ""}
-          defaultValue={params.uid !== "newEvent" ? formData.title : ""}
+          placeholder={type === "new" ? "Event Name" : ""}
+          defaultValue={type !== "new" ? formData.title : ""}
           name={"title"}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
         />
@@ -221,95 +227,135 @@ const EventInfoCardModifier = ({}) => {
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-10">
           <h2 className="col-span-3 pt-2 text-5xl font-black">General Data</h2>
           <div className="col-span-7 flex max-w-xl flex-col gap-4">
-            <div className="flex w-full items-center gap-4">
-              <span className="shrink-0 text-7xl font-black">1</span>
-              <span className="shrink-0 text-lg font-bold uppercase">
-                select a category
-              </span>
-              <Select
-                value={formData.category}
-                onValueChange={(e) => setFormData({ ...formData, category: e })}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Season">Season</SelectItem>
-                  <SelectItem value="Concert">Concert</SelectItem>
-                  <SelectItem value="Religious_Event">
-                    Religious Event
-                  </SelectItem>
-                  <SelectItem value="Music_Theater">Music Theater</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="flex w-full shrink-0 items-start gap-4">
+              <div className="flex items-center gap-4">
+                <span className="shrink-0 text-7xl font-black">1</span>
+                <span className="shrink-0 text-lg font-bold uppercase">
+                  select a category
+                </span>
+              </div>
+              <div className="pt-4">
+                <Select
+                  value={formData.category}
+                  onValueChange={(e) =>
+                    setFormData({ ...formData, category: e })
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Season">Season</SelectItem>
+                    <SelectItem value="Concert">Concert</SelectItem>
+                    <SelectItem value="Religious_Event">
+                      Religious Event
+                    </SelectItem>
+                    <SelectItem value="Music_Theater">Music Theater</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <div className="relative flex w-full items-center gap-4">
-              <span className="text-7xl font-black">2</span>
-              <span className="shrink-0 text-lg font-bold uppercase">
-                Date of the Event
-              </span>
-              <Input
-                defaultValue={params.uid === "newEvent" ? "" : formattedDate}
-                placeholder="yyyy-MM-dd"
-                onChange={(e) => {
-                  const inputDate = new Date(e.target.value)
-                  const isDateValid = isValid(inputDate)
-                  if (!isDateValid) {
-                    setFormData({ ...formData, date: null })
-                    setDataFormat(false)
-                  }
-                  if (isDateValid) {
-                    setFormData({ ...formData, date: inputDate })
-                    setDataFormat(true)
-                  }
-                }}
-              />
-              {dataFormat ? (
-                <Icons.check className="absolute -right-8 h-4 shrink-0 text-green-600" />
-              ) : null}
-            </div>
-            <div className="flex h-20 w-full shrink-0 items-center gap-4">
-              <span className="text-7xl font-black">3</span>
-              <span className="shrink-0 text-lg font-bold uppercase">
-                location
-              </span>
-              {!formData.locationsM[0]?.title ? (
-                <InputAutosuggest
-                  paramsAPI={"location"}
-                  setFormData={(locationData) =>
-                    setFormData({
-                      ...formData,
-                      locationsM: [
-                        {
-                          title: locationData[0],
-                          mUid: locationData[2],
-                        },
-                      ],
-                    })
-                  }
+            <div className="flex w-full shrink-0 items-start gap-4">
+              <div className="flex items-center gap-4">
+                <span className="text-7xl font-black">2</span>
+                <span className="shrink-0 text-lg font-bold uppercase">
+                  Date of the Event
+                </span>
+              </div>
+              <div className="flex items-center gap-1 pt-4">
+                <Input
+                  defaultValue={type === "new" ? "" : formattedDate}
+                  placeholder="yyyy-MM-dd"
+                  onChange={(e) => {
+                    const inputDate = new Date(e.target.value)
+                    const isDateValid = isValid(inputDate)
+                    if (!isDateValid) {
+                      setFormData({ ...formData, date: null })
+                      setDataFormat(false)
+                    }
+                    if (isDateValid) {
+                      setFormData({ ...formData, date: inputDate })
+                      setDataFormat(true)
+                    }
+                  }}
                 />
-              ) : (
-                <>
-                  <Badge
-                    className="h-fit max-w-[220px] cursor-pointer hover:bg-destructive hover:text-primary"
-                    onClick={() => {
+
+                {dataFormat ? (
+                  <Icons.check className="h-4 shrink-0 text-green-600" />
+                ) : null}
+              </div>
+            </div>
+            <div className="flex w-full shrink-0 items-start gap-4">
+              <div className="flex items-center gap-4">
+                <span className="text-7xl font-black">3</span>
+                <span className="shrink-0 self-center text-lg font-bold uppercase">
+                  location
+                </span>
+              </div>
+
+              {!formData.locationsM[0]?.title ? (
+                <div className="grid grid-cols-1 pt-4">
+                  <InputAutosuggest
+                    paramsAPI={"location"}
+                    setFormData={(locationData) =>
                       setFormData({
                         ...formData,
-                        locationsM: [],
+                        locationsM: [
+                          {
+                            title: locationData[0],
+                            mUid: locationData[2],
+                          },
+                        ],
                       })
-                    }}
-                  >
-                    {formData.locationsM[0]?.title}
-                  </Badge>
-                  {hasCoordinates ? (
-                    <Icons.check className="h-4 shrink-0 text-green-600" />
-                  ) : (
-                    <span className="text-sm">
-                      mmm apparently this location doesn&apos;t have coordinates on
-                      the musiconn.performance database
-                    </span>
-                  )}
-                </>
+                    }
+                  />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 pt-6">
+                  <div className="flex items-center">
+                    <Badge
+                      className="h-fit max-w-[220px] cursor-pointer hover:bg-destructive hover:text-primary"
+                      onClick={() => {
+                        setFormData({
+                          ...formData,
+                          locationsM: [],
+                        })
+                        setCoordinatesCandidate(undefined)
+                      }}
+                    >
+                      <span className="truncate">
+                        {formData.locationsM[0]?.title}
+                      </span>
+                    </Badge>
+                    {hasCoordinates && (
+                      <Icons.check className="h-4 shrink-0 text-green-600" />
+                    )}
+                  </div>
+                  <div className="pt-2">
+                    {!hasCoordinates && !coordinatesCandidate ? (
+                      <div className="rounded-lg bg-secondary p-2 text-sm">
+                        <span className="flex flex-col justify-center text-sm">
+                          <div className="w-full text-center text-lg">🤔</div>
+                          <div>
+                            Apparently this location doesn&apos;t have
+                            coordinates on the musiconn.performance database.
+                            Would you like to add them?
+                          </div>
+                        </span>
+                        <div className="pt-2">
+                          <SearchGeoLocation
+                            address={formData.locationsM[0].title}
+                            setCoordinatesCandidate={setCoordinatesCandidate}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full rounded-lg bg-secondary p-2 text-center text-sm">
+                        Thank you for contributing!🥳
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           </div>
@@ -318,10 +364,12 @@ const EventInfoCardModifier = ({}) => {
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-10">
           <h2 className="col-span-3 text-5xl font-black ">Relationships</h2>
           <div className="col-span-7 flex max-w-xl flex-col gap-4">
-            <div className="flex w-full shrink-0 gap-4">
-              <span className="text-7xl font-black">4</span>
-              <span className="mt-5 text-lg font-bold uppercase">Persons</span>
-              <div className="mt-[0.85rem] flex w-full flex-col space-y-2">
+            <div className="flex w-full shrink-0 items-start gap-4">
+              <div className="flex items-center gap-4">
+                <span className="text-7xl font-black">4</span>
+                <span className="text-lg font-bold uppercase">Persons</span>
+              </div>
+              <div className="flex w-full flex-col space-y-2 pt-4">
                 <div className="flex shrink-0 items-center gap-4">
                   <InputAutosuggest
                     paramsAPI={"person"}
@@ -342,10 +390,12 @@ const EventInfoCardModifier = ({}) => {
               </div>
             </div>
 
-            <div className="flex w-full shrink-0 gap-4">
-              <span className="text-7xl font-black">5</span>
-              <span className="mt-5 text-lg font-bold uppercase">Program</span>
-              <div className="mt-[0.85rem] flex w-full flex-col space-y-2">
+            <div className="flex w-full shrink-0 items-start gap-4">
+              <div className="flex items-center gap-4">
+                <span className="text-7xl font-black">5</span>
+                <span className="text-lg font-bold uppercase">Program</span>
+              </div>
+              <div className="flex w-full flex-col space-y-2 pt-4">
                 <div className="flex shrink-0 items-center gap-4">
                   <InputAutosuggest
                     paramsAPI={"work"}
@@ -374,10 +424,12 @@ const EventInfoCardModifier = ({}) => {
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-10">
           <h2 className="col-span-3 text-5xl font-black ">Sources</h2>
           <div className="col-span-7 flex max-w-xl flex-col gap-4">
-            <div className="flex w-full shrink-0 gap-4">
-              <span className="text-7xl font-black">6</span>
-              <span className="mt-6 text-lg font-bold uppercase">Import</span>
-              <div className="mt-[0.85rem] flex w-full flex-col space-y-2">
+            <div className="flex w-full shrink-0 items-start gap-4">
+              <div className="flex items-center gap-4">
+                <span className="text-7xl font-black">6</span>
+                <span className="text-lg font-bold uppercase">Import</span>
+              </div>
+              <div className="flex w-full flex-col space-y-2 pt-4">
                 <div className="flex h-6 items-center space-x-2 py-6">
                   <Checkbox
                     checked={isLinkVisible}
@@ -406,7 +458,7 @@ const EventInfoCardModifier = ({}) => {
                   {isImgVisible && (
                     <Input
                       placeholder="https://www.example.com"
-                    /*   value={formData.img} */
+                      /*   value={formData.img} */
                       onChange={(e) => {
                         const imglinkValue = e.target.value
                         setFormData((prevFormData) => ({
@@ -443,9 +495,7 @@ const EventInfoCardModifier = ({}) => {
                       comment: commentValue,
                     }))
                   }}
-                  defaultValue={
-                    params.uid !== "newEvent" ? formData.comment : ""
-                  }
+                  defaultValue={type !== "new" ? formData.comment : ""}
                 />
               </div>
             </div>
@@ -469,7 +519,7 @@ const EventInfoCardModifier = ({}) => {
             manageEvent()
           }}
         >
-          {params.uid === "newEvent" ? "Create a new Event" : "Update Event"}
+          {type === "new" ? "Create a new Event" : "Update Event"}
         </Button>
       </div>
     </>

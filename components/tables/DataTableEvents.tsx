@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
+import { Role } from "@prisma/client"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -26,7 +28,6 @@ import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOption"
 
 import { OperationOnSelectedRows } from "./OperationOnSelectedRows"
-import { Role } from "@prisma/client"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -39,6 +40,7 @@ export function DataTable<TData, TValue>({
   data,
   userRole,
 }: DataTableProps<TData, TValue>) {
+  const router = useRouter()
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -126,9 +128,7 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="pt-4">
         <DataTablePagination table={table} />
-        {table.getFilteredSelectedRowModel().rows.length > 0 && (
-          <OperationOnSelectedRows userRole={userRole} table={table} />
-        )}
+        <OperationOnSelectedRows userRole={userRole} table={table} />
       </div>
     </>
   )

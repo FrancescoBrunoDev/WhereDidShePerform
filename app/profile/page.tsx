@@ -61,12 +61,6 @@ const ProfilePage = async () => {
           <div>
             <h2 className="text-3xl font-black">Your contributions</h2>
             <TableEvents userRole={user?.role} events={user?.event} />
-            <Link
-              href={`/profile/eventInfo/newEvent`}
-              className={buttonVariants({ className: "mt-4" })}
-            >
-              create a new Event
-            </Link>
           </div>
         </div>
       </div>

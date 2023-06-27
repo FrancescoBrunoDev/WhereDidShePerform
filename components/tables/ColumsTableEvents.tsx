@@ -21,7 +21,6 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader
 
 import DeleteButton from "../DeleteButton"
 
-
 export const columns: ColumnDef<EventTable>[] = [
   {
     id: "select",
@@ -45,6 +44,16 @@ export const columns: ColumnDef<EventTable>[] = [
   {
     accessorKey: "title",
     header: "Title",
+    cell: ({ row }) => {
+      const event = row.original
+      return (
+        <Link href={`/profile/eventInfo/visualise/${event.uid}`}>
+          <p className="rounded-lg p-1 font-bold hover:bg-secondary">
+            {event.title}
+          </p>
+        </Link>
+      )
+    },
   },
   {
     accessorKey: "createdAt",
@@ -82,7 +91,7 @@ export const columns: ColumnDef<EventTable>[] = [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="z-40">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
             <div className="grid grid-cols-1 gap-2">
@@ -91,7 +100,7 @@ export const columns: ColumnDef<EventTable>[] = [
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/profile/eventInfo/${event.uid}`}
+                  href={`/profile/eventInfo/modify/${event.uid}`}
                   className={buttonVariants({
                     className: "w-full",
                     size: "xs",
@@ -103,8 +112,9 @@ export const columns: ColumnDef<EventTable>[] = [
               </DropdownMenuItem>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem disabled={true}>
+              Who&apos;s the Creator?
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
