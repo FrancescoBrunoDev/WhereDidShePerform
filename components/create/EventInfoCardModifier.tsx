@@ -195,7 +195,16 @@ const EventInfoCardModifier = ({
       if (coordinates) {
         setHasCoordinates(true)
       } else {
-        setHasCoordinates(false)
+        const { data } = await axios.post(
+          "/api/get/coordinatesCommunity", // api da fare
+          idLocation
+        )
+   /*      const coordinates = location[idLocation].geometries */
+        if (!coordinates) {
+          setHasCoordinates(false)
+        } else {
+          setHasCoordinates(false)
+        }
       }
     }
     hasCoordinates()
@@ -349,11 +358,11 @@ const EventInfoCardModifier = ({
                           />
                         </div>
                       </div>
-                    ) : (
+                    ) : coordinatesCandidate ? (
                       <div className="w-full rounded-lg bg-secondary p-2 text-center text-sm">
                         Thank you for contributing!🥳
                       </div>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               )}
