@@ -20,7 +20,6 @@ export async function filterLocationsData(
   locationsWithComposer,
   filterLowestYear,
   filterHighestYear,
-  locationsData
 ) {
 
   // Apply timeline filter

@@ -246,7 +246,6 @@ export default function Dashboard({ params }) {
       locationsWithComposer,
       filterLowestYear,
       filterHighestYear,
-      locationsData
     )
 
     const seasonAvailable = checkCategoryAvailability(locationsData, 1)
@@ -272,7 +271,6 @@ export default function Dashboard({ params }) {
     locationsWithComposer,
     filterLowestYear,
     filterHighestYear,
-    locationsData
   ])
 
   // filter list
