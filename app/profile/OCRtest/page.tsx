@@ -14,7 +14,7 @@ export default function OCR() {
 
   const handleImageFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    setImageFile(file);
+    setImageFile(file || null);
     setOCRResult(null);
   };
 
