@@ -1,12 +1,11 @@
 "use client"
 
-import { FC } from "react"
 import { useParams } from "next/navigation"
 
 import CloseModal from "@/components/CloseModal"
 import TableEvents from "@/components/tables/TableEvents"
 
-const page: FC = ({}) => {
+const Page = () => {
   const params = useParams()
   const id = params.id
   console.log(params, "params")
@@ -26,4 +25,4 @@ const page: FC = ({}) => {
   )
 }
 
-export default page
+export default Page

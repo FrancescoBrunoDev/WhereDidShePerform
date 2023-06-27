@@ -33,13 +33,13 @@ export default function TableEvents({
         }
         setData(data.events as EventTable[])
       } else {
-        setRole(userRole as Role) // set the role in any case 
+        setRole(userRole as Role) // set the role in any case
         setData(events)
       }
     }
 
     fetchData()
-  }, [])
+  }, [events, userId, userRole])
 
   return (
     <div className="mx-auto">

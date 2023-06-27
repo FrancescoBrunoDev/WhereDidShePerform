@@ -35,7 +35,7 @@ export default function InputAutosuggest({
     } else {
       setSuggestions([])
     }
-  }, [searchTerm])
+  }, [searchTerm, paramsAPI])
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newSearchTerm = event.target.value

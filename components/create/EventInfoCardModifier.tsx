@@ -195,8 +195,6 @@ const EventInfoCardModifier = ({}) => {
     hasCoordinates()
   }, [formData.locationsM])
 
-  console.log(hasCoordinates, "coordinates")
-
   return (
     <>
       <div className="z-50 mx-4 flex w-fit flex-col gap-16">
@@ -216,7 +214,7 @@ const EventInfoCardModifier = ({}) => {
                 : formData.stateVerification === StateVerification.VERIFIED
                 ? "has been already verified"
                 : null}
-              . If you make any changes, you'll need to resubmit it for review.
+              . If you make any changes, you&apos;ll need to resubmit it for review.
             </div>
           )}
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-10">

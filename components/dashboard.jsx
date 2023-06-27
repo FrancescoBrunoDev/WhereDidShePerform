@@ -169,7 +169,7 @@ export default function Dashboard({ params }) {
     if (performerId || eventIds || userId) {
       fetchData()
     }
-  }, [performerId, eventIds, userId])
+  }, [performerId, eventIds, userId, searchKind, searchId])
 
   useEffect(() => {
     async function getData() {
@@ -245,7 +245,8 @@ export default function Dashboard({ params }) {
       selectedComposerNames,
       locationsWithComposer,
       filterLowestYear,
-      filterHighestYear
+      filterHighestYear,
+      locationsData
     )
 
     const seasonAvailable = checkCategoryAvailability(locationsData, 1)
@@ -271,6 +272,7 @@ export default function Dashboard({ params }) {
     locationsWithComposer,
     filterLowestYear,
     filterHighestYear,
+    locationsData
   ])
 
   // filter list

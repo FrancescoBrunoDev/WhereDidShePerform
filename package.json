@@ -90,6 +90,7 @@
     "@types/topojson": "^3.2.3",
     "@typescript-eslint/parser": "^5.58.0",
     "autoprefixer": "^10.4.13",
+    "encoding": "^0.1.13",
     "eslint": "^8.31.0",
     "eslint-config-next": "13.0.0",
     "eslint-config-prettier": "^8.3.0",

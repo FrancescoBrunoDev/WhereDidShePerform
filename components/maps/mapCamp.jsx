@@ -5,11 +5,9 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps"
 import MarksMap from "./marksMarp"
 import MenuMap from "./menuMap"
 
-const geoUrl =
-  "/maps/europe.json"
+const geoUrl = "/maps/europe.json"
 
-const worldUrl =
-  "/maps/world.json"
+const worldUrl = "/maps/world.json"
 
 export default function MapCamp({
   locationsData,
@@ -40,7 +38,7 @@ export default function MapCamp({
   useEffect(() => {
     // Update the map URL based on the current map type
     setMapUrl(isEuropeMap ? geoUrl : worldUrl)
-  }, [isEuropeMap])
+  }, [isEuropeMap, setMapUrl])
 
   useEffect(() => {
     const updateMapConfig = () => {
@@ -123,7 +121,7 @@ export default function MapCamp({
     return () => {
       window.removeEventListener("resize", updateMapConfig)
     }
-  }, [isEuropeMap, locationsData?.length, mapConfig.maxRadius])
+  }, [isEuropeMap, locationsData?.length, mapConfig.maxRadius, setIsHighQuality, isHighQuality])
 
   const { scale, center } = mapConfig
 
@@ -183,7 +181,6 @@ export default function MapCamp({
                   ))
                 }
               </Geographies>{" "}
-              
               <MarksMap
                 locationsData={locationsData}
                 isHighQuality={isHighQuality}
