@@ -406,7 +406,7 @@ const EventInfoCardModifier = ({}) => {
                   {isImgVisible && (
                     <Input
                       placeholder="https://www.example.com"
-                      value={formData.img}
+                    /*   value={formData.img} */
                       onChange={(e) => {
                         const imglinkValue = e.target.value
                         setFormData((prevFormData) => ({
