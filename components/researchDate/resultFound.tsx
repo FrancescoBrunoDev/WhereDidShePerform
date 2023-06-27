@@ -27,7 +27,7 @@ export default function ResultFound(props: ResultFoundProps) {
       setEncodedUids(encodedUids);
     }
     compressUid()
-  }, [])
+  }, [compress, uidString])
 
   return (
     <>

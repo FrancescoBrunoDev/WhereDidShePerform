@@ -11,7 +11,7 @@ const page: FC = () => {
           <div className="absolute right-4 top-4">
             <CloseModal />
           </div>
-          <div className="overflow-y-auto h-full p-2">
+          <div className="h-full overflow-y-auto p-2">
             <EventInfoCardModifier />
           </div>
         </div>

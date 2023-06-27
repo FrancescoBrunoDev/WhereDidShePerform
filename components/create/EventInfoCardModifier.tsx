@@ -214,7 +214,8 @@ const EventInfoCardModifier = ({}) => {
                 : formData.stateVerification === StateVerification.VERIFIED
                 ? "has been already verified"
                 : null}
-              . If you make any changes, you&apos;ll need to resubmit it for review.
+              . If you make any changes, you&apos;ll need to resubmit it for
+              review.
             </div>
           )}
         <div className="flex flex-col gap-8 lg:grid lg:grid-cols-10">
@@ -290,7 +291,7 @@ const EventInfoCardModifier = ({}) => {
               ) : (
                 <>
                   <Badge
-                    className="max-w-[220px] h-fit cursor-pointer hover:bg-destructive hover:text-primary"
+                    className="h-fit max-w-[220px] cursor-pointer hover:bg-destructive hover:text-primary"
                     onClick={() => {
                       setFormData({
                         ...formData,
@@ -304,7 +305,7 @@ const EventInfoCardModifier = ({}) => {
                     <Icons.check className="h-4 shrink-0 text-green-600" />
                   ) : (
                     <span className="text-sm">
-                      mmm apparently this location doesn't have coordinates on
+                      mmm apparently this location doesn&apos;t have coordinates on
                       the musiconn.performance database
                     </span>
                   )}
