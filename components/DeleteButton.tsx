@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 
@@ -23,6 +24,7 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = (uid, setEventList) => {
+  const router = useRouter()
   const { mutate: deleteEvent, isLoading } = useMutation({
     mutationFn: async (eventId) => {
       const payload: EventModifyPayload = {
@@ -32,11 +34,10 @@ const DeleteButton: React.FC<DeleteButtonProps> = (uid, setEventList) => {
       const { data } = await axios.post("/api/create/deleteEvent", payload)
       return data as String
     },
-    onSuccess: (response, eventId) => {
+    onSuccess: () => {
       // Remove the deleted event from the event list
-      setEventList((prevEvents: any[]) =>
-        prevEvents.filter((event) => event.uid !== eventId)
-      )
+      console.log("Event deleted")
+      router.refresh()
     },
   })
   return (

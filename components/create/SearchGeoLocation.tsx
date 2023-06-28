@@ -10,12 +10,12 @@ import { Label } from "../ui/label"
 
 interface InputAutosuggestProps {
   address: string
-  setCoordinatesCandidate: (coordinates: CoordinatesGeo) => void
+  setCoordinateCandidate: (coordinates: CoordinatesGeo) => void
 }
 
 export default function InputAutosuggest({
   address,
-  setCoordinatesCandidate,
+  setCoordinateCandidate,
 }: InputAutosuggestProps): JSX.Element {
   const [opened, setOpened] = useState(false)
   const [searchTerm, setSearchTerm] = useState<string>(address)
@@ -29,6 +29,9 @@ export default function InputAutosuggest({
           const suggestions = await autocompleteGeo(searchTerm)
           console.log(suggestions, "suggestions")
           setSuggestionsGeo(suggestions || [])
+          if (suggestions?.length > 0) {
+            setOpened(true)
+          }
         } catch (error) {
           console.error(error)
         }
@@ -46,8 +49,8 @@ export default function InputAutosuggest({
     setOpened(true)
   }
 
-  function handleSuggestionClick(name: string, lat: string, lon: string) {
-    setCoordinatesCandidate({ lat, lon })
+  function handleSuggestionClick(name: string, lat: string, lon: string, place_id: number) {
+    setCoordinateCandidate({place_id, geometries: {lat, lon} })
     setSearchTerm(name)
     setSuggestionsGeo([])
     setOpened(false)
@@ -85,7 +88,8 @@ export default function InputAutosuggest({
                       handleSuggestionClick(
                         location.display_name,
                         location.lat,
-                        location.lon
+                        location.lon,
+                        location.place_id
                       )
                     }
                     style={{

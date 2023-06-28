@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { Role } from "@prisma/client"
+import { Role, StateVerification } from "@prisma/client"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,6 +12,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  isRowSelected,
   useReactTable,
 } from "@tanstack/react-table"
 
@@ -60,6 +61,14 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   })
+
+  const selectedRows = table.getFilteredSelectedRowModel().rows
+  const uidArrayForVerification = selectedRows.map((row) => ({
+    uid: (row.original as any).uid,
+    stateVerification: (row.original as any)
+      .stateVerification as StateVerification,
+  }))
+  console.log(uidArrayForVerification, "uidArrayForVerification")
 
   return (
     <>

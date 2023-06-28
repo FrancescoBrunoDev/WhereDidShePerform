@@ -27,6 +27,7 @@ export async function POST(req: Request) {
     const body = await req.json()
 
     const { eventId } = EventModifyValidator.parse(body)
+    console.log(eventId, "eventId")
 
     await Promise.all(
       eventId.map(async (eventId: any) => {

@@ -1,16 +1,16 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import router from "next/router"
+import { useRouter } from "next/navigation"
 import { Category, StateVerification } from "@prisma/client"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { isValid } from "date-fns"
-import { set } from "lodash"
 
 import { LocationM, PersonM, WorkM } from "@/types/database"
 import { CoordinatesGeo } from "@/types/locationGeo"
 import { NewEventPayload } from "@/lib/validators/newEvent"
+import { newLocationMCPayload } from "@/lib/validators/newLocationMC"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -37,11 +37,12 @@ const EventInfoCardModifier = ({
   uid: string
   type: string
 }) => {
+  const router = useRouter()
   const [dataFormat, setDataFormat] = useState<boolean>()
   const [isLinkVisible, setIsLinkVisible] = useState<boolean>(false)
   const [isImgVisible, setIsImgVisible] = useState<boolean>(false)
   const [hasCoordinates, setHasCoordinates] = useState<boolean>(false)
-  const [coordinatesCandidate, setCoordinatesCandidate] =
+  const [coordinateCandidate, setCoordinateCandidate] =
     useState<CoordinatesGeo>()
   const [formData, setFormData] = useState({
     title: "",
@@ -55,7 +56,7 @@ const EventInfoCardModifier = ({
     comment: "",
     stateVerification: "",
   })
-  console.log(coordinatesCandidate, "coordinatesCandidate")
+
   useEffect(() => {
     if (type === "modify") {
       const fetchData = async () => {
@@ -66,7 +67,6 @@ const EventInfoCardModifier = ({
 
           const { data } = await axios.post(`/api/create/getEvent/`, payload)
           const dateConverted = new Date(data.date)
-          console.log(data, "data")
           setFormData({
             title: data.title,
             category: data.category as Category,
@@ -122,6 +122,26 @@ const EventInfoCardModifier = ({
       const result = data as string
 
       if (result === "success") {
+        if (coordinateCandidate?.place_id) {
+          const place_id = coordinateCandidate?.place_id
+          const lat = coordinateCandidate?.geometries?.lat
+          const lon = coordinateCandidate?.geometries?.lon
+          const request: newLocationMCPayload = {
+            uid: formData.locationsM[0].mUid,
+            coordinateCandidateId: place_id,
+            lat: lat,
+            lon: lon,
+          }
+
+          const { data } = await axios.post(
+            "/api/create/createLocationMC",
+            request
+          )
+        }
+        router.back()
+        router.refresh()
+      } else {
+        //make the error message as a toast
       }
       return data as string
     },
@@ -188,10 +208,11 @@ const EventInfoCardModifier = ({
 
   useEffect(() => {
     const hasCoordinates = async () => {
+      let coordinates
       if (formData.locationsM.length === 0) return
       const idLocation = formData.locationsM[0].mUid
       const { location } = await GetCoordinates(idLocation)
-      const coordinates = location[idLocation].geometries
+      coordinates = location[idLocation].geometries
       if (coordinates) {
         setHasCoordinates(true)
       } else {
@@ -199,13 +220,15 @@ const EventInfoCardModifier = ({
           "/api/get/coordinatesCommunity", // api da fare
           idLocation
         )
-   /*      const coordinates = location[idLocation].geometries */
+        coordinates = data.geometries
         if (!coordinates) {
           setHasCoordinates(false)
         } else {
-          setHasCoordinates(false)
+          setHasCoordinates(true)
         }
       }
+
+      setHasCoordinates(false)
     }
     hasCoordinates()
   }, [formData.locationsM])
@@ -329,7 +352,7 @@ const EventInfoCardModifier = ({
                           ...formData,
                           locationsM: [],
                         })
-                        setCoordinatesCandidate(undefined)
+                        setCoordinateCandidate(undefined)
                       }}
                     >
                       <span className="truncate">
@@ -341,7 +364,7 @@ const EventInfoCardModifier = ({
                     )}
                   </div>
                   <div className="pt-2">
-                    {!hasCoordinates && !coordinatesCandidate ? (
+                    {!hasCoordinates && !coordinateCandidate ? (
                       <div className="rounded-lg bg-secondary p-2 text-sm">
                         <span className="flex flex-col justify-center text-sm">
                           <div className="w-full text-center text-lg">🤔</div>
@@ -354,11 +377,11 @@ const EventInfoCardModifier = ({
                         <div className="pt-2">
                           <SearchGeoLocation
                             address={formData.locationsM[0].title}
-                            setCoordinatesCandidate={setCoordinatesCandidate}
+                            setCoordinateCandidate={setCoordinateCandidate}
                           />
                         </div>
                       </div>
-                    ) : coordinatesCandidate ? (
+                    ) : coordinateCandidate ? (
                       <div className="w-full rounded-lg bg-secondary p-2 text-center text-sm">
                         Thank you for contributing!🥳
                       </div>

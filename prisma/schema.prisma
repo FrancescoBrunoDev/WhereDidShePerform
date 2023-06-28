@@ -142,3 +142,35 @@ enum StateVerification {
   REJECTED
   NONE
 }
+
+// modelli per la gestione di locationM senza coordinate
+
+model LocationMC {
+  uid                      String                     @id @unique // this is the same as the locationM
+  coordinateCandidates     CoordinateCandidate[]
+  CoordinateCandidateCount CoordinateCandidateCount[]
+}
+
+model CoordinateCandidate {
+  coordinateCandidateId    Int                       @unique // lo stesso di geoMap
+  locationMC               LocationMC                @relation(fields: [locationMCId], references: [uid])
+  locationMCId             String
+  coordinateCandidateCount CoordinateCandidateCount? @relation(fields: [coordinateCandidateId], references: [id])
+  lat                      String
+  lon                      String
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+
+  @@index([locationMCId])
+}
+
+model CoordinateCandidateCount {
+  id                    Int                  @id @unique @default(autoincrement())
+  coordinateCandidate   CoordinateCandidate?
+  coordinateCandidateId Int                  @unique
+  locationMC            LocationMC           @relation(fields: [locationMCId], references: [uid])
+  locationMCId          String
+  count                 Int                  @default(0)
+
+  @@index([locationMCId])
+}
