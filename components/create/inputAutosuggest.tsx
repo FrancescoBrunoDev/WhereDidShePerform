@@ -49,7 +49,7 @@ export default function InputAutosuggest({
     setOpened(false)
     setFormData(suggestion)
   }
-console.log(suggestions, "suggestions")
+
   return (
     <div className="relative top-0 w-full">
       <Input

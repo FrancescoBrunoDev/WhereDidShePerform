@@ -24,6 +24,6 @@
     ],
     "strictNullChecks": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.jsx", "store/useStoreFiltersMap.js", "store/useStoreSettingMap.js"],
   "exclude": ["node_modules"]
 }

@@ -1,3 +1,6 @@
+import { useEffect } from "react"
+import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
+import { useStoreSettingMap } from "@/store/useStoreSettingMap"
 import { AnimatePresence, motion as m } from "framer-motion"
 
 import { buttonVariants } from "@/components/ui/button"
@@ -10,16 +13,58 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Icons } from "@/components/icons"
 
-export default function MenuMap({
-  setChangeMap,
-  changeMap,
-  setIsGeoMap,
-  setIsHighQuality,
-  isHighQuality,
-  isEuropeMap,
-  thereIsMoreInWorld,
-  thereIsMoreInWorldPopup,
-}) {
+export default function MenuMap() {
+  const thereIsMoreInWorld = useStoreSettingMap(
+    (state) => state.thereIsMoreInWorld
+  )
+  const thereIsMoreInWorldPopup = useStoreSettingMap(
+    (state) => state.thereIsMoreInWorldPopup
+  )
+  const setIsEuropeMap = useStoreSettingMap((state) => state.setIsEuropeMap)
+  const setIsWorldMap = useStoreSettingMap((state) => state.setIsWorldMap)
+  const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
+  const [isHighQuality, setIsHighQuality] = useStoreSettingMap((state) => [
+    state.isHighQuality,
+    state.setIsHighQuality,
+  ])
+
+  const filteredLocationsData = useStoreFiltersMap(
+    (state) => state.filteredLocationsData
+  )
+
+  const setThereIsMoreInWorldPopup = useStoreSettingMap(
+    (state) => state.setThereIsMoreInWorldPopup
+  )
+
+  const setThereIsMoreInWorld = useStoreSettingMap(
+    (state) => state.setThereIsMoreInWorld
+  )
+
+  useEffect(() => {
+    if (filteredLocationsData && filteredLocationsData.length > 0) {
+      const nonEuLocations = filteredLocationsData.filter(
+        (location) => location.continent !== "EU"
+      )
+      if (nonEuLocations.length > 0) {
+        setThereIsMoreInWorld(true)
+        setThereIsMoreInWorldPopup(true)
+        setTimeout(() => {
+          setThereIsMoreInWorldPopup(false)
+        }, 5000)
+      } else {
+        setThereIsMoreInWorld(false)
+      }
+    }
+  }, [filteredLocationsData])
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setThereIsMoreInWorldPopup(false)
+    }, 10000)
+
+    return () => clearTimeout(timeoutId)
+  }, [])
+
   return (
     <div className="flex">
       {thereIsMoreInWorld && thereIsMoreInWorldPopup && isEuropeMap ? (
@@ -57,10 +102,15 @@ export default function MenuMap({
                 disabled={!thereIsMoreInWorld && isEuropeMap}
                 className="data-[state=checked]:bg-input"
                 onCheckedChange={() => {
-                  setChangeMap(changeMap + 1)
                   setTimeout(() => {
-                    setIsGeoMap((prevIsGeoMap) => !prevIsGeoMap)
-                  }, 100)
+                    if (isEuropeMap) {
+                      setIsWorldMap(true)
+                      setIsEuropeMap(false)
+                    } else {
+                      setIsEuropeMap(true)
+                      setIsWorldMap(false)
+                    }
+                  }, 500)
                 }}
                 checked={isEuropeMap}
               />
@@ -71,7 +121,11 @@ export default function MenuMap({
               <Label>Marker Shadow</Label>
               <Switch
                 onCheckedChange={() => {
-                  setIsHighQuality((prevIsHighQuality) => !prevIsHighQuality)
+                  if (isHighQuality) {
+                    setIsHighQuality(false)
+                  } else {
+                    setIsHighQuality(true)
+                  }
                 }}
                 checked={isHighQuality}
               />

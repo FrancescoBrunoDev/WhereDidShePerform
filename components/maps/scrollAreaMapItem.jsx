@@ -1,5 +1,7 @@
 import { Suspense, useState } from "react"
 import Link from "next/link"
+import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
+import { useStoreSettingMap } from "@/store/useStoreSettingMap"
 import { linkMaker } from "@/utils/linkMaker"
 import { groupBy } from "lodash"
 
@@ -12,19 +14,28 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Toggle } from "@/components/ui/toggle"
 
-export default function ScrollAreaItem({
-  locationsData,
-  handleAccordionHover,
-  setIsHover,
-  filteredDataContinent,
-  filteredDataCountry,
-  isEuropeMap,
-  handleSwitchToggleContinent,
-  handleSwitchToggleCountry,
-  activeContinents,
-  activeCountries,
-}) {
+export default function ScrollAreaItem({ handleAccordionHover, setIsHover }) {
   const [visibleItems, setVisibleItems] = useState(20)
+  const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
+  const locationsData = useStoreFiltersMap((state) => state.locationsData)
+  const [activeCountries, setActiveCountries] = useStoreFiltersMap((state) => [
+    state.activeCountries,
+    state.setActiveCountries,
+  ])
+
+
+  const [activeContinents, setActiveContinents] = useStoreFiltersMap(
+    (state) => [state.activeContinents, state.setActiveContinents]
+  )
+
+  const filteredDataCountry = useStoreFiltersMap(
+    (state) => state.filteredDataCountry
+  )
+
+  const filteredDataContinent = useStoreFiltersMap(
+    (state) => state.filteredDataContinent
+  )
+
   return (
     <div className={!isEuropeMap ? "sflex flex-col space-y-2" : ""}>
       {Object.entries(
@@ -34,7 +45,7 @@ export default function ScrollAreaItem({
           {isEuropeMap ? null : (
             <Toggle
               className="pl-1"
-              onPressedChange={() => handleSwitchToggleContinent(continent)}
+              onPressedChange={() => setActiveContinents(continent)}
               pressed={!activeContinents.includes(continent)}
             >
               <h1 className="rounded-lg bg-secondary px-2 py-1 text-xl font-black">
@@ -60,7 +71,7 @@ export default function ScrollAreaItem({
                 activeCountries.includes(country) &&
                 "data-[state=off]:bg-secondary"
               }`}
-                    onPressedChange={() => handleSwitchToggleCountry(country)}
+                    onPressedChange={() => setActiveCountries(country)}
                     pressed={!activeCountries.includes(country)}
                   >
                     <h2>{country}</h2>

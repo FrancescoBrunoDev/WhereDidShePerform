@@ -1,3 +1,4 @@
+import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 import { LayoutGroup, motion as m } from "framer-motion"
 
 import {
@@ -27,9 +28,6 @@ export function SettingsList({
   setSeason,
   season,
   isSeasonAvailable,
-  locationsData,
-  setSelectedComposerNames,
-  selectedComposerNames,
   searchData,
 }) {
   const isFilterActive =
@@ -37,6 +35,10 @@ export function SettingsList({
     isMusicTheaterAvailable ||
     isReligiousEventAvailable ||
     isSeasonAvailable
+
+  const resetSelectedComposerNames = useStoreFiltersMap(
+    (state) => state.resetSelectedComposerNames
+  )
 
   return (
     <div className="container flex justify-center lg:justify-end">
@@ -102,12 +104,7 @@ export function SettingsList({
                 animate={{ opacity: 1 }}
                 exit={{ width: 0, opacity: 0 }}
               >
-                <ComposerSearchBox
-                  locationsData={locationsData}
-                  setSelectedComposerNames={setSelectedComposerNames}
-                  selectedComposerNames={selectedComposerNames}
-                  searchData={searchData}
-                />
+                <ComposerSearchBox searchData={searchData} />
               </m.div>
               <LayoutGroup>
                 <Toggle
@@ -115,7 +112,7 @@ export function SettingsList({
                     setExpandedLocations(
                       (prevExpandedLocations) => !prevExpandedLocations
                     )
-                    setSelectedComposerNames([])
+                    resetSelectedComposerNames()
                   }}
                   checked={expandedLocations}
                 >
@@ -129,7 +126,7 @@ export function SettingsList({
                 setExpandedLocations(
                   (prevExpandedLocations) => !prevExpandedLocations
                 )
-                setSelectedComposerNames([])
+                resetSelectedComposerNames()
               }}
               checked={expandedLocations}
             >

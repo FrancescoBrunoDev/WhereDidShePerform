@@ -1,8 +1,8 @@
 import { Suspense, useCallback, useState } from "react"
 import { AnimatePresence, motion as m } from "framer-motion"
+import { useStoreSettingMap } from "@/store/useStoreSettingMap"
 
 import { Accordion } from "@/components/ui/accordion"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Switch } from "@/components/ui/switch"
 import CarrerTimeline from "@/components/maps/careerTimeline"
 import { DatePicker } from "@/components/researchDate/eventPicker"
@@ -10,7 +10,6 @@ import { DatePicker } from "@/components/researchDate/eventPicker"
 import ScrollAreaItem from "./scrollAreaMapItem"
 
 export default function ScrollAreaMap({
-  locationsData,
   onLocationHover,
   lowestYear,
   highestYear,
@@ -19,14 +18,6 @@ export default function ScrollAreaMap({
   filterHighestYear,
   expandedLocations,
   searchData,
-  thereIsMoreInWorld,
-  isEuropeMap,
-  filteredDataContinent,
-  filteredDataCountry,
-  handleSwitchToggleContinent,
-  handleSwitchToggleCountry,
-  activeContinents,
-  activeCountries,
 }) {
   const [isTimeVisible, setIsTimeVisible] = useState(false)
   const handleAccordionHover = useCallback(
@@ -35,6 +26,8 @@ export default function ScrollAreaMap({
     },
     [onLocationHover]
   )
+  const thereIsMoreInWorld = useStoreSettingMap((state) => state.thereIsMoreInWorld)
+  const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
 
   return (
     <Suspense>
@@ -94,16 +87,8 @@ export default function ScrollAreaMap({
             <div className="h-[30rem] w-full overflow-y-scroll rounded-lg pr-3">
               <Accordion collapsible>
                 <ScrollAreaItem
-                  locationsData={locationsData}
                   handleAccordionHover={handleAccordionHover}
                   setIsHover={setIsHover}
-                  filteredDataContinent={filteredDataContinent}
-                  filteredDataCountry={filteredDataCountry}
-                  isEuropeMap={isEuropeMap}
-                  handleSwitchToggleContinent={handleSwitchToggleContinent}
-                  handleSwitchToggleCountry={handleSwitchToggleCountry}
-                  activeContinents={activeContinents}
-                  activeCountries={activeCountries}
                 />
               </Accordion>
             </div>

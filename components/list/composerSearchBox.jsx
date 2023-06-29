@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 import { useClickOutside } from "@mantine/hooks"
 import { motion as m } from "framer-motion"
 
@@ -10,17 +11,21 @@ import { Separator } from "@/components/ui/separator"
 import { item } from "@/components/animationConst/animationConst"
 import { getAvailableComposers } from "@/components/list/filterLocationsData"
 
-export function ComposerSearchBox({
-  locationsData,
-  setSelectedComposerNames,
-  selectedComposerNames,
-}) {
+export function ComposerSearchBox({}) {
   const [searchQuery, setSearchQuery] = useState("")
   const [suggestions, setSuggestions] = useState([])
   const [opened, setOpened] = useState(false)
   const ref = useClickOutside(() => setOpened(false))
 
-  const availableComposers = getAvailableComposers(locationsData)
+  const [selectedComposerNames, setSelectedComposerNames] = useStoreFiltersMap(
+    (state) => [state.selectedComposerNames, state.setSelectedComposerNames]
+  )
+
+  const filteredLocationsData = useStoreFiltersMap(
+    (state) => state.filteredLocationsData
+  )
+
+  const availableComposers = getAvailableComposers(filteredLocationsData)
 
   const handleInputChange = (event) => {
     const newSearchQuery = event.target.value
@@ -38,7 +43,7 @@ export function ComposerSearchBox({
       <div className="static w-48 sm:w-64 md:w-72">
         <Input
           placeholder={
-            selectedComposerNames.length > 0
+            selectedComposerNames
               ? selectedComposerNames.join(", ")
               : "Composer"
           }
@@ -68,9 +73,7 @@ export function ComposerSearchBox({
                           name={name}
                           checked={true}
                           onCheckedChange={() => {
-                            setSelectedComposerNames((prevNames) =>
-                              prevNames.filter((n) => n !== name)
-                            )
+                            setSelectedComposerNames(name, false);
                             setSearchQuery("") // Clear the search query
                           }}
                         />
@@ -100,16 +103,9 @@ export function ComposerSearchBox({
                             )}
                             onCheckedChange={(checked) => {
                               if (checked) {
-                                setSelectedComposerNames((prevNames) => [
-                                  ...prevNames,
-                                  suggestion.title,
-                                ])
+                                setSelectedComposerNames(suggestion.title, true);
                               } else {
-                                setSelectedComposerNames((prevNames) =>
-                                  prevNames.filter(
-                                    (n) => n !== suggestion.title
-                                  )
-                                )
+                                setSelectedComposerNames(suggestion.title, false);
                               }
                               setSearchQuery("") // Clear the search query
                             }}

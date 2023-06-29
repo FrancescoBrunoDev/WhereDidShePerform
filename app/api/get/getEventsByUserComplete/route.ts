@@ -4,7 +4,6 @@ import { db } from "@/lib/db"
 export async function POST(req: Request) {
   try {
     const { userId } = await req.json()
-    console.log(userId, "userId")
 
     const session = await getAuthSession()
     if (!session) {

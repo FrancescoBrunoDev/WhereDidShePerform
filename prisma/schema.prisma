@@ -39,19 +39,20 @@ model Session {
 }
 
 model User {
-  id                 String                  @id @default(cuid())
-  name               String?
-  email              String?                 @unique
-  emailVerified      DateTime?
-  username           String?                 @unique
-  role               Role                    @default(USER)
-  image              String?
-  accounts           Account[]
-  sessions           Session[]
-  eventVerifications UserEventVerification[]
-  event              Event[]
-  person             Person[]
-  work               Work[]
+  id                   String                  @id @default(cuid())
+  name                 String?
+  email                String?                 @unique
+  emailVerified        DateTime?
+  username             String?                 @unique
+  role                 Role                    @default(USER)
+  image                String?
+  accounts             Account[]
+  sessions             Session[]
+  eventVerifications   UserEventVerification[]
+  event                Event[]
+  person               Person[]
+  work                 Work[]
+  usersVotesACandidate UsersVotesACandidate[]
 }
 
 model Event {
@@ -146,31 +147,36 @@ enum StateVerification {
 // modelli per la gestione di locationM senza coordinate
 
 model LocationMC {
-  uid                      String                     @id @unique // this is the same as the locationM
-  coordinateCandidates     CoordinateCandidate[]
-  CoordinateCandidateCount CoordinateCandidateCount[]
+  uid                  String                @id @unique // this is the same as the locationM
+  coordinateCandidates CoordinateCandidate[]
+
+  @@index([uid])
 }
 
 model CoordinateCandidate {
-  coordinateCandidateId    Int                       @unique // lo stesso di geoMap
-  locationMC               LocationMC                @relation(fields: [locationMCId], references: [uid])
-  locationMCId             String
-  coordinateCandidateCount CoordinateCandidateCount? @relation(fields: [coordinateCandidateId], references: [id])
-  lat                      String
-  lon                      String
-  createdAt                DateTime                  @default(now())
-  updatedAt                DateTime                  @updatedAt
+  coordinateCandidateId Int // lo stesso di geoMap
+  locationMC            LocationMC             @relation(fields: [locationMCId], references: [uid])
+  locationMCId          String
+  locationName          String
+  lat                   String
+  lon                   String
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  votes                 UsersVotesACandidate[]
 
-  @@index([locationMCId])
+  @@unique([locationMCId, coordinateCandidateId]) // Adding unique constraint on locationMCId and coordinateCandidateId
+  @@unique([coordinateCandidateId, locationMCId])
+  @@index([locationMCId, coordinateCandidateId])
 }
 
-model CoordinateCandidateCount {
-  id                    Int                  @id @unique @default(autoincrement())
-  coordinateCandidate   CoordinateCandidate?
-  coordinateCandidateId Int                  @unique
-  locationMC            LocationMC           @relation(fields: [locationMCId], references: [uid])
+model UsersVotesACandidate {
+  user                  User                @relation(fields: [userId], references: [id])
+  userId                String
+  coordinateCandidate   CoordinateCandidate @relation(fields: [coordinateCandidateId, locationMCId], references: [coordinateCandidateId, locationMCId])
+  coordinateCandidateId Int
   locationMCId          String
-  count                 Int                  @default(0)
 
-  @@index([locationMCId])
+  @@unique([userId, locationMCId])
+  @@index([userId, locationMCId])
+  @@index([coordinateCandidateId, locationMCId])
 }

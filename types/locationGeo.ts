@@ -14,6 +14,7 @@ export interface LocationGeocode {
 }
 
 export interface CoordinatesGeo {
+  name: string
   place_id: number
   geometries: {
     lat: string

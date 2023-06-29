@@ -41,6 +41,8 @@ const EventInfoCardModifier = ({
   const [dataFormat, setDataFormat] = useState<boolean>()
   const [isLinkVisible, setIsLinkVisible] = useState<boolean>(false)
   const [isImgVisible, setIsImgVisible] = useState<boolean>(false)
+  const [coodinateButtonActive, setCoodinateButtonActive] =
+    useState<boolean>(true)
   const [hasCoordinates, setHasCoordinates] = useState<boolean>(false)
   const [coordinateCandidate, setCoordinateCandidate] =
     useState<CoordinatesGeo>()
@@ -126,7 +128,9 @@ const EventInfoCardModifier = ({
           const place_id = coordinateCandidate?.place_id
           const lat = coordinateCandidate?.geometries?.lat
           const lon = coordinateCandidate?.geometries?.lon
+          const locationName = coordinateCandidate?.name
           const request: newLocationMCPayload = {
+            locationName: locationName,
             uid: formData.locationsM[0].mUid,
             coordinateCandidateId: place_id,
             lat: lat,
@@ -216,19 +220,17 @@ const EventInfoCardModifier = ({
       if (coordinates) {
         setHasCoordinates(true)
       } else {
+        const payload = { idLocation: idLocation, type: "highestVote" }
         const { data } = await axios.post(
-          "/api/get/coordinatesCommunity", // api da fare
-          idLocation
+          "/api/get/getCoordinatesCommunity", // api da fare
+          payload
         )
-        coordinates = data.geometries
-        if (!coordinates) {
-          setHasCoordinates(false)
-        } else {
-          setHasCoordinates(true)
-        }
-      }
+        // filter the coordinateCandidate with highest number votes and set it as coordinateCandidate
 
-      setHasCoordinates(false)
+        setCoordinateCandidate(data)
+
+        setHasCoordinates(false)
+      }
     }
     hasCoordinates()
   }, [formData.locationsM])
@@ -382,8 +384,34 @@ const EventInfoCardModifier = ({
                         </div>
                       </div>
                     ) : coordinateCandidate ? (
-                      <div className="w-full rounded-lg bg-secondary p-2 text-center text-sm">
-                        Thank you for contributing!🥳
+                      <div className="grid w-full grid-cols-1 gap-2 rounded-lg bg-secondary p-2 text-center text-sm">
+                        <p className="flex flex-col justify-center  text-sm font-semibold">
+                          Do you confirm that this is the correct location?
+                        </p>
+                        <div className="">{coordinateCandidate.name}</div>
+                        <div className="grid w-full grid-cols-2 space-x-2">
+                          <Button
+                            onClick={() => {
+                              setCoordinateCandidate(undefined)
+                            }}
+                            variant={"destructive"}
+                            size={"xs"}
+                          >
+                            I can do better 🤓
+                          </Button>
+                          <Button
+                            variant={
+                              coodinateButtonActive ? "default" : "outline"
+                            }
+                            disabled={!coodinateButtonActive}
+                            onClick={() => setCoodinateButtonActive(false)}
+                            size={"xs"}
+                          >
+                            {!coodinateButtonActive
+                              ? "thank you 🚀"
+                              : "looks good to me 👌"}
+                          </Button>
+                        </div>
                       </div>
                     ) : null}
                   </div>

@@ -1,3 +1,4 @@
+import { connect } from "http2"
 import { StateVerification } from "@prisma/client"
 import { z } from "zod"
 
@@ -13,81 +14,91 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json()
-    const { uid, coordinateCandidateId, lat, lon } =
+    const { uid, coordinateCandidateId, lat, lon, locationName } =
       newLocationMCValidator.parse(body)
 
-    const locationMCExists = await db.locationMC.findUnique({
-      where: { uid: uid },
+    // verifico se la locationMC esiste già, se no la creo
+    const locationMC = await db.locationMC.findMany({
+      where: {
+        uid: uid,
+      },
     })
 
-    if (!locationMCExists) {
-      const locationMC = await db.locationMC.create({
+    if (!locationMC) {
+      await db.locationMC.create({
         data: {
           uid: uid,
         },
       })
     }
-
-    const coordinateCandidate = await db.coordinateCandidate.findUnique({
+    // verifico se la coordinateCandidateExists esiste già, se no la creo
+    const coordinateCandidateExists = await db.coordinateCandidate.findUnique({
       where: {
-        coordinateCandidateId: coordinateCandidateId,
+        locationMCId_coordinateCandidateId: {
+          coordinateCandidateId: coordinateCandidateId,
+          locationMCId: uid,
+        },
       },
     })
 
-    if (!coordinateCandidate) {
-      const createCoordinateCandidate = await db.coordinateCandidate.create({
+    if (!coordinateCandidateExists) {
+      await db.coordinateCandidate.create({
         data: {
-          locationMC: {
-            connect: {
-              uid: uid,
-            },
-          },
-          coordinateCandidateCount: {
-            connect: {
-              coordinateCandidateId: coordinateCandidateId,
-            },
-          },
+          locationName: locationName,
+          locationMCId: uid,
+          coordinateCandidateId: coordinateCandidateId,
           lat: lat,
           lon: lon,
-        },
-      })
-    }
-    console.log(coordinateCandidate, "coordinateCandidate")
-
-    const coordinateCandidateCount =
-      await db.coordinateCandidateCount.findUnique({
-        where: {
-          coordinateCandidateId: coordinateCandidateId,
-        },
-      })
-
-    if (!coordinateCandidateCount) {
-      const createdCoordinateCandidateCount =
-        await db.coordinateCandidateCount.create({
-          data: {
-            count: 1,
-            coordinateCandidate: {
-              connect: {
-                coordinateCandidateId: coordinateCandidateId,
+          votes: {
+            connectOrCreate: {
+              where: {
+                userId_locationMCId: {
+                  userId: session.user.id,
+                  locationMCId: uid,
+                },
+              },
+              create: {
+                userId: session.user.id,
               },
             },
-            coordinateCandidateId: coordinateCandidateId,
-            locationMCId: uid,
           },
-        })
-    }
-
-    const updateCoordinateCandidateCount =
-      await db.coordinateCandidateCount.update({
-        where: {
-          coordinateCandidateId: coordinateCandidateId,
         },
-        data: {
-          count: {
-            increment: 1,
-          },
+        include: {
+          votes: true,
         },
       })
+    }
+
+    // se l'utente ha già votato per questa coordinateCandidateId, aggiorno il suo voto
+    const userVoteUpdate = await db.usersVotesACandidate.findUnique({
+      where: {
+        userId_locationMCId: {
+          userId: session.user.id,
+          locationMCId: uid,
+        },
+      },
+    })
+    if (userVoteUpdate) {
+      await db.usersVotesACandidate.update({
+        where: {
+          userId_locationMCId: {
+            userId: session.user.id,
+            locationMCId: uid,
+          },
+        },
+        data: {
+          coordinateCandidateId: coordinateCandidateId,
+        },
+      })
+    }
+    // se l'utente non ha ancora votato per questa coordinateCandidateId, creo il suo vot
+    await db.usersVotesACandidate.create({
+      data: {
+        userId: session.user.id,
+        coordinateCandidateId: coordinateCandidateId,
+        locationMCId: uid,
+      },
+    })
 
     return new Response("success", { status: 200 })
   } catch (error) {

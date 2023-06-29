@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
+import { useStoreSettingMap } from "@/store/useStoreSettingMap"
 import { useViewportSize } from "@mantine/hooks"
 import { format, parseISO } from "date-fns"
 import { LayoutGroup, motion as m } from "framer-motion"
@@ -18,10 +20,12 @@ import { GetExpandedEventWithPerformances } from "@/components/maps/getExpandedL
 import MapVisualizer from "@/components/maps/mapVisualizer"
 import { GetInfoPerson } from "@/app/api/musiconn"
 
-const geoUrl = "/maps/europe.json"
-
 export default function Dashboard({ params }) {
-  const [locationsData, setLocationsData] = useState([])
+  const [locationsData, setLocationsData] = useStoreFiltersMap((state) => [
+    state.locationsData,
+    state.setLocationsData,
+  ])
+
   const [id, setId] = useState(null)
   const { timeFrame } = params
   const [searchData, setSearchData] = useState(timeFrame !== undefined)
@@ -35,17 +39,17 @@ export default function Dashboard({ params }) {
     formattedEndDate = format(endDate, "do MMM, yyyy")
   }
 
-  const [mapUrl, setMapUrl] = useState(geoUrl) // Initial map URL is geoUrl
-  const [isHighQuality, setIsHighQuality] = useState(true) // Track the current map type
-  const [isEuropeMap, setIsGeoMap] = useState(true) // Track the current map type
-  const [changeMap, setChangeMap] = useState(0) // Track if the map is changed
   const [expandedLocations, setExpandedLocations] = useState(false) // Track if the composer is expanded
   const [concerts, setConcerts] = useState(true) // Track if the concerts-filter are triggered
   const [musicTheater, setMusicTheater] = useState(true) // Track if the musicTheater-filter are triggered
   const [religiousEvent, setReligiousEvent] = useState(true) // Track if the religiousEvent-filter are triggered
   const [season, setSeason] = useState(true) // Track if the season-filter are triggered
+
   const [areAllFiltersDeactivated, setAreAllFiltersDeactivated] =
-    useState(false)
+    useStoreFiltersMap((state) => [
+      state.areAllFiltersDeactivated,
+      state.setAreAllFiltersDeactivated,
+    ])
 
   const [isConcertCategoryAvailable, setIsConcertCategoryAvailable] =
     useState(true)
@@ -58,60 +62,35 @@ export default function Dashboard({ params }) {
   const [isSeasonCategoryAvailable, setIsSeasonCategoryAvailable] =
     useState(true)
 
-  const [filteredLocationsData, setFilteredLocationsData] = useState()
-  const [selectedComposerNames, setSelectedComposerNames] = useState([])
+  const [filteredLocationsData, setFilteredLocationsData] = useStoreFiltersMap(
+    (state) => [state.filteredLocationsData, state.setFilteredLocationsData]
+  )
+
   const [locationsWithComposer, setlocationsWithComposer] = useState([])
 
   const { width } = useViewportSize()
-  //select and show accordingly the map
-  const [thereIsMoreInWorld, setThereIsMoreInWorld] = useState(false)
-  const [thereIsMoreInWorldPopup, setThereIsMoreInWorldPopup] = useState(false)
   // filter from list
-  const [activeContinents, setActiveContinents] = useState([])
-  const [activeCountries, setActiveCountries] = useState([])
 
-  const handleSwitchToggleContinent = (continent) => {
-    setActiveContinents((prev) =>
-      prev.includes(continent)
-        ? prev.filter((c) => c !== continent)
-        : [...prev, continent]
-    )
-  }
-  const handleSwitchToggleCountry = (country) => {
-    setActiveCountries((prev) =>
-      prev.includes(country)
-        ? prev.filter((c) => c !== country)
-        : [...prev, country]
-    )
-  }
+  // zustand state
+  const selectedComposerNames = useStoreFiltersMap(
+    (state) => state.selectedComposerNames
+  )
+
+  const setFilteredLocationsDataViewMap = useStoreFiltersMap(
+    (state) => state.setFilteredLocationsDataViewMap
+  )
+  const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
+
+  const setFiltersFirstStart = useStoreFiltersMap(
+    (state) => state.setFiltersFirstStart
+  )
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setThereIsMoreInWorldPopup(false)
-    }, 10000)
-
-    return () => clearTimeout(timeoutId)
-  }, [])
-
-  const filteredLocationsDataViewMap = isEuropeMap
-    ? filteredLocationsData?.filter((location) => location.continent === "EU")
-    : filteredLocationsData
-
-  useEffect(() => {
-    if (filteredLocationsData && filteredLocationsData.length > 0) {
-      const nonEuLocations = filteredLocationsData.filter(
-        (location) => location.continent !== "EU"
-      )
-      if (nonEuLocations.length > 0) {
-        setThereIsMoreInWorld(true)
-        setThereIsMoreInWorldPopup(true)
-        setTimeout(() => {
-          setThereIsMoreInWorldPopup(false)
-        }, 5000)
-      } else {
-        setThereIsMoreInWorld(false)
-      }
+    const handleFilterChange = () => {
+      setFilteredLocationsDataViewMap(filteredLocationsData, isEuropeMap)
+      setFiltersFirstStart(filteredLocationsData, filteredLocationsData)
     }
+    handleFilterChange()
   }, [filteredLocationsData])
 
   useEffect(() => {
@@ -245,7 +224,7 @@ export default function Dashboard({ params }) {
       selectedComposerNames,
       locationsWithComposer,
       filterLowestYear,
-      filterHighestYear,
+      filterHighestYear
     )
 
     const seasonAvailable = checkCategoryAvailability(locationsData, 1)
@@ -274,17 +253,6 @@ export default function Dashboard({ params }) {
   ])
 
   // filter list
-  const filteredDataContinent = filteredLocationsData
-    ? filteredLocationsData.filter(
-        (location) => !activeContinents.includes(location.continent)
-      )
-    : locationsData.filter(
-        (location) => !activeContinents.includes(location.continent)
-      )
-
-  const filteredDataCountry = filteredDataContinent.filter(
-    (location) => !activeCountries.includes(location.country)
-  )
 
   const { toast } = useToast()
   return (
@@ -341,35 +309,17 @@ export default function Dashboard({ params }) {
         <LayoutGroup>
           <TabsContent value="map">
             <MapVisualizer
-              locationsData={filteredLocationsDataViewMap}
               lowestYear={lowestYear}
               highestYear={highestYear}
               filterHighestYear={filterHighestYear}
               updateFilterHighestYear={updateFilterHighestYear}
-              isHighQuality={isHighQuality}
-              setIsHighQuality={setIsHighQuality}
-              isEuropeMap={isEuropeMap}
-              setIsGeoMap={setIsGeoMap}
-              changeMap={changeMap}
-              setChangeMap={setChangeMap}
-              mapUrl={mapUrl}
-              setMapUrl={setMapUrl}
               expandedLocations={expandedLocations}
               searchData={searchData}
-              thereIsMoreInWorld={thereIsMoreInWorld}
-              thereIsMoreInWorldPopup={thereIsMoreInWorldPopup}
-              filteredDataContinent={filteredDataContinent}
-              filteredDataCountry={filteredDataCountry}
-              handleSwitchToggleContinent={handleSwitchToggleContinent}
-              handleSwitchToggleCountry={handleSwitchToggleCountry}
-              activeContinents={activeContinents}
-              activeCountries={activeCountries}
             />
           </TabsContent>
           <TabsContent value="list">
             {filteredLocationsData && (
               <List
-                filteredLocationsData={filteredLocationsData}
                 setExpandedLocations={setExpandedLocations}
                 setConcerts={setConcerts}
                 setMusicTheater={setMusicTheater}
@@ -387,17 +337,8 @@ export default function Dashboard({ params }) {
                 musicTheater={musicTheater}
                 religiousEvent={religiousEvent}
                 season={season}
-                areAllFiltersDeactivated={areAllFiltersDeactivated}
                 expandedLocations={expandedLocations}
-                setSelectedComposerNames={setSelectedComposerNames}
-                selectedComposerNames={selectedComposerNames}
                 searchData={searchData}
-                activeContinents={activeContinents}
-                activeCountries={activeCountries}
-                filteredDataContinent={filteredDataContinent}
-                filteredDataCountry={filteredDataCountry}
-                handleSwitchToggleContinent={handleSwitchToggleContinent}
-                handleSwitchToggleCountry={handleSwitchToggleCountry}
               />
             )}
           </TabsContent>

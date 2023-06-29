@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
+import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 import { linkMaker } from "@/utils/linkMaker"
 import { AnimatePresence, motion as m, useInView } from "framer-motion"
 import { groupBy } from "lodash"
@@ -10,17 +11,32 @@ import { list } from "@/components/animationConst/animationConst"
 import { CardItem, CardItemMoreLeft } from "@/components/list/cardItem"
 import getRandomSentenceList from "@/components/list/randomSencences"
 
-export default function CardList({
-  locationsData,
-  areAllFiltersDeactivated,
-  activeContinents,
-  activeCountries,
-  filteredDataContinent,
-  filteredDataCountry,
-  handleSwitchToggleContinent,
-  handleSwitchToggleCountry,
-}) {
+export default function CardList({}) {
   const [sentence, setSentence] = useState(getRandomSentenceList())
+  const filteredLocationsData = useStoreFiltersMap(
+    (state) => state.filteredLocationsData
+  )
+  const [activeCountries, setActiveCountries] = useStoreFiltersMap((state) => [
+    state.activeCountries,
+    state.setActiveCountries,
+  ])
+
+  const [activeContinents, setActiveContinents] = useStoreFiltersMap(
+    (state) => [state.activeContinents, state.setActiveContinents]
+  )
+
+  const filteredDataCountry = useStoreFiltersMap(
+    (state) => state.filteredDataCountry
+  )
+
+  const filteredDataContinent = useStoreFiltersMap(
+    (state) => state.filteredDataContinent
+  )
+
+  const areAllFiltersDeactivated = useStoreFiltersMap(
+    (state) => state.areAllFiltersDeactivated
+  )
+
   const ref = useRef(null)
   const isInView = useInView(ref)
   useEffect(() => {
@@ -33,7 +49,7 @@ export default function CardList({
     }
   }, [])
 
-  if (locationsData.length === 0 && areAllFiltersDeactivated) {
+  if (filteredLocationsData.length === 0 && areAllFiltersDeactivated) {
     return (
       <div className="container -z-10 mx-auto">
         <div className="flex h-[90vh] items-center justify-center text-center">
@@ -57,14 +73,14 @@ export default function CardList({
   return (
     <div className="container -z-10 mx-auto pt-80">
       {Object.entries(
-        groupBy(locationsData, (location) => location.continent)
+        groupBy(filteredLocationsData, (location) => location.continent)
       ).map(([continent]) => (
         <div key={continent}>
           <div className="flex items-center pl-5 pt-5">
             <div className="flex items-center space-x-2 rounded-lg bg-secondary px-5 py-2">
               <h1 className="w-24 text-6xl font-black">{continent}</h1>
               <Switch
-                onCheckedChange={() => handleSwitchToggleContinent(continent)}
+                onCheckedChange={() => setActiveContinents(continent)}
                 name={continent}
                 checked={!activeContinents.includes(continent)}
               />
@@ -83,7 +99,7 @@ export default function CardList({
                 <div className="flex items-center space-x-2 rounded-lg bg-background px-5 py-2">
                   <h2 className="text-4xl font-black">{country}</h2>
                   <Switch
-                    onCheckedChange={() => handleSwitchToggleCountry(country)}
+                    onCheckedChange={() => setActiveCountries(country)}
                     name={country}
                     checked={!activeCountries.includes(country)}
                   />
@@ -121,7 +137,7 @@ export default function CardList({
                               <div>
                                 <div className="flex items-center space-x-2 pb-5 pt-3">
                                   <h1 className="text-lg font-black leading-none">
-                                    {location.title} 
+                                    {location.title}
                                   </h1>{" "}
                                   <Link
                                     href={`https://performance.musiconn.de/location/${locationTitleLink}`}

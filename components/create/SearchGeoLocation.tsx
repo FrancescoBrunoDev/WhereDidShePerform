@@ -27,7 +27,6 @@ export default function InputAutosuggest({
       const fetchSuggestions = async () => {
         try {
           const suggestions = await autocompleteGeo(searchTerm)
-          console.log(suggestions, "suggestions")
           setSuggestionsGeo(suggestions || [])
           if (suggestions?.length > 0) {
             setOpened(true)
@@ -50,7 +49,7 @@ export default function InputAutosuggest({
   }
 
   function handleSuggestionClick(name: string, lat: string, lon: string, place_id: number) {
-    setCoordinateCandidate({place_id, geometries: {lat, lon} })
+    setCoordinateCandidate({name, place_id, geometries: {lat, lon} })
     setSearchTerm(name)
     setSuggestionsGeo([])
     setOpened(false)

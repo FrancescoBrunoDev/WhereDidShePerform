@@ -109,6 +109,8 @@ export function getEventsByComposerSearch(
   selectedComposerNames,
   filteredDataFilteredByCategory
 ) {
+
+  console.log('selectedComposerNames', selectedComposerNames)
   const filteredData = filteredDataFilteredByCategory
     .map((city) => {
       const { locations, count: totalCount } = city

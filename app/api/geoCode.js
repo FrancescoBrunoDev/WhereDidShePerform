@@ -11,3 +11,4 @@ async function autocompleteGeo(searchTerm) {
 }
 
 export { autocompleteGeo }
+
