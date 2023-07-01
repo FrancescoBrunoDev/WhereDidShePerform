@@ -14,10 +14,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Toggle } from "@/components/ui/toggle"
 
-export default function ScrollAreaItem({ handleAccordionHover, setIsHover }) {
+export default function ScrollAreaItem() {
   const [visibleItems, setVisibleItems] = useState(20)
   const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
-  const locationsData = useStoreFiltersMap((state) => state.locationsData)
+  const locationsData = useStoreFiltersMap((state) => state.filteredLocationsDataViewMap)
   const [activeCountries, setActiveCountries] = useStoreFiltersMap((state) => [
     state.activeCountries,
     state.setActiveCountries,
@@ -35,6 +35,8 @@ export default function ScrollAreaItem({ handleAccordionHover, setIsHover }) {
   const filteredDataContinent = useStoreFiltersMap(
     (state) => state.filteredDataContinent
   )
+
+  const setIsHover = useStoreSettingMap((state) => state.setIsHover)
 
   return (
     <div className={!isEuropeMap ? "sflex flex-col space-y-2" : ""}>
@@ -90,12 +92,10 @@ export default function ScrollAreaItem({ handleAccordionHover, setIsHover }) {
                           className="ml-4"
                           key={key}
                           onMouseEnter={() => {
-                            handleAccordionHover(key)
-                            setIsHover(true)
+                            setIsHover(key)
                           }}
                           onMouseLeave={() => {
-                            handleAccordionHover(null)
-                            setIsHover(false)
+                            setIsHover(null)
                           }}
                         >
                           <h2 className="font-black">{city}</h2>

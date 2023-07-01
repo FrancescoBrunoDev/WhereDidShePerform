@@ -3,16 +3,14 @@ import { useStoreSettingMap } from "@/store/useStoreSettingMap"
 import { Marker } from "react-simple-maps"
 
 export default function MarksMap({
-  selectedLocationId,
-  setSelectedLocationId,
-  isHover,
-  setIsHover,
   mapConfig,
 }) {
   const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
   const isHighQuality = useStoreSettingMap((state) => state.isHighQuality)
 
-  const filteredDataCountry = useStoreFiltersMap((state) => state.filteredDataCountry)
+  const filteredDataCountry = useStoreFiltersMap(
+    (state) => state.filteredDataCountry
+  )
 
   const scaleRadius = (count) => {
     const minRadius = 2 // Minimum radius value
@@ -23,6 +21,11 @@ export default function MarksMap({
       (logCount / scaleFactor) * (maxRadius - minRadius) + minRadius // Map log count value to radius range
     return radius
   }
+
+  const [isHover, setIsHover] = useStoreSettingMap((state) => [
+    state.isHover,
+    state.setIsHover,
+  ])
 
   // Wait until mapConfig.maxRadius is defined before rendering the component
   if (!mapConfig?.maxRadius) {
@@ -46,23 +49,19 @@ export default function MarksMap({
                 style={{
                   transition: `transform ${transitionDuration}s ease-in-out`,
                   transform: isHover
-                    ? selectedLocationId === key
+                    ? isHover === key
                       ? "scale(1.5)"
                       : "scale(0.2)"
                     : "scale(1)",
                 }}
                 exit={{ scale: 0 }}
                 r={scaleRadius(count)}
-                fill={
-                  selectedLocationId === key ? "currentColor" : "currentColor"
-                }
+                fill="currentColor"
                 onMouseEnter={() => {
-                  setSelectedLocationId(key)
-                  setIsHover(true)
+                  setIsHover(key)
                 }}
                 onMouseLeave={() => {
-                  setSelectedLocationId(null)
-                  setIsHover(false)
+                  setIsHover(null)
                 }}
               />
             </Marker>

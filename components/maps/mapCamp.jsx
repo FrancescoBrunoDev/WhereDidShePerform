@@ -6,16 +6,11 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps"
 import MarksMap from "./marksMarp"
 import MenuMap from "./menuMap"
 
-export default function MapCamp({
-  locationsData,
-  isHover,
-  setIsHover,
-  selectedLocationId,
-  setSelectedLocationId,
-}) {
+export default function MapCamp() {
   // handle map switch
   // map size based on screen size
   const mapUrl = useStoreSettingMap((state) => state.mapUrl)
+  const locationsData = useStoreSettingMap((state) => state.filteredLocationsDataViewMap)
 
   const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
   const [isHighQuality, setIsHighQuality] = useStoreSettingMap((state) => [
@@ -169,10 +164,6 @@ export default function MapCamp({
                 }
               </Geographies>{" "}
               <MarksMap
-                selectedLocationId={selectedLocationId}
-                setSelectedLocationId={setSelectedLocationId}
-                isHover={isHover}
-                setIsHover={setIsHover}
                 mapConfig={mapConfig}
               />
             </ComposableMap>

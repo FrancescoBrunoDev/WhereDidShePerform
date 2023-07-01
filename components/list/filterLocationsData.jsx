@@ -1,3 +1,5 @@
+
+
 export function checkCategoryAvailability(locationsData, category) {
   const isCategoryAvailable = locationsData.some((city) =>
     city.locations.some((location) =>
@@ -8,18 +10,15 @@ export function checkCategoryAvailability(locationsData, category) {
   return isCategoryAvailable
 }
 
-export async function filterLocationsData(
+export function filterLocationsData(
   expandedLocations,
-  concerts,
-  musicTheater,
-  religiousEvent,
-  season,
+  categoryFiltersActive,
   locationsData,
   setFilteredLocationsData,
   selectedComposerNames,
   locationsWithComposer,
   filterLowestYear,
-  filterHighestYear,
+  filterHighestYear
 ) {
 
   // Apply timeline filter
@@ -38,12 +37,9 @@ export async function filterLocationsData(
   let categoryFilteredData = filteredData
   categoryFilteredData = getEventsByCathegoryFilters(
     filteredData,
-    concerts,
-    musicTheater,
-    religiousEvent,
-    season
+    categoryFiltersActive
   )
-
+  console.log("categoryFilteredData", categoryFilteredData)
   // Apply composer filter
   let composerFilteredData = categoryFilteredData
   if (selectedComposerNames.length > 0) {
@@ -58,21 +54,16 @@ export async function filterLocationsData(
 
 export function getEventsByCathegoryFilters(
   filteredDataByTimeLine,
-  concerts,
-  musicTheater,
-  religiousEvent,
-  season
+  categoryFiltersActive
 ) {
   const filteredData = filteredDataByTimeLine
     .map((city) => {
       const { locations, count: totalCount } = city
       const filteredLocations = locations.reduce((filtered, location) => {
-        const filteredEventInfo = location.eventInfo.filter(
-          (event) =>
-            (concerts || event.eventCategory !== 2) &&
-            (musicTheater || event.eventCategory !== 4) &&
-            (religiousEvent || event.eventCategory !== 3) &&
-            (season || event.eventCategory !== 1)
+        const filteredEventInfo = location.eventInfo.filter((event) =>
+          Object.values(categoryFiltersActive).some(
+            (category) => event.eventCategory === category.id
+          )
         )
 
         const count = filteredEventInfo.length
@@ -109,8 +100,6 @@ export function getEventsByComposerSearch(
   selectedComposerNames,
   filteredDataFilteredByCategory
 ) {
-
-  console.log('selectedComposerNames', selectedComposerNames)
   const filteredData = filteredDataFilteredByCategory
     .map((city) => {
       const { locations, count: totalCount } = city
@@ -159,7 +148,6 @@ export function getEventsByComposerSearch(
 
   return filteredData
 }
-
 
 export function getEventFilteredByTimeLine(
   locationsData,

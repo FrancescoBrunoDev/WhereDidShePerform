@@ -10,13 +10,88 @@ export const useStoreFiltersMap = create((set) => ({
   filteredDataContinent: [],
   areAllFiltersDeactivated: false,
   selectedComposerNames: [],
+  expandedLocations: false,
+  locationsWithComposer: [],
+  categoryFilters: {
+    Season: {
+      state: true,
+      id: 1,
+    },
+    Concerts: {
+      state: true,
+      id: 2,
+    },
+    Religious_Event: {
+      state: true,
+      id: 3,
+    },
+    Music_Theater: {
+      state: true,
+      id: 4,
+    },
+  },
+  categoryFiltersActive: {},
 
   setFiltersFirstStart: (filteredDataCountry: [], filteredDataContinent: []) =>
     set({ filteredDataCountry, filteredDataContinent }),
-
+  setlocationsWithComposer: (locationsWithComposer: []) =>
+    set({ locationsWithComposer }),
   setLocationsData: (locationsData: []) => set({ locationsData }),
-  setFilteredLocationsData: (filteredLocationsData: []) =>
-    set({ filteredLocationsData }),
+  setExpandedLocations: (expandedLocations: boolean) =>
+    set({ expandedLocations }),
+  setFilteredLocationsDataStart: (locationsData: []) =>
+    set({ filteredLocationsData: locationsData }),
+
+  setFilteredLocationsData: () =>
+    set((state: { locationsData: any[]; categoryFiltersActive: {} }) => {
+      const locationsData = state.locationsData
+      const categoryFiltersActive = state.categoryFiltersActive
+
+      const filteredData = locationsData
+        .map((city) => {
+          const { locations, count: totalCount } = city
+          const filteredLocations = locations.reduce(
+            (filtered: any[], location: { eventInfo: any[] }) => {
+              const filteredEventInfo = location.eventInfo.filter((event) =>
+                Object.values(categoryFiltersActive).some(
+                  (category) =>
+                    (category as { state: boolean; id: number }).state &&
+                    event.eventCategory ===
+                      (category as { state: boolean; id: number }).id
+                )
+              )
+
+              const count = filteredEventInfo.length
+
+              if (count > 0) {
+                const updatedLocation = {
+                  ...location,
+                  eventInfo: filteredEventInfo,
+                  count,
+                }
+                filtered.push(updatedLocation)
+              }
+
+              return filtered
+            },
+            []
+          )
+
+          if (filteredLocations.length > 0) {
+            return {
+              ...city,
+              locations: filteredLocations,
+              count: totalCount,
+              countLocations: filteredLocations.length,
+            }
+          }
+
+          return null
+        })
+        .filter((city) => city)
+
+      return { filteredLocationsData: filteredData }
+    }),
   setFilteredLocationsDataViewMap: (
     filteredLocationsData: [],
     isEuropeMap: boolean
@@ -96,4 +171,43 @@ export const useStoreFiltersMap = create((set) => ({
     })
   },
   resetSelectedComposerNames: () => set({ selectedComposerNames: [] }),
+  setCategoryFilters: (category: any) => {
+    set((state: { categoryFilters: any; categoryFiltersActive: any }) => {
+      const currentFilterValue = state.categoryFiltersActive[category].state
+      const updatedFilterValue = !currentFilterValue
+
+      return {
+        categoryFiltersActive: {
+          ...state.categoryFiltersActive,
+          [category]: {
+            ...state.categoryFiltersActive[category],
+            state: updatedFilterValue,
+          },
+        },
+      }
+    })
+  },
+  isCategoryAvailable: () => {
+    set((state: { locationsData: any[]; categoryFilters: any }) => {
+      const locationsData = state.locationsData
+      let categoryFilters = state.categoryFilters
+
+      Object.keys(categoryFilters).forEach((category) => {
+        const id = categoryFilters[category].id
+        const isCategoryAvailable = locationsData.some((city) =>
+          city.locations.some((location: { eventInfo: any[] }) =>
+            location.eventInfo.some((event) => event.eventCategory === id)
+          )
+        )
+
+        if (!isCategoryAvailable) {
+          delete categoryFilters[category]
+        }
+      })
+
+      return {
+        categoryFiltersActive: { ...categoryFilters },
+      }
+    })
+  },
 }))

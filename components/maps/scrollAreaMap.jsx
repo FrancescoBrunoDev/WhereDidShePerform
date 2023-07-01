@@ -1,6 +1,6 @@
-import { Suspense, useCallback, useState } from "react"
-import { AnimatePresence, motion as m } from "framer-motion"
+import { Suspense, useState } from "react"
 import { useStoreSettingMap } from "@/store/useStoreSettingMap"
+import { AnimatePresence, motion as m } from "framer-motion"
 
 import { Accordion } from "@/components/ui/accordion"
 import { Switch } from "@/components/ui/switch"
@@ -10,23 +10,16 @@ import { DatePicker } from "@/components/researchDate/eventPicker"
 import ScrollAreaItem from "./scrollAreaMapItem"
 
 export default function ScrollAreaMap({
-  onLocationHover,
   lowestYear,
   highestYear,
   updateFilterHighestYear,
-  setIsHover,
   filterHighestYear,
-  expandedLocations,
   searchData,
 }) {
   const [isTimeVisible, setIsTimeVisible] = useState(false)
-  const handleAccordionHover = useCallback(
-    (locationId) => {
-      onLocationHover(locationId)
-    },
-    [onLocationHover]
+  const thereIsMoreInWorld = useStoreSettingMap(
+    (state) => state.thereIsMoreInWorld
   )
-  const thereIsMoreInWorld = useStoreSettingMap((state) => state.thereIsMoreInWorld)
   const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
 
   return (
@@ -72,7 +65,6 @@ export default function ScrollAreaMap({
                     lowestYear={lowestYear}
                     filterHighestYear={filterHighestYear}
                     updateFilterHighestYear={updateFilterHighestYear}
-                    expandedLocations={expandedLocations}
                   />
                 </m.div>
               )}
@@ -86,10 +78,7 @@ export default function ScrollAreaMap({
             </h4>
             <div className="h-[30rem] w-full overflow-y-scroll rounded-lg pr-3">
               <Accordion collapsible>
-                <ScrollAreaItem
-                  handleAccordionHover={handleAccordionHover}
-                  setIsHover={setIsHover}
-                />
+                <ScrollAreaItem />
               </Accordion>
             </div>
           </m.div>

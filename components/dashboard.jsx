@@ -9,12 +9,8 @@ import { LayoutGroup, motion as m } from "framer-motion"
 
 import { useToast } from "@/hooks/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ToastAction } from "@/components/ui/toast"
 import { Toaster } from "@/components/ui/toaster"
-import {
-  checkCategoryAvailability,
-  filterLocationsData,
-} from "@/components/list/filterLocationsData"
+import { filterLocationsData } from "@/components/list/filterLocationsData"
 import List from "@/components/list/list"
 import { GetExpandedEventWithPerformances } from "@/components/maps/getExpandedLocations"
 import MapVisualizer from "@/components/maps/mapVisualizer"
@@ -39,34 +35,23 @@ export default function Dashboard({ params }) {
     formattedEndDate = format(endDate, "do MMM, yyyy")
   }
 
-  const [expandedLocations, setExpandedLocations] = useState(false) // Track if the composer is expanded
-  const [concerts, setConcerts] = useState(true) // Track if the concerts-filter are triggered
-  const [musicTheater, setMusicTheater] = useState(true) // Track if the musicTheater-filter are triggered
-  const [religiousEvent, setReligiousEvent] = useState(true) // Track if the religiousEvent-filter are triggered
-  const [season, setSeason] = useState(true) // Track if the season-filter are triggered
-
-  const [areAllFiltersDeactivated, setAreAllFiltersDeactivated] =
-    useStoreFiltersMap((state) => [
-      state.areAllFiltersDeactivated,
-      state.setAreAllFiltersDeactivated,
-    ])
-
-  const [isConcertCategoryAvailable, setIsConcertCategoryAvailable] =
-    useState(true)
-  const [isMusicTheaterCategoryAvailable, setIsMusicTheaterCategoryAvailable] =
-    useState(true)
-  const [
-    isReligiousEventCategoryAvailable,
-    setIsReligiousEventCategoryAvailable,
-  ] = useState(true)
-  const [isSeasonCategoryAvailable, setIsSeasonCategoryAvailable] =
-    useState(true)
-
-  const [filteredLocationsData, setFilteredLocationsData] = useStoreFiltersMap(
-    (state) => [state.filteredLocationsData, state.setFilteredLocationsData]
+  const expandedLocations = useStoreFiltersMap(
+    (state) => state.expandedLocations
+  ) // Track if the composer is expanded
+  const categoryFiltersActive = useStoreFiltersMap(
+    (state) => state.categoryFiltersActive
   )
 
-  const [locationsWithComposer, setlocationsWithComposer] = useState([])
+  const [filteredLocationsData, setFilteredLocationsDataStart, setFilteredLocationsData] =
+    useStoreFiltersMap((state) => [
+      state.filteredLocationsData,
+      state.setFilteredLocationsDataStart,
+      state.setFilteredLocationsData,
+    ])
+
+  const [locationsWithComposer, setlocationsWithComposer] = useStoreFiltersMap(
+    (state) => [state.locationsWithComposer, state.setlocationsWithComposer]
+  )
 
   const { width } = useViewportSize()
   // filter from list
@@ -87,37 +72,14 @@ export default function Dashboard({ params }) {
 
   useEffect(() => {
     const handleFilterChange = () => {
+      setFilteredLocationsDataStart(locationsData)
       setFilteredLocationsDataViewMap(filteredLocationsData, isEuropeMap)
-      setFiltersFirstStart(filteredLocationsData, filteredLocationsData)
+      setFiltersFirstStart(locationsData, locationsData)
     }
     handleFilterChange()
-  }, [filteredLocationsData])
+  }, [locationsData, isEuropeMap])
 
-  useEffect(() => {
-    const handleFilterChange = () => {
-      if (
-        (!concerts || !isConcertCategoryAvailable) &&
-        (!musicTheater || !isMusicTheaterCategoryAvailable) &&
-        (!religiousEvent || !isReligiousEventCategoryAvailable) &&
-        (!season || !isSeasonCategoryAvailable)
-      ) {
-        setAreAllFiltersDeactivated(true)
-      } else {
-        setAreAllFiltersDeactivated(false)
-      }
-    }
-    handleFilterChange()
-  }, [
-    concerts,
-    musicTheater,
-    religiousEvent,
-    season,
-    isConcertCategoryAvailable,
-    isMusicTheaterCategoryAvailable,
-    isReligiousEventCategoryAvailable,
-    isSeasonCategoryAvailable,
-  ])
-
+  console.log(filteredLocationsData, "filteredLocationsData")
   // fetch data
 
   const { performerId } = params
@@ -215,42 +177,24 @@ export default function Dashboard({ params }) {
   useEffect(() => {
     filterLocationsData(
       expandedLocations,
-      concerts,
-      musicTheater,
-      religiousEvent,
-      season,
+      categoryFiltersActive,
       locationsData,
-      setFilteredLocationsData,
+     setFilteredLocationsData, 
       selectedComposerNames,
       locationsWithComposer,
       filterLowestYear,
       filterHighestYear
     )
-
-    const seasonAvailable = checkCategoryAvailability(locationsData, 1)
-    setIsSeasonCategoryAvailable(seasonAvailable)
-
-    const concertAvailable = checkCategoryAvailability(locationsData, 2)
-    setIsConcertCategoryAvailable(concertAvailable)
-
-    const religiousEventAvailable = checkCategoryAvailability(locationsData, 3)
-    setIsReligiousEventCategoryAvailable(religiousEventAvailable)
-
-    const musicTheaterAvailable = checkCategoryAvailability(locationsData, 4)
-    setIsMusicTheaterCategoryAvailable(musicTheaterAvailable)
   }, [
     expandedLocations,
-    concerts,
-    musicTheater,
-    religiousEvent,
-    season,
+    categoryFiltersActive,
     locationsData,
-    setFilteredLocationsData,
+   setFilteredLocationsData, 
     selectedComposerNames,
     locationsWithComposer,
     filterLowestYear,
     filterHighestYear,
-  ])
+  ]) 
 
   // filter list
 
@@ -286,7 +230,7 @@ export default function Dashboard({ params }) {
         >
           <TabsList className="flex justify-center shadow-lg lg:shadow-none">
             <TabsTrigger
-              onClick={() => {
+              /* onClick={() => {
                 toast({
                   title: areAllFiltersDeactivated
                     ? "It's more fun with at least one filter!"
@@ -297,7 +241,7 @@ export default function Dashboard({ params }) {
                     </ToastAction>
                   ),
                 })
-              }}
+              }} */
               value="map"
             >
               map
@@ -313,34 +257,11 @@ export default function Dashboard({ params }) {
               highestYear={highestYear}
               filterHighestYear={filterHighestYear}
               updateFilterHighestYear={updateFilterHighestYear}
-              expandedLocations={expandedLocations}
               searchData={searchData}
             />
           </TabsContent>
           <TabsContent value="list">
-            {filteredLocationsData && (
-              <List
-                setExpandedLocations={setExpandedLocations}
-                setConcerts={setConcerts}
-                setMusicTheater={setMusicTheater}
-                setReligiousEvent={setReligiousEvent}
-                setSeason={setSeason}
-                isConcertCategoryAvailable={isConcertCategoryAvailable}
-                isMusicTheaterCategoryAvailable={
-                  isMusicTheaterCategoryAvailable
-                }
-                isReligiousEventCategoryAvailable={
-                  isReligiousEventCategoryAvailable
-                }
-                isSeasonCategoryAvailable={isSeasonCategoryAvailable}
-                concerts={concerts}
-                musicTheater={musicTheater}
-                religiousEvent={religiousEvent}
-                season={season}
-                expandedLocations={expandedLocations}
-                searchData={searchData}
-              />
-            )}
+            {filteredLocationsData && <List />}
           </TabsContent>
         </LayoutGroup>
       </Tabs>
