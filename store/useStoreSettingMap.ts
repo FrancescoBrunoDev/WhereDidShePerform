@@ -12,6 +12,7 @@ export const useStoreSettingMap = create((set) => ({
   mapUrl: EuropeUrl,
   isHighQuality: false,
   isHover: null,
+  isTimeVisible: false,
 
   setThereIsMoreInWorld: (thereIsMoreInWorld: boolean) =>
     set({ thereIsMoreInWorld }),
@@ -25,4 +26,5 @@ export const useStoreSettingMap = create((set) => ({
     set({ isWorldMap, mapUrl: isWorldMap ? worldUrl : EuropeUrl }),
   setIsHighQuality: (isHighQuality: boolean) => set({ isHighQuality }),
   setIsHover: (isHover: number) => set({ isHover }),
+  setIsTimeVisible: (isTimeVisible: boolean) => set({ isTimeVisible }),
 }))

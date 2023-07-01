@@ -39,7 +39,7 @@ export function filterLocationsData(
     filteredData,
     categoryFiltersActive
   )
-  console.log("categoryFilteredData", categoryFilteredData)
+
   // Apply composer filter
   let composerFilteredData = categoryFilteredData
   if (selectedComposerNames.length > 0) {

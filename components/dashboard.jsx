@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
-import { useStoreSettingMap } from "@/store/useStoreSettingMap"
 import { useViewportSize } from "@mantine/hooks"
 import { format, parseISO } from "date-fns"
 import { LayoutGroup, motion as m } from "framer-motion"
@@ -22,6 +21,10 @@ export default function Dashboard({ params }) {
     state.setLocationsData,
   ])
 
+  const isCategoryAvailable = useStoreFiltersMap(
+    (state) => state.isCategoryAvailable
+  )
+
   const [id, setId] = useState(null)
   const { timeFrame } = params
   const [searchData, setSearchData] = useState(timeFrame !== undefined)
@@ -38,16 +41,9 @@ export default function Dashboard({ params }) {
   const expandedLocations = useStoreFiltersMap(
     (state) => state.expandedLocations
   ) // Track if the composer is expanded
-  const categoryFiltersActive = useStoreFiltersMap(
+  /*   const categoryFiltersActive = useStoreFiltersMap(
     (state) => state.categoryFiltersActive
-  )
-
-  const [filteredLocationsData, setFilteredLocationsDataStart, setFilteredLocationsData] =
-    useStoreFiltersMap((state) => [
-      state.filteredLocationsData,
-      state.setFilteredLocationsDataStart,
-      state.setFilteredLocationsData,
-    ])
+  ) */
 
   const [locationsWithComposer, setlocationsWithComposer] = useStoreFiltersMap(
     (state) => [state.locationsWithComposer, state.setlocationsWithComposer]
@@ -61,25 +57,9 @@ export default function Dashboard({ params }) {
     (state) => state.selectedComposerNames
   )
 
-  const setFilteredLocationsDataViewMap = useStoreFiltersMap(
-    (state) => state.setFilteredLocationsDataViewMap
+  const [findHigestYear, highestYear, lowestYear] = useStoreFiltersMap(
+    (state) => [state.findHigestYear, state.highestYear, state.lowestYear]
   )
-  const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
-
-  const setFiltersFirstStart = useStoreFiltersMap(
-    (state) => state.setFiltersFirstStart
-  )
-
-  useEffect(() => {
-    const handleFilterChange = () => {
-      setFilteredLocationsDataStart(locationsData)
-      setFilteredLocationsDataViewMap(filteredLocationsData, isEuropeMap)
-      setFiltersFirstStart(locationsData, locationsData)
-    }
-    handleFilterChange()
-  }, [locationsData, isEuropeMap])
-
-  console.log(filteredLocationsData, "filteredLocationsData")
   // fetch data
 
   const { performerId } = params
@@ -105,6 +85,8 @@ export default function Dashboard({ params }) {
 
       const data = await res.json()
       setLocationsData(data)
+      isCategoryAvailable()
+      findHigestYear()
     }
 
     if (performerId || eventIds || userId) {
@@ -122,43 +104,6 @@ export default function Dashboard({ params }) {
     }
   }, [performerId, eventIds])
 
-  let highestYear = null
-  let lowestYear = null
-
-  if (locationsData.length > 0) {
-    locationsData.forEach(({ locations }) => {
-      if (locations) {
-        locations.forEach(({ eventInfo }) => {
-          if (eventInfo) {
-            eventInfo.forEach(({ date }) => {
-              const year = Number(date.substr(0, 4))
-
-              if (highestYear === null || year > highestYear) {
-                highestYear = year
-              }
-
-              if (lowestYear === null || year < lowestYear) {
-                lowestYear = year
-              }
-            })
-          }
-        })
-      }
-    })
-  }
-
-  let filterLowestYear = lowestYear
-
-  const [filterHighestYear, setFilterHighestYear] = useState(highestYear)
-
-  useEffect(() => {
-    setFilterHighestYear(highestYear)
-  }, [highestYear])
-
-  const updateFilterHighestYear = (newValue) => {
-    setFilterHighestYear(newValue)
-  }
-
   useEffect(() => {
     async function fetchData() {
       const locationsWithComposer = await GetExpandedEventWithPerformances(
@@ -174,7 +119,7 @@ export default function Dashboard({ params }) {
     }
   }, [id, expandedLocations])
 
-  useEffect(() => {
+  /*   useEffect(() => {
     filterLocationsData(
       expandedLocations,
       categoryFiltersActive,
@@ -195,7 +140,7 @@ export default function Dashboard({ params }) {
     filterLowestYear,
     filterHighestYear,
   ]) 
-
+ */
   // filter list
 
   const { toast } = useToast()
@@ -253,15 +198,11 @@ export default function Dashboard({ params }) {
         <LayoutGroup>
           <TabsContent value="map">
             <MapVisualizer
-              lowestYear={lowestYear}
-              highestYear={highestYear}
-              filterHighestYear={filterHighestYear}
-              updateFilterHighestYear={updateFilterHighestYear}
               searchData={searchData}
             />
           </TabsContent>
           <TabsContent value="list">
-            {filteredLocationsData && <List />}
+            <List />
           </TabsContent>
         </LayoutGroup>
       </Tabs>

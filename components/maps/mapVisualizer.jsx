@@ -5,27 +5,13 @@ import { useState } from "react"
 import MapCamp from "@/components/maps/mapCamp"
 import ScrollAreaMap from "@/components/maps/scrollAreaMap"
 
-export default function MapVisualizer({
-  lowestYear,
-  highestYear,
-  filterHighestYear,
-  updateFilterHighestYear,
-  searchData,
-}) {
-
+export default function MapVisualizer({ searchData }) {
   return (
     <section>
-      <ScrollAreaMap
-        lowestYear={lowestYear}
-        highestYear={highestYear}
-        filterHighestYear={filterHighestYear}
-        updateFilterHighestYear={updateFilterHighestYear}
-        searchData={searchData}
-      />
+      <ScrollAreaMap searchData={searchData} />
 
       <div>
-        <MapCamp
-        />
+        <MapCamp />
       </div>
     </section>
   )

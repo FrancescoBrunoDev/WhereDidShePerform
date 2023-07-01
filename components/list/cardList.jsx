@@ -13,32 +13,27 @@ import getRandomSentenceList from "@/components/list/randomSencences"
 
 export default function CardList({}) {
   const [sentence, setSentence] = useState(getRandomSentenceList())
-  const filteredLocationsData = useStoreFiltersMap(
-    (state) => state.filteredLocationsData
-  )
-  const [activeCountries, setActiveCountries] = useStoreFiltersMap((state) => [
+
+  const [
+    categoryFiltersActive,
+    locationsData,
+    activeCountries,
+    setActiveCountries,
+    activeContinents,
+    setActiveContinents,
+    areAllFiltersDeactivated,
+    filterHighestYear,
+  ] = useStoreFiltersMap((state) => [
+    state.categoryFiltersActive,
+    state.locationsData,
     state.activeCountries,
     state.setActiveCountries,
+    state.activeContinents,
+    state.setActiveContinents,
+    state.areAllFiltersDeactivated,
+    state.filterHighestYear,
   ])
 
-  const [activeContinents, setActiveContinents] = useStoreFiltersMap(
-    (state) => [state.activeContinents, state.setActiveContinents]
-  )
-
-  const filteredDataCountry = useStoreFiltersMap(
-    (state) => state.filteredDataCountry
-  )
-
-  const filteredDataContinent = useStoreFiltersMap(
-    (state) => state.filteredDataContinent
-  )
-
-  const areAllFiltersDeactivated = useStoreFiltersMap(
-    (state) => state.areAllFiltersDeactivated
-  )
-
-  const ref = useRef(null)
-  const isInView = useInView(ref)
   useEffect(() => {
     const interval = setInterval(() => {
       setSentence(getRandomSentenceList())
@@ -49,7 +44,7 @@ export default function CardList({}) {
     }
   }, [])
 
-  if (filteredLocationsData.length === 0 && areAllFiltersDeactivated) {
+  if (locationsData.length === 0 && areAllFiltersDeactivated) {
     return (
       <div className="container -z-10 mx-auto">
         <div className="flex h-[90vh] items-center justify-center text-center">
@@ -73,128 +68,159 @@ export default function CardList({}) {
   return (
     <div className="container -z-10 mx-auto pt-80">
       {Object.entries(
-        groupBy(filteredLocationsData, (location) => location.continent)
-      ).map(([continent]) => (
-        <div key={continent}>
-          <div className="flex items-center pl-5 pt-5">
-            <div className="flex items-center space-x-2 rounded-lg bg-secondary px-5 py-2">
-              <h1 className="w-24 text-6xl font-black">{continent}</h1>
-              <Switch
-                onCheckedChange={() => setActiveContinents(continent)}
-                name={continent}
-                checked={!activeContinents.includes(continent)}
-              />
-            </div>
-          </div>
-          {Object.entries(
-            groupBy(
-              filteredDataContinent.filter(
-                (city) => city.continent === continent
-              ),
-              "country"
+        groupBy(locationsData, (location) => location.continent)
+      ).map(([continent]) => {
+        const filteredDataContinent = locationsData
+          .filter((city) => city.continent === continent)
+          .filter((city) =>
+            city.locations.some((location) =>
+              location.eventInfo?.some((event) => {
+                const eventYear = Number(event.date.substr(0, 4))
+                return eventYear <= filterHighestYear
+              })
             )
-          ).map(([country]) => (
-            <div key={country} className="mt-5 rounded-lg bg-secondary p-5">
-              <div className="flex items-center space-x-2">
-                <div className="flex items-center space-x-2 rounded-lg bg-background px-5 py-2">
-                  <h2 className="text-4xl font-black">{country}</h2>
-                  <Switch
-                    onCheckedChange={() => setActiveCountries(country)}
-                    name={country}
-                    checked={!activeCountries.includes(country)}
-                  />
-                </div>
+          )
+          .filter((city) => !activeContinents.includes(city.continent))
+
+        return (
+          <div key={continent}>
+            <div className="flex items-center pl-5 pt-5">
+              <div className="flex items-center space-x-2 rounded-lg bg-secondary px-5 py-2">
+                <h1 className="w-24 text-6xl font-black">{continent}</h1>
+                <Switch
+                  onCheckedChange={() => setActiveContinents(continent)}
+                  name={continent}
+                  checked={!activeContinents.includes(continent)}
+                />
               </div>
+            </div>
+            {Object.entries(groupBy(filteredDataContinent, "country")).map(
+              ([country]) => {
+                const filteredDataCountry = filteredDataContinent
+                  .filter((city) => !activeCountries.includes(city.country))
+                  .filter((city) => city.country === country)
 
-              {filteredDataCountry
-                .filter(
-                  (city) =>
-                    city.continent === continent && city.country === country
-                )
-                .map((city) => {
-                  const hasEvents = city.locations.some(
-                    (location) => location.eventInfo.length > 0
-                  )
-                  if (!hasEvents) {
-                    return null // Skip rendering the city if it has no events
-                  }
-
-                  return (
-                    <m.div variants={list} key={city.key} className="pt-5">
-                      <div className="flex items-center space-x-2 ">
-                        <h3 className="text-3xl font-black leading-none ">
-                          {city.city}
-                        </h3>
+                return (
+                  <div
+                    key={country}
+                    className="mt-5 rounded-lg bg-secondary p-5"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 rounded-lg bg-background px-5 py-2">
+                        <h2 className="text-4xl font-black">{country}</h2>
+                        <Switch
+                          onCheckedChange={() => setActiveCountries(country)}
+                          name={country}
+                          checked={!activeCountries.includes(country)}
+                        />
                       </div>
-                      <div>
-                        {city.locations.map((location) => {
-                          if (location.eventInfo.length === 0) {
-                            return null // Skip rendering the location if it has no events
-                          }
-                          const locationTitleLink = linkMaker(location.title)
-                          return (
-                            <m.div variants={list} key={location.locationId}>
-                              <div>
-                                <div className="flex items-center space-x-2 pb-5 pt-3">
-                                  <h1 className="text-lg font-black leading-none">
-                                    {location.title}
-                                  </h1>{" "}
-                                  <Link
-                                    href={`https://performance.musiconn.de/location/${locationTitleLink}`}
-                                    target="_blank"
-                                  >
-                                    <Badge className="flex h-6 w-14 justify-center">
-                                      {location.locationId}
-                                    </Badge>
-                                  </Link>
-                                </div>
+                    </div>
+
+                    {filteredDataCountry.map((city) => {
+                      const hasEvents = city.locations.some(
+                        (location) => location.eventInfo.length > 0
+                      )
+                      if (!hasEvents) {
+                        return null // Skip rendering the city if it has no events
+                      }
+
+                      return (
+                        <m.div variants={list} key={city.key} className="pt-5">
+                          <div className="flex items-center space-x-2 ">
+                            <h3 className="text-3xl font-black leading-none ">
+                              {city.city}
+                            </h3>
+                          </div>
+                          <div>
+                            {city.locations.map((location) => {
+                              if (location.eventInfo.length === 0) {
+                                return null // Skip rendering the location if it has no events
+                              }
+                              const locationTitleLink = linkMaker(
+                                location.title
+                              )
+                              return (
                                 <m.div
                                   variants={list}
-                                  className="grid grid-flow-dense grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+                                  key={location.locationId}
                                 >
-                                  {location.eventInfo.map((event, index) => {
-                                    if (index < 20) {
-                                      return (
-                                        <CardItem
-                                          key={event.eventId}
-                                          event={event}
-                                        />
-                                      )
-                                    } else if (index === 20) {
-                                      const remainingCount =
-                                        location.eventInfo.length - 20
-                                      if (remainingCount < 20) {
-                                        return (
-                                          <CardItem
-                                            key={event.eventId}
-                                            event={event}
-                                          />
+                                  <div>
+                                    <div className="flex items-center space-x-2 pb-5 pt-3">
+                                      <h1 className="text-lg font-black leading-none">
+                                        {location.title}
+                                      </h1>{" "}
+                                      <Link
+                                        href={`https://performance.musiconn.de/location/${locationTitleLink}`}
+                                        target="_blank"
+                                      >
+                                        <Badge className="flex h-6 w-14 justify-center">
+                                          {location.locationId}
+                                        </Badge>
+                                      </Link>
+                                    </div>
+                                    <m.div
+                                      variants={list}
+                                      className="grid grid-flow-dense grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+                                    >
+                                      {location.eventInfo
+                                        .filter((event) =>
+                                          Object.values(
+                                            categoryFiltersActive
+                                          ).some(
+                                            (category) =>
+                                              category.state &&
+                                              event.eventCategory ===
+                                                category.id
+                                          )
                                         )
-                                      } else {
-                                        return (
-                                          <CardItemMoreLeft
-                                            key={event.eventId}
-                                            location={location}
-                                            remainingCount={remainingCount}
-                                          />
-                                        )
-                                      }
-                                    }
-                                    return null
-                                  })}
+                                        .map((event, index) => {
+                                          if (index < 20) {
+                                            return (
+                                              <CardItem
+                                                key={event.eventId}
+                                                event={event}
+                                              />
+                                            )
+                                          } else if (index === 20) {
+                                            const remainingCount =
+                                              location.eventInfo.length - 20
+                                            if (remainingCount < 20) {
+                                              return (
+                                                <CardItem
+                                                  key={event.eventId}
+                                                  event={event}
+                                                />
+                                              )
+                                            } else {
+                                              return (
+                                                <CardItemMoreLeft
+                                                  key={event.eventId}
+                                                  location={location}
+                                                  remainingCount={
+                                                    remainingCount
+                                                  }
+                                                />
+                                              )
+                                            }
+                                          }
+                                          return null
+                                        })}
+                                    </m.div>
+                                  </div>
                                 </m.div>
-                              </div>
-                            </m.div>
-                          )
-                        })}
-                      </div>
-                    </m.div>
-                  )
-                })}
-            </div>
-          ))}
-        </div>
-      ))}
+                              )
+                            })}
+                          </div>
+                        </m.div>
+                      )
+                    })}
+                  </div>
+                )
+              }
+            )}
+          </div>
+        )
+      })}
     </div>
   )
 }

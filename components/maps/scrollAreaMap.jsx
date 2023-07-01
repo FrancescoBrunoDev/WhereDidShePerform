@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 import { useStoreSettingMap } from "@/store/useStoreSettingMap"
 import { AnimatePresence, motion as m } from "framer-motion"
 
@@ -9,14 +9,12 @@ import { DatePicker } from "@/components/researchDate/eventPicker"
 
 import ScrollAreaItem from "./scrollAreaMapItem"
 
-export default function ScrollAreaMap({
-  lowestYear,
-  highestYear,
-  updateFilterHighestYear,
-  filterHighestYear,
-  searchData,
-}) {
-  const [isTimeVisible, setIsTimeVisible] = useState(false)
+export default function ScrollAreaMap({ searchData }) {
+  const [isTimeVisible, setIsTimeVisible] = useStoreSettingMap((state) => [
+    state.isTimeVisible,
+    state.setIsTimeVisible,
+  ])
+
   const thereIsMoreInWorld = useStoreSettingMap(
     (state) => state.thereIsMoreInWorld
   )
@@ -60,12 +58,7 @@ export default function ScrollAreaMap({
                   exit={{ opacity: 0 }}
                   key="careerTimeline"
                 >
-                  <CarrerTimeline
-                    highestYear={highestYear}
-                    lowestYear={lowestYear}
-                    filterHighestYear={filterHighestYear}
-                    updateFilterHighestYear={updateFilterHighestYear}
-                  />
+                  <CarrerTimeline />
                 </m.div>
               )}
             </AnimatePresence>

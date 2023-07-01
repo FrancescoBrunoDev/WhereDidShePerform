@@ -5,19 +5,12 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 
 export function FilterList({}) {
-  const [categoryFiltersActive, setCategoryFilters, isCategoryAvailable] =
+  const [categoryFiltersActive, setCategoryFilters] =
     useStoreFiltersMap((state) => [
       state.categoryFiltersActive,
       state.setCategoryFilters,
-      state.isCategoryAvailable,
     ])
 
-  useEffect(() => {
-    isCategoryAvailable()
-  }, [])
-
-
-  console.log(categoryFiltersActive, "categoryFiltersActive")
 
   return (
     <>

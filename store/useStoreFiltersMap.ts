@@ -1,13 +1,63 @@
 import { create } from "zustand"
 
-export const useStoreFiltersMap = create((set) => ({
+interface Location {
+  locationId: number
+  title: string
+  coordinates: [number, number]
+  eventInfo: EventInfo[]
+  categories: { label: number }[]
+  count: number
+}
+
+interface EventInfo {
+  eventId: number
+  date: string
+  eventCategory: number
+  eventTitle: string
+}
+
+interface City {
+  key: number
+  city: string
+  count: number
+  countLocations: number
+  locations: Location[]
+  coordinates: [number, number]
+  country: string
+  coordinatesCountry: [number, number]
+  continent: string
+}
+
+interface CategoryFilter {
+  state: boolean
+  id: number
+}
+
+interface Filters {
+  locationsData: City[]
+  activeCountries: string[]
+  activeContinents: string[]
+  areAllFiltersDeactivated: boolean
+  selectedComposerNames: string[]
+  expandedLocations: boolean
+  locationsWithComposer: any[] // Update the type of this property accordingly
+  categoryFilters: {
+    Season: CategoryFilter
+    Concerts: CategoryFilter
+    Religious_Event: CategoryFilter
+    Music_Theater: CategoryFilter
+    // Add more categories if needed
+  }
+  categoryFiltersActive: Record<string, boolean>
+  highestYear: number | null
+  lowestYear: number | null
+  filterHighestYear: number | null
+}
+
+export const useStoreFiltersMap = create<Filters>()((set) => ({
   locationsData: [],
-  filteredLocationsData: [],
-  filteredLocationsDataViewMap: [],
   activeCountries: [],
-  filteredDataCountry: [],
   activeContinents: [],
-  filteredDataContinent: [],
   areAllFiltersDeactivated: false,
   selectedComposerNames: [],
   expandedLocations: false,
@@ -31,126 +81,38 @@ export const useStoreFiltersMap = create((set) => ({
     },
   },
   categoryFiltersActive: {},
+  highestYear: null,
+  lowestYear: null,
+  filterHighestYear: null,
 
-  setFiltersFirstStart: (filteredDataCountry: [], filteredDataContinent: []) =>
-    set({ filteredDataCountry, filteredDataContinent }),
   setlocationsWithComposer: (locationsWithComposer: []) =>
     set({ locationsWithComposer }),
   setLocationsData: (locationsData: []) => set({ locationsData }),
   setExpandedLocations: (expandedLocations: boolean) =>
     set({ expandedLocations }),
-  setFilteredLocationsDataStart: (locationsData: []) =>
-    set({ filteredLocationsData: locationsData }),
 
-  setFilteredLocationsData: () =>
-    set((state: { locationsData: any[]; categoryFiltersActive: {} }) => {
-      const locationsData = state.locationsData
-      const categoryFiltersActive = state.categoryFiltersActive
-
-      const filteredData = locationsData
-        .map((city) => {
-          const { locations, count: totalCount } = city
-          const filteredLocations = locations.reduce(
-            (filtered: any[], location: { eventInfo: any[] }) => {
-              const filteredEventInfo = location.eventInfo.filter((event) =>
-                Object.values(categoryFiltersActive).some(
-                  (category) =>
-                    (category as { state: boolean; id: number }).state &&
-                    event.eventCategory ===
-                      (category as { state: boolean; id: number }).id
-                )
-              )
-
-              const count = filteredEventInfo.length
-
-              if (count > 0) {
-                const updatedLocation = {
-                  ...location,
-                  eventInfo: filteredEventInfo,
-                  count,
-                }
-                filtered.push(updatedLocation)
-              }
-
-              return filtered
-            },
-            []
-          )
-
-          if (filteredLocations.length > 0) {
-            return {
-              ...city,
-              locations: filteredLocations,
-              count: totalCount,
-              countLocations: filteredLocations.length,
-            }
-          }
-
-          return null
-        })
-        .filter((city) => city)
-
-      return { filteredLocationsData: filteredData }
-    }),
-  setFilteredLocationsDataViewMap: (
-    filteredLocationsData: [],
-    isEuropeMap: boolean
-  ) => {
-    const filteredLocationsDataViewMap = isEuropeMap
-      ? filteredLocationsData.filter(
-          (location: any) => location.continent === "EU"
-        )
-      : filteredLocationsData
-
-    set({ filteredLocationsDataViewMap })
-  },
   setActiveCountries: (country: any) => {
-    set((state: { activeCountries: any[]; filteredDataContinent: any[] }) => {
+    set((state: { activeCountries: any[] }) => {
       const updatedActiveCountries = state.activeCountries.includes(country)
         ? state.activeCountries.filter((c) => c !== country)
         : [...state.activeCountries, country]
 
-      const updatedFilteredDataCountry = state.filteredDataContinent.filter(
-        (location) => !updatedActiveCountries.includes(location.country)
-      )
-
       return {
         activeCountries: updatedActiveCountries,
-        filteredDataCountry: updatedFilteredDataCountry,
       }
     })
   },
 
   setActiveContinents: (continent: any) => {
-    set(
-      (state: {
-        activeContinents: any[]
-        filteredLocationsData: any[]
-        locationsData: any[]
-      }) => {
-        const updatedActiveContinents = state.activeContinents.includes(
-          continent
-        )
-          ? state.activeContinents.filter((c) => c !== continent)
-          : [...state.activeContinents, continent]
+    set((state: { activeContinents: any[] }) => {
+      const updatedActiveContinents = state.activeContinents.includes(continent)
+        ? state.activeContinents.filter((c) => c !== continent)
+        : [...state.activeContinents, continent]
 
-        const updatedFilteredDataContinent = state.filteredLocationsData
-          ? state.filteredLocationsData.filter(
-              (location) =>
-                !updatedActiveContinents.includes(location.continent)
-            )
-          : state.locationsData.filter(
-              (location) =>
-                !updatedActiveContinents.includes(location.continent)
-            )
-
-        return {
-          activeContinents: updatedActiveContinents,
-          filteredDataContinent: updatedFilteredDataContinent,
-          locationsData: state.locationsData,
-        }
+      return {
+        activeContinents: updatedActiveContinents,
       }
-    )
+    })
   },
   setAreAllFiltersDeactivated: (areAllFiltersDeactivated: boolean) =>
     set({ areAllFiltersDeactivated }),
@@ -210,4 +172,40 @@ export const useStoreFiltersMap = create((set) => ({
       }
     })
   },
+  findHigestYear: () => {
+    set((state: Filters) => {
+      let highestYear: number | null = null
+      let lowestYear: number | null = null
+
+      const locationsData: City[] = state.locationsData
+      if (locationsData.length > 0) {
+        locationsData.forEach(({ locations }) => {
+          if (locations) {
+            locations.forEach(({ eventInfo }) => {
+              if (eventInfo) {
+                eventInfo.forEach(({ date }) => {
+                  const year = Number(date.substr(0, 4))
+
+                  if (highestYear === null || year > highestYear) {
+                    highestYear = year
+                  }
+
+                  if (lowestYear === null || year < lowestYear) {
+                    lowestYear = year
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
+      return {
+        highestYear,
+        lowestYear,
+        filterHighestYear: highestYear,
+      }
+    })
+  },
+  updateFilterHighestYear: (filterHighestYear: number | null) =>
+    set({ filterHighestYear }),
 }))

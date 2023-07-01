@@ -1,15 +1,22 @@
-import { Slider } from "@/components/ui/slider"
 import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 
-export default function careerTimeline({
-  highestYear,
-  lowestYear,
-  filterHighestYear,
-  updateFilterHighestYear,
-}) {
+import { Slider } from "@/components/ui/slider"
+
+export default function careerTimeline({}) {
   const expandedLocations = useStoreFiltersMap(
     (state) => state.expandedLocations
   )
+  const [lowestYear, highestYear, updateFilterHighestYear, filterHighestYear] = useStoreFiltersMap(
+    (state) => [
+      state.lowestYear,
+      state.highestYear,
+      state.updateFilterHighestYear,
+      state.filterHighestYear,
+    ]
+  )
+
+  console.log(filterHighestYear, "filterHighestYear")
+  
   return (
     <>
       <div className="flex items-center justify-normal space-x-2 pt-6">

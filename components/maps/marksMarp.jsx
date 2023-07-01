@@ -1,16 +1,13 @@
 import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 import { useStoreSettingMap } from "@/store/useStoreSettingMap"
+import { groupBy } from "lodash"
 import { Marker } from "react-simple-maps"
 
-export default function MarksMap({
-  mapConfig,
-}) {
+export default function MarksMap({ mapConfig }) {
   const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
   const isHighQuality = useStoreSettingMap((state) => state.isHighQuality)
 
-  const filteredDataCountry = useStoreFiltersMap(
-    (state) => state.filteredDataCountry
-  )
+  const locationsData = useStoreFiltersMap((state) => state.locationsData)
 
   const scaleRadius = (count) => {
     const minRadius = 2 // Minimum radius value
@@ -32,12 +29,35 @@ export default function MarksMap({
     return null
   }
 
+  const [activeCountries, activeContinents, filterHighestYear] = useStoreFiltersMap((state) => [
+    state.activeCountries,
+    state.activeContinents,
+    state.filterHighestYear,
+  ])
+
   return (
     <>
-      {filteredDataCountry.map(
-        ({ key, coordinates, count, coordinatesCountry }) => {
+      {locationsData
+        .filter((city) => !activeContinents.includes(city.continent))
+        .filter((city) =>
+          city.locations.some((location) =>
+            location.eventInfo?.some((event) => {
+              const eventYear = Number(event.date.substr(0, 4))
+              return eventYear <= filterHighestYear
+            })
+          )
+        )
+        .filter((city) => !activeCountries.includes(city.country))
+        .map(({ key, coordinates, count, coordinatesCountry, locations }) => {
+          const hasEvents = locations.some(
+            (location) => location.eventInfo.length > 0
+          )
+          if (!hasEvents) {
+            return null // Skip rendering the city if it has no events
+          }
           const transitionDuration =
-            Math.floor(Math.random() * 900 + 100) / 2000 // Generate a random value between 0.1 and 1
+            Math.floor(Math.random() * 900 + 100) / 2000
+
           return (
             <Marker
               id={key}
@@ -66,8 +86,7 @@ export default function MarksMap({
               />
             </Marker>
           )
-        }
-      )}
+        })}
     </>
   )
 }
