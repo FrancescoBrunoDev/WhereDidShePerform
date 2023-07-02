@@ -1,5 +1,18 @@
+import { CoordinateCandidate, UsersVotesACandidate } from "@prisma/client"
+
 import { getAuthSession } from "@/lib/auth"
 import { db } from "@/lib/db"
+
+interface extendCoordinateCandidate extends CoordinateCandidate {
+  coordinateCandidateId: number
+  locationMCId: string
+  locationName: string
+  lat: string
+  lon: string
+  createdAt: Date
+  updatedAt: Date
+  votes: UsersVotesACandidate[]
+}
 
 export async function POST(req: Request) {
   try {
@@ -19,13 +32,15 @@ export async function POST(req: Request) {
       },
     })
 
+    console.log(geometries[0].votes, "geometries")
+
     if (geometries.length === 0) {
       return new Response("No geometries found", { status: 404 })
     }
 
     if (query.type === "highestVote") {
       const highestVotedCoordinateCandidate = geometries.reduce(
-        (highestVotedCoordinateCandidate, coordinateCandidate) => {
+        (highestVotedCoordinateCandidate: extendCoordinateCandidate, coordinateCandidate: extendCoordinateCandidate) => {
           if (
             coordinateCandidate.votes.length >
             highestVotedCoordinateCandidate.votes.length
@@ -35,7 +50,7 @@ export async function POST(req: Request) {
             return highestVotedCoordinateCandidate
           }
         },
-        { votes: [] } // Initialize with an empty object in case there are no candidates
+        { votes: [] } as any // Initialize with an empty object in case there are no candidates
       )
 
       const { coordinateCandidateId, lat, lon, locationName } =
