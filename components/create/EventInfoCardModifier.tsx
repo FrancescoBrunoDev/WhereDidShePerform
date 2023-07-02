@@ -91,7 +91,7 @@ const EventInfoCardModifier = ({
       fetchData()
       setDataFormat(true)
     }
-  }, [uid])
+  }, [uid, type])
 
   const { mutate: manageEvent, isLoading } = useMutation({
     mutationFn: async () => {
@@ -262,13 +262,13 @@ const EventInfoCardModifier = ({
           <h2 className="col-span-3 pt-2 text-5xl font-black">General Data</h2>
           <div className="col-span-7 flex max-w-xl flex-col gap-4">
             <div className="flex w-full shrink-0 items-start gap-4">
-              <div className="flex items-center gap-4">
+              <div className="flex shrink-0 items-center gap-4">
                 <span className="shrink-0 text-7xl font-black">1</span>
                 <span className="shrink-0 text-lg font-bold uppercase">
                   select a category
                 </span>
               </div>
-              <div className="pt-4">
+              <div className="w-full pt-4">
                 <Select
                   value={formData.category}
                   onValueChange={(e) =>
@@ -290,13 +290,13 @@ const EventInfoCardModifier = ({
               </div>
             </div>
             <div className="flex w-full shrink-0 items-start gap-4">
-              <div className="flex items-center gap-4">
+              <div className="flex shrink-0 items-center gap-4">
                 <span className="text-7xl font-black">2</span>
                 <span className="shrink-0 text-lg font-bold uppercase">
                   Date of the Event
                 </span>
               </div>
-              <div className="flex items-center gap-1 pt-4">
+              <div className="flex w-full items-center gap-1 pt-4">
                 <Input
                   defaultValue={type === "new" ? "" : formattedDate}
                   placeholder="yyyy-MM-dd"
@@ -320,7 +320,7 @@ const EventInfoCardModifier = ({
               </div>
             </div>
             <div className="flex w-full shrink-0 items-start gap-4">
-              <div className="flex items-center gap-4">
+              <div className="flex shrink-0 items-center gap-4">
                 <span className="text-7xl font-black">3</span>
                 <span className="shrink-0 self-center text-lg font-bold uppercase">
                   location
@@ -328,7 +328,7 @@ const EventInfoCardModifier = ({
               </div>
 
               {!formData.locationsM[0]?.title ? (
-                <div className="grid grid-cols-1 pt-4">
+                <div className="grid w-full grid-cols-1 pt-4">
                   <InputAutosuggest
                     paramsAPI={"location"}
                     setFormData={(locationData) =>

@@ -91,7 +91,7 @@ export async function POST(req: Request) {
         },
       })
     }
-    // se l'utente non ha ancora votato per questa coordinateCandidateId, creo il suo vot
+    // se l'utente non ha ancora votato per questa coordinateCandidateId, creo il suo voto
     await db.usersVotesACandidate.create({
       data: {
         userId: session.user.id,

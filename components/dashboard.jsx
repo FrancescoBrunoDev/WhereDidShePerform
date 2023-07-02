@@ -96,7 +96,18 @@ export default function Dashboard({ params }) {
     if (performerId || eventIds || userId) {
       fetchData()
     }
-  }, [performerId, eventIds, userId, searchKind, searchId, timeFrame])
+  }, [
+    performerId,
+    eventIds,
+    userId,
+    searchKind,
+    searchId,
+    timeFrame,
+    findHigestYear,
+    isCategoryAvailable,
+    setSearchData,
+    setLocationsData,
+  ])
 
   useEffect(() => {
     async function getData() {
@@ -106,13 +117,13 @@ export default function Dashboard({ params }) {
     if (performerId) {
       getData()
     }
-  }, [performerId, eventIds])
+  }, [performerId, eventIds, userId, setId])
 
   useEffect(() => {
     if (expandedLocations) {
       getAvaiableComposers(id, locationsData, eventIds)
     }
-  }, [expandedLocations])
+  }, [expandedLocations, id, locationsData, eventIds, getAvaiableComposers])
 
   // FILTERS
 
@@ -125,6 +136,7 @@ export default function Dashboard({ params }) {
     activeContinents,
     expandedLocations,
     selectedComposerNames,
+    applyCategoryFilters,
   ])
 
   return (

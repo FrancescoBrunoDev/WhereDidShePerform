@@ -2,10 +2,7 @@ import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 
 import { Slider } from "@/components/ui/slider"
 
-export default function careerTimeline({}) {
-  const expandedLocations = useStoreFiltersMap(
-    (state) => state.expandedLocations
-  )
+export default function CareerTimeline() {
   const [lowestYear, highestYear, updateFilterHighestYear, filterHighestYear] =
     useStoreFiltersMap((state) => [
       state.lowestYear,
