@@ -244,7 +244,7 @@ export const useStoreFiltersMap = create<Filters>()((set) => ({
 
                     return hasAllSelectedNames
                   }
-                  if (expandedLocations) {
+                  if (expandedLocations && selectedComposerNames.length > 0) {
                     return false
                   }
                   return true

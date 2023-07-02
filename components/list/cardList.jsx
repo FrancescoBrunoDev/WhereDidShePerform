@@ -19,14 +19,12 @@ export default function CardList({}) {
     setActiveCountries,
     activeContinents,
     setActiveContinents,
-    areAllFiltersDeactivated,
     locationsWithFilterCategory,
   ] = useStoreFiltersMap((state) => [
     state.activeCountries,
     state.setActiveCountries,
     state.activeContinents,
     state.setActiveContinents,
-    state.areAllFiltersDeactivated,
     state.locationsWithFilterCategory,
   ])
 
@@ -40,7 +38,9 @@ export default function CardList({}) {
     }
   }, [])
 
-  if (locationsWithFilterCategory.length === 0 && areAllFiltersDeactivated) {
+  console.log("locationsWithFilterCategory", locationsWithFilterCategory)
+
+  if (locationsWithFilterCategory.length === 0) {
     return (
       <div className="container -z-10 mx-auto">
         <div className="flex h-[90vh] items-center justify-center text-center">

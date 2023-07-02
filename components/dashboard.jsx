@@ -122,6 +122,7 @@ export default function Dashboard({ params }) {
   useEffect(() => {
     if (expandedLocations) {
       getAvaiableComposers(id, locationsData, eventIds)
+      applyCategoryFilters()
     }
   }, [expandedLocations, id, locationsData, eventIds, getAvaiableComposers])
 
