@@ -13,15 +13,18 @@ import { Icons } from "@/components/icons"
 import { ComposerSearchBox } from "./composerSearchBox"
 import { FilterList } from "./filterList"
 
-export function SettingsList({ searchData }) {
-  const resetSelectedComposerNames = useStoreFiltersMap(
-    (state) => state.resetSelectedComposerNames
-  )
-
-  const [setExpandedLocations, expandedLocations] = useStoreFiltersMap(
-    (state) => [state.setExpandedLocations, state.expandedLocations]
-  )
-  const categoryFilters = useStoreFiltersMap((state) => state.categoryFilters)
+export function SettingsList() {
+  const [
+    setExpandedLocations,
+    expandedLocations,
+    resetSelectedComposerNames,
+    categoryFiltersActive,
+  ] = useStoreFiltersMap((state) => [
+    state.setExpandedLocations,
+    state.expandedLocations,
+    state.resetSelectedComposerNames,
+    state.categoryFiltersActive,
+  ])
 
   return (
     <div className="container flex justify-center lg:justify-end">
@@ -39,7 +42,9 @@ export function SettingsList({ searchData }) {
           <Popover openDelay={200}>
             <PopoverTrigger>
               {" "}
-              <Toggle checked={categoryFilters.length > 0}>Filters</Toggle>
+              <Toggle checked={categoryFiltersActive.length > 0}>
+                Filters
+              </Toggle>
             </PopoverTrigger>
             <PopoverContent
               align="start"
@@ -61,7 +66,7 @@ export function SettingsList({ searchData }) {
                 animate={{ opacity: 1 }}
                 exit={{ width: 0, opacity: 0 }}
               >
-                <ComposerSearchBox searchData={searchData} />
+                <ComposerSearchBox />
               </m.div>
               <LayoutGroup>
                 <Toggle
@@ -83,7 +88,9 @@ export function SettingsList({ searchData }) {
               }}
               checked={expandedLocations}
             >
-              {searchData ? "Who was performed?" : "Who did s.he perform?"}
+              {expandedLocations
+                ? "Who was performed?"
+                : "Who did s.he perform?"}
             </Toggle>
           )}
         </div>

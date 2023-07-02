@@ -5,10 +5,10 @@ import { useState } from "react"
 import MapCamp from "@/components/maps/mapCamp"
 import ScrollAreaMap from "@/components/maps/scrollAreaMap"
 
-export default function MapVisualizer({ searchData }) {
+export default function MapVisualizer() {
   return (
     <section>
-      <ScrollAreaMap searchData={searchData} />
+      <ScrollAreaMap />
 
       <div>
         <MapCamp />

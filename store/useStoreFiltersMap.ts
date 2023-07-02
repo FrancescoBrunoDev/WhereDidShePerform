@@ -1,5 +1,7 @@
 import { create } from "zustand"
 
+import { GetExpandedEventWithPerformances } from "@/components/maps/getExpandedLocations"
+
 interface Location {
   locationId: number
   title: string
@@ -14,6 +16,11 @@ interface EventInfo {
   date: string
   eventCategory: number
   eventTitle: string
+  composerNamesArray?: composerNamesArray[]
+}
+
+interface composerNamesArray {
+  title: string
 }
 
 interface City {
@@ -34,6 +41,8 @@ interface CategoryFilter {
 }
 
 interface Filters {
+  eventIds: any[]
+  id: number | null
   locationsData: City[]
   activeCountries: string[]
   activeContinents: string[]
@@ -41,20 +50,18 @@ interface Filters {
   selectedComposerNames: string[]
   expandedLocations: boolean
   locationsWithComposer: any[] // Update the type of this property accordingly
-  categoryFilters: {
-    Season: CategoryFilter
-    Concerts: CategoryFilter
-    Religious_Event: CategoryFilter
-    Music_Theater: CategoryFilter
-    // Add more categories if needed
-  }
-  categoryFiltersActive: Record<string, boolean>
+  categoryFiltersActive: CategoryFilter[]
   highestYear: number | null
   lowestYear: number | null
   filterHighestYear: number | null
+  locationsWithFilterCategory: City[]
+  avaiableComposers: any[]
+  searchData: boolean
 }
 
 export const useStoreFiltersMap = create<Filters>()((set) => ({
+  eventIds: [],
+  id: null,
   locationsData: [],
   activeCountries: [],
   activeContinents: [],
@@ -62,28 +69,16 @@ export const useStoreFiltersMap = create<Filters>()((set) => ({
   selectedComposerNames: [],
   expandedLocations: false,
   locationsWithComposer: [],
-  categoryFilters: {
-    Season: {
-      state: true,
-      id: 1,
-    },
-    Concerts: {
-      state: true,
-      id: 2,
-    },
-    Religious_Event: {
-      state: true,
-      id: 3,
-    },
-    Music_Theater: {
-      state: true,
-      id: 4,
-    },
-  },
-  categoryFiltersActive: {},
+  categoryFiltersActive: [],
   highestYear: null,
   lowestYear: null,
   filterHighestYear: null,
+  locationsWithFilterCategory: [],
+  avaiableComposers: [],
+  searchData: false,
+
+  setId: (id: number) => set({ id }),
+  setSearchData: (searchData: boolean) => set({ searchData }),
 
   setlocationsWithComposer: (locationsWithComposer: []) =>
     set({ locationsWithComposer }),
@@ -134,7 +129,7 @@ export const useStoreFiltersMap = create<Filters>()((set) => ({
   },
   resetSelectedComposerNames: () => set({ selectedComposerNames: [] }),
   setCategoryFilters: (category: any) => {
-    set((state: { categoryFilters: any; categoryFiltersActive: any }) => {
+    set((state: { categoryFiltersActive: any }) => {
       const currentFilterValue = state.categoryFiltersActive[category].state
       const updatedFilterValue = !currentFilterValue
 
@@ -150,25 +145,40 @@ export const useStoreFiltersMap = create<Filters>()((set) => ({
     })
   },
   isCategoryAvailable: () => {
-    set((state: { locationsData: any[]; categoryFilters: any }) => {
+    set((state: { locationsData: any[] }) => {
       const locationsData = state.locationsData
-      let categoryFilters = state.categoryFilters
+      const categoryFiltersActive: any = {}
 
-      Object.keys(categoryFilters).forEach((category) => {
-        const id = categoryFilters[category].id
-        const isCategoryAvailable = locationsData.some((city) =>
-          city.locations.some((location: { eventInfo: any[] }) =>
-            location.eventInfo.some((event) => event.eventCategory === id)
-          )
-        )
-
-        if (!isCategoryAvailable) {
-          delete categoryFilters[category]
-        }
+      locationsData.forEach((city) => {
+        city.locations.forEach((location: { eventInfo: any[] }) => {
+          location.eventInfo.forEach((event) => {
+            const eventCategory = event.eventCategory
+            if (eventCategory === 1) {
+              categoryFiltersActive.Season = { state: true, id: eventCategory }
+            } else if (eventCategory === 2) {
+              categoryFiltersActive.Concerts = {
+                state: true,
+                id: eventCategory,
+              }
+            } else if (eventCategory === 3) {
+              categoryFiltersActive.Religious_Event = {
+                state: true,
+                id: eventCategory,
+              }
+            } else if (eventCategory === 4) {
+              categoryFiltersActive.Music_Theater = {
+                state: true,
+                id: eventCategory,
+              }
+            } else {
+              categoryFiltersActive.Other = { state: true, id: eventCategory }
+            }
+          })
+        })
       })
 
       return {
-        categoryFiltersActive: { ...categoryFilters },
+        categoryFiltersActive,
       }
     })
   },
@@ -208,4 +218,115 @@ export const useStoreFiltersMap = create<Filters>()((set) => ({
   },
   updateFilterHighestYear: (filterHighestYear: number | null) =>
     set({ filterHighestYear }),
+
+  applyCategoryFilters: () => {
+    set((state: any) => {
+      const expandedLocations = state.expandedLocations
+      const selectedComposerNames = state.selectedComposerNames
+      const categoryFiltersActive = state.categoryFiltersActive
+      const filterHighestYear = state.filterHighestYear
+      const filteredData = state.locationsData
+        .map((city: City) => {
+          const { locations } = city
+
+          const filteredLocations = locations.reduce(
+            (filtered: Location[], location: Location) => {
+              const filteredEventInfo = location.eventInfo
+                .filter((event) => {
+                  const composerNamesArray = event?.composerNamesArray
+                  if (composerNamesArray && composerNamesArray.length > 0) {
+                    const hasAllSelectedNames = selectedComposerNames.every(
+                      (selectedName: string) =>
+                        composerNamesArray.some(
+                          (composer) => composer?.title === selectedName
+                        )
+                    )
+
+                    return hasAllSelectedNames
+                  }
+                  if (expandedLocations) {
+                    return false
+                  }
+                  return true
+                })
+                .filter((event: EventInfo) => {
+                  const year = Number(event.date.slice(0, 4))
+                  return year <= filterHighestYear
+                })
+                .filter((event: EventInfo) =>
+                  Object.values(categoryFiltersActive).some(
+                    (category: any) =>
+                      category.state && event.eventCategory === category.id
+                  )
+                )
+
+              const count = filteredEventInfo.length
+
+              if (count > 0) {
+                const updatedLocation: Location = {
+                  ...location,
+                  eventInfo: filteredEventInfo,
+                  count,
+                }
+                filtered.push(updatedLocation)
+              }
+
+              return filtered
+            },
+            []
+          )
+
+          if (filteredLocations.length > 0) {
+            const count = filteredLocations.reduce(
+              (total, location) => total + location.count,
+              0
+            )
+            return {
+              ...city,
+              locations: filteredLocations,
+              count,
+              countLocations: filteredLocations.length,
+            }
+          }
+
+          return null
+        })
+        .filter((city: City | null) => city !== null)
+
+      return {
+        ...state,
+        locationsWithFilterCategory: filteredData,
+      }
+    })
+  },
+  getAvaiableComposers: async (
+    id: string,
+    locationsData: City[],
+    eventIds: string[]
+  ) => {
+    const composerSet = new Set()
+
+    const locationsWithComposer = await GetExpandedEventWithPerformances(
+      id,
+      locationsData,
+      eventIds
+    )
+
+    locationsWithComposer.forEach((city: City) => {
+      city.locations.forEach((location) => {
+        location.eventInfo.forEach((event) => {
+          event.composerNamesArray?.forEach((composer) => {
+            composerSet.add(composer?.title)
+          })
+        })
+      })
+    })
+
+    const avaibleComposers = Array.from(composerSet).map((title) => ({ title }))
+
+    set({
+      locationsData: locationsWithComposer,
+      avaiableComposers: avaibleComposers,
+    })
+  },
 }))

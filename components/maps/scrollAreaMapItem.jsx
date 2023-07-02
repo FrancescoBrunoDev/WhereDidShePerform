@@ -22,36 +22,26 @@ export default function ScrollAreaItem() {
   ])
 
   const [
-    locationsData,
+    locationsWithFilterCategory,
     activeCountries,
     setActiveCountries,
     activeContinents,
     setActiveContinents,
-    filterHighestYear,
   ] = useStoreFiltersMap((state) => [
-    state.locationsData,
+    state.locationsWithFilterCategory,
     state.activeCountries,
     state.setActiveCountries,
     state.activeContinents,
     state.setActiveContinents,
-    state.filterHighestYear,
   ])
 
   return (
     <div className={!isEuropeMap ? "flex flex-col space-y-2" : ""}>
       {Object.entries(
-        groupBy(locationsData, (location) => location.continent)
+        groupBy(locationsWithFilterCategory, (location) => location.continent)
       ).map(([continent]) => {
-        const filteredDataContinent = locationsData
+        const filteredDataContinent = locationsWithFilterCategory
           .filter((city) => !activeContinents.includes(city.continent))
-          .filter((city) =>
-          city.locations.some((location) =>
-            location.eventInfo?.some((event) => {
-              const eventYear = Number(event.date.substr(0, 4))
-              return eventYear <= filterHighestYear
-            })
-          )
-        )
           .filter((city) => city.continent === continent)
         return (
           <div key={continent}>

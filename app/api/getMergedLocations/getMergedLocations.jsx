@@ -331,8 +331,6 @@ export async function GetLocationsWithEventsAndTitle(idsCandidate) {
     key++
   }
 
-  /*   console.log(titlesWithSameCity) */
-
   for (const city in titlesWithSameCity) {
     const {
       count,

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { use, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 import { linkMaker } from "@/utils/linkMaker"
@@ -15,23 +15,19 @@ export default function CardList({}) {
   const [sentence, setSentence] = useState(getRandomSentenceList())
 
   const [
-    categoryFiltersActive,
-    locationsData,
     activeCountries,
     setActiveCountries,
     activeContinents,
     setActiveContinents,
     areAllFiltersDeactivated,
-    filterHighestYear,
+    locationsWithFilterCategory,
   ] = useStoreFiltersMap((state) => [
-    state.categoryFiltersActive,
-    state.locationsData,
     state.activeCountries,
     state.setActiveCountries,
     state.activeContinents,
     state.setActiveContinents,
     state.areAllFiltersDeactivated,
-    state.filterHighestYear,
+    state.locationsWithFilterCategory,
   ])
 
   useEffect(() => {
@@ -44,7 +40,7 @@ export default function CardList({}) {
     }
   }, [])
 
-  if (locationsData.length === 0 && areAllFiltersDeactivated) {
+  if (locationsWithFilterCategory.length === 0 && areAllFiltersDeactivated) {
     return (
       <div className="container -z-10 mx-auto">
         <div className="flex h-[90vh] items-center justify-center text-center">
@@ -68,19 +64,11 @@ export default function CardList({}) {
   return (
     <div className="container -z-10 mx-auto pt-80">
       {Object.entries(
-        groupBy(locationsData, (location) => location.continent)
+        groupBy(locationsWithFilterCategory, (location) => location.continent)
       ).map(([continent]) => {
-        const filteredDataContinent = locationsData
-          .filter((city) => city.continent === continent)
-          .filter((city) =>
-            city.locations.some((location) =>
-              location.eventInfo?.some((event) => {
-                const eventYear = Number(event.date.substr(0, 4))
-                return eventYear <= filterHighestYear
-              })
-            )
-          )
+        const filteredDataContinent = locationsWithFilterCategory
           .filter((city) => !activeContinents.includes(city.continent))
+          .filter((city) => city.continent === continent)
 
         return (
           <div key={continent}>
@@ -99,7 +87,6 @@ export default function CardList({}) {
                 const filteredDataCountry = filteredDataContinent
                   .filter((city) => !activeCountries.includes(city.country))
                   .filter((city) => city.country === country)
-
                 return (
                   <div
                     key={country}
@@ -139,6 +126,7 @@ export default function CardList({}) {
                               const locationTitleLink = linkMaker(
                                 location.title
                               )
+
                               return (
                                 <m.div
                                   variants={list}
@@ -162,18 +150,8 @@ export default function CardList({}) {
                                       variants={list}
                                       className="grid grid-flow-dense grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
                                     >
-                                      {location.eventInfo
-                                        .filter((event) =>
-                                          Object.values(
-                                            categoryFiltersActive
-                                          ).some(
-                                            (category) =>
-                                              category.state &&
-                                              event.eventCategory ===
-                                                category.id
-                                          )
-                                        )
-                                        .map((event, index) => {
+                                      {location.eventInfo.map(
+                                        (event, index) => {
                                           if (index < 20) {
                                             return (
                                               <CardItem
@@ -204,7 +182,8 @@ export default function CardList({}) {
                                             }
                                           }
                                           return null
-                                        })}
+                                        }
+                                      )}
                                     </m.div>
                                   </div>
                                 </m.div>

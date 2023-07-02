@@ -1,34 +1,54 @@
 "use client"
 
-import { use, useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 import { useViewportSize } from "@mantine/hooks"
 import { format, parseISO } from "date-fns"
 import { LayoutGroup, motion as m } from "framer-motion"
 
-import { useToast } from "@/hooks/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Toaster } from "@/components/ui/toaster"
-import { filterLocationsData } from "@/components/list/filterLocationsData"
 import List from "@/components/list/list"
-import { GetExpandedEventWithPerformances } from "@/components/maps/getExpandedLocations"
 import MapVisualizer from "@/components/maps/mapVisualizer"
 import { GetInfoPerson } from "@/app/api/musiconn"
 
 export default function Dashboard({ params }) {
-  const [locationsData, setLocationsData] = useStoreFiltersMap((state) => [
+  const [
+    id,
+    setId,
+    locationsData,
+    setLocationsData,
+    isCategoryAvailable,
+    applyCategoryFilters,
+    categoryFiltersActive,
+    filterHighestYear,
+    activeContinents,
+    activeCountries,
+    getAvaiableComposers,
+    expandedLocations,
+    selectedComposerNames,
+    findHigestYear,
+    setSearchData,
+  ] = useStoreFiltersMap((state) => [
+    state.id,
+    state.setId,
     state.locationsData,
     state.setLocationsData,
+    state.isCategoryAvailable,
+    state.applyCategoryFilters,
+    state.categoryFiltersActive,
+    state.filterHighestYear,
+    state.activeContinents,
+    state.activeCountries,
+    state.getAvaiableComposers,
+    state.expandedLocations,
+    state.selectedComposerNames,
+    state.findHigestYear,
+    state.setSearchData,
   ])
 
-  const isCategoryAvailable = useStoreFiltersMap(
-    (state) => state.isCategoryAvailable
-  )
-
-  const [id, setId] = useState(null)
-  const { timeFrame } = params
-  const [searchData, setSearchData] = useState(timeFrame !== undefined)
   let startDate, endDate, formattedStartDate, formattedEndDate
+  const { timeFrame } = params
 
   if (timeFrame !== undefined) {
     const [startDateString, endDateString] = timeFrame.split("%7C")
@@ -38,28 +58,8 @@ export default function Dashboard({ params }) {
     formattedEndDate = format(endDate, "do MMM, yyyy")
   }
 
-  const expandedLocations = useStoreFiltersMap(
-    (state) => state.expandedLocations
-  ) // Track if the composer is expanded
-  /*   const categoryFiltersActive = useStoreFiltersMap(
-    (state) => state.categoryFiltersActive
-  ) */
-
-  const [locationsWithComposer, setlocationsWithComposer] = useStoreFiltersMap(
-    (state) => [state.locationsWithComposer, state.setlocationsWithComposer]
-  )
-
   const { width } = useViewportSize()
-  // filter from list
 
-  // zustand state
-  const selectedComposerNames = useStoreFiltersMap(
-    (state) => state.selectedComposerNames
-  )
-
-  const [findHigestYear, highestYear, lowestYear] = useStoreFiltersMap(
-    (state) => [state.findHigestYear, state.highestYear, state.lowestYear]
-  )
   // fetch data
 
   const { performerId } = params
@@ -83,6 +83,10 @@ export default function Dashboard({ params }) {
         throw new Error("Failed to fetch data")
       }
 
+      if (timeFrame !== undefined) {
+        setSearchData(true)
+      }
+
       const data = await res.json()
       setLocationsData(data)
       isCategoryAvailable()
@@ -92,7 +96,7 @@ export default function Dashboard({ params }) {
     if (performerId || eventIds || userId) {
       fetchData()
     }
-  }, [performerId, eventIds, userId, searchKind, searchId])
+  }, [performerId, eventIds, userId, searchKind, searchId, timeFrame])
 
   useEffect(() => {
     async function getData() {
@@ -105,45 +109,24 @@ export default function Dashboard({ params }) {
   }, [performerId, eventIds])
 
   useEffect(() => {
-    async function fetchData() {
-      const locationsWithComposer = await GetExpandedEventWithPerformances(
-        id,
-        locationsData,
-        eventIds
-      )
-      setlocationsWithComposer(locationsWithComposer)
-    }
-
     if (expandedLocations) {
-      fetchData()
+      getAvaiableComposers(id, locationsData, eventIds)
     }
-  }, [id, expandedLocations])
+  }, [expandedLocations])
 
-  /*   useEffect(() => {
-    filterLocationsData(
-      expandedLocations,
-      categoryFiltersActive,
-      locationsData,
-     setFilteredLocationsData, 
-      selectedComposerNames,
-      locationsWithComposer,
-      filterLowestYear,
-      filterHighestYear
-    )
+  // FILTERS
+
+  useEffect(() => {
+    applyCategoryFilters()
   }, [
-    expandedLocations,
     categoryFiltersActive,
-    locationsData,
-   setFilteredLocationsData, 
-    selectedComposerNames,
-    locationsWithComposer,
-    filterLowestYear,
     filterHighestYear,
-  ]) 
- */
-  // filter list
+    activeCountries,
+    activeContinents,
+    expandedLocations,
+    selectedComposerNames,
+  ])
 
-  const { toast } = useToast()
   return (
     <m.section
       initial={{ opacity: 0 }}
@@ -174,32 +157,14 @@ export default function Dashboard({ params }) {
           }
         >
           <TabsList className="flex justify-center shadow-lg lg:shadow-none">
-            <TabsTrigger
-              /* onClick={() => {
-                toast({
-                  title: areAllFiltersDeactivated
-                    ? "It's more fun with at least one filter!"
-                    : "The map is updated with your filter settings!",
-                  action: (
-                    <ToastAction altText="Goto schedule to undo">
-                      {areAllFiltersDeactivated ? "leave me alone!" : "Thanks!"}
-                    </ToastAction>
-                  ),
-                })
-              }} */
-              value="map"
-            >
-              map
-            </TabsTrigger>
+            <TabsTrigger value="map">map</TabsTrigger>
             <TabsTrigger value="list">list</TabsTrigger>
           </TabsList>
         </div>
 
         <LayoutGroup>
           <TabsContent value="map">
-            <MapVisualizer
-              searchData={searchData}
-            />
+            <MapVisualizer />
           </TabsContent>
           <TabsContent value="list">
             <List />

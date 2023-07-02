@@ -9,14 +9,14 @@ import MenuMap from "./menuMap"
 export default function MapCamp() {
   // handle map switch
   // map size based on screen size
-  const mapUrl = useStoreSettingMap((state) => state.mapUrl)
-  const locationsData = useStoreSettingMap((state) => state.filteredLocationsDataViewMap)
-
-  const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
-  const [isHighQuality, setIsHighQuality] = useStoreSettingMap((state) => [
-    state.isHighQuality,
-    state.setIsHighQuality,
-  ])
+  const [mapUrl, locationsData, isEuropeMap, isHighQuality, setIsHighQuality] =
+    useStoreSettingMap((state) => [
+      state.mapUrl,
+      state.filteredLocationsDataViewMap,
+      state.isEuropeMap,
+      state.isHighQuality,
+      state.setIsHighQuality,
+    ])
 
   // Set the map configuration state
   const [mapConfig, setMapConfig] = useState({
@@ -163,9 +163,7 @@ export default function MapCamp() {
                   ))
                 }
               </Geographies>{" "}
-              <MarksMap
-                mapConfig={mapConfig}
-              />
+              <MarksMap mapConfig={mapConfig} />
             </ComposableMap>
           </m.div>
         </AnimatePresence>

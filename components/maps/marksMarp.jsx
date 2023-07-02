@@ -1,13 +1,18 @@
 import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 import { useStoreSettingMap } from "@/store/useStoreSettingMap"
-import { groupBy } from "lodash"
 import { Marker } from "react-simple-maps"
 
 export default function MarksMap({ mapConfig }) {
-  const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
-  const isHighQuality = useStoreSettingMap((state) => state.isHighQuality)
-
-  const locationsData = useStoreFiltersMap((state) => state.locationsData)
+  const [isEuropeMap, isHighQuality] = useStoreSettingMap((state) => [
+    state.isEuropeMap,
+    state.isHighQuality,
+  ])
+  const [locationsWithFilterCategory, activeContinents, activeCountries] =
+    useStoreFiltersMap((state) => [
+      state.locationsWithFilterCategory,
+      state.activeContinents,
+      state.activeCountries,
+    ])
 
   const scaleRadius = (count) => {
     const minRadius = 2 // Minimum radius value
@@ -29,24 +34,10 @@ export default function MarksMap({ mapConfig }) {
     return null
   }
 
-  const [activeCountries, activeContinents, filterHighestYear] = useStoreFiltersMap((state) => [
-    state.activeCountries,
-    state.activeContinents,
-    state.filterHighestYear,
-  ])
-
   return (
     <>
-      {locationsData
+      {locationsWithFilterCategory
         .filter((city) => !activeContinents.includes(city.continent))
-        .filter((city) =>
-          city.locations.some((location) =>
-            location.eventInfo?.some((event) => {
-              const eventYear = Number(event.date.substr(0, 4))
-              return eventYear <= filterHighestYear
-            })
-          )
-        )
         .filter((city) => !activeCountries.includes(city.country))
         .map(({ key, coordinates, count, coordinatesCountry, locations }) => {
           const hasEvents = locations.some(

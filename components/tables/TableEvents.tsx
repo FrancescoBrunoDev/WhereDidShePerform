@@ -1,10 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useStoreProfile } from "@/store/useStoreProfile"
 import { Role } from "@prisma/client"
-import axios from "axios"
 
-import { EventTable } from "@/types/database"
 import { columns } from "@/components/tables/ColumsTableEvents"
 import { DataTable } from "@/components/tables/DataTableEvents"
 
@@ -12,34 +11,24 @@ export default function TableEvents({
   events,
   userId,
   userRole,
+  profileId,
 }: {
   events?: any
   userId?: string
   userRole?: Role
+  profileId?: string
 }) {
-  const [data, setData] = useState<EventTable[]>([])
-  const [role, setRole] = useState<Role>(Role.USER)
+  const [data, role, fetchData, setUserId] = useStoreProfile((state) => [
+    state.events,
+    state.role,
+    state.fetchData,
+    state.setUserId,
+  ])
 
   useEffect(() => {
-    async function fetchData() {
-      if (!events) {
-        const payload = {
-          userId: userId,
-        }
-        const { data } = await axios.post("/api/get/getEventsByUser", payload)
-
-        if (data.role) {
-          setRole(data.role as Role) // set the role in case of open as modal
-        }
-        setData(data.events as EventTable[])
-      } else {
-        setRole(userRole as Role) // set the role in any case
-        setData(events)
-      }
-    }
-
-    fetchData()
-  }, [events, userId, userRole])
+    fetchData(events, userId, userRole)
+    setUserId(profileId)
+  }, [events, userId, userRole, profileId])
 
   return (
     <div className="mx-auto">

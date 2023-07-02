@@ -1,4 +1,5 @@
 import { useRouter } from "next/navigation"
+import { useStoreProfile } from "@/store/useStoreProfile"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 
@@ -24,6 +25,10 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = (uid, setEventList) => {
+  const [fetchData, userId] = useStoreProfile((state) => [
+    state.fetchData,
+    state.userId,
+  ])
   const router = useRouter()
   const { mutate: deleteEvent, isLoading } = useMutation({
     mutationFn: async (eventId) => {
@@ -37,7 +42,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = (uid, setEventList) => {
     onSuccess: () => {
       // Remove the deleted event from the event list
       console.log("Event deleted")
-      router.refresh()
+      fetchData(userId)
     },
   })
   return (

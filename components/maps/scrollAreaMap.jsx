@@ -1,4 +1,5 @@
 import { Suspense } from "react"
+import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 import { useStoreSettingMap } from "@/store/useStoreSettingMap"
 import { AnimatePresence, motion as m } from "framer-motion"
 
@@ -9,16 +10,17 @@ import { DatePicker } from "@/components/researchDate/eventPicker"
 
 import ScrollAreaItem from "./scrollAreaMapItem"
 
-export default function ScrollAreaMap({ searchData }) {
-  const [isTimeVisible, setIsTimeVisible] = useStoreSettingMap((state) => [
-    state.isTimeVisible,
-    state.setIsTimeVisible,
-  ])
+export default function ScrollAreaMap() {
+  // searchData è da definire, serve a capire se stiamo facendo una ricerca per data o per id
+  const [isTimeVisible, setIsTimeVisible, isEuropeMap, thereIsMoreInWorld] =
+    useStoreSettingMap((state) => [
+      state.isTimeVisible,
+      state.setIsTimeVisible,
+      state.isEuropeMap,
+      state.thereIsMoreInWorld,
+    ])
 
-  const thereIsMoreInWorld = useStoreSettingMap(
-    (state) => state.thereIsMoreInWorld
-  )
-  const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
+  const searchData = useStoreFiltersMap((state) => state.searchData)
 
   return (
     <Suspense>

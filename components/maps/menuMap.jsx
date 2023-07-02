@@ -14,30 +14,30 @@ import { Switch } from "@/components/ui/switch"
 import { Icons } from "@/components/icons"
 
 export default function MenuMap() {
-  const thereIsMoreInWorld = useStoreSettingMap(
-    (state) => state.thereIsMoreInWorld
-  )
-  const thereIsMoreInWorldPopup = useStoreSettingMap(
-    (state) => state.thereIsMoreInWorldPopup
-  )
-  const setIsEuropeMap = useStoreSettingMap((state) => state.setIsEuropeMap)
-  const setIsWorldMap = useStoreSettingMap((state) => state.setIsWorldMap)
-  const isEuropeMap = useStoreSettingMap((state) => state.isEuropeMap)
-  const [isHighQuality, setIsHighQuality] = useStoreSettingMap((state) => [
+  const [
+    thereIsMoreInWorldPopup,
+    setThereIsMoreInWorldPopup,
+    isHighQuality,
+    setIsHighQuality,
+    thereIsMoreInWorld,
+    setThereIsMoreInWorld,
+    setIsEuropeMap,
+    setIsWorldMap,
+    isEuropeMap,
+  ] = useStoreSettingMap((state) => [
+    state.thereIsMoreInWorldPopup,
+    state.setThereIsMoreInWorldPopup,
     state.isHighQuality,
     state.setIsHighQuality,
+    state.thereIsMoreInWorld,
+    state.setThereIsMoreInWorld,
+    state.setIsEuropeMap,
+    state.setIsWorldMap,
+    state.isEuropeMap,
   ])
 
   const filteredLocationsData = useStoreFiltersMap(
-    (state) => state.filteredLocationsData
-  )
-
-  const setThereIsMoreInWorldPopup = useStoreSettingMap(
-    (state) => state.setThereIsMoreInWorldPopup
-  )
-
-  const setThereIsMoreInWorld = useStoreSettingMap(
-    (state) => state.setThereIsMoreInWorld
+    (state) => state.locationsWithFilterCategory
   )
 
   useEffect(() => {

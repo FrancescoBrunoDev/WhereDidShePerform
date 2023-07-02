@@ -68,7 +68,6 @@ export function DataTable<TData, TValue>({
     stateVerification: (row.original as any)
       .stateVerification as StateVerification,
   }))
-  console.log(uidArrayForVerification, "uidArrayForVerification")
 
   return (
     <>

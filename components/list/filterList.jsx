@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
 
 import { Label } from "@/components/ui/label"

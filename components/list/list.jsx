@@ -1,10 +1,10 @@
 import CardList from "@/components/list/cardList"
 import { SettingsList } from "@/components/list/settingsList"
 
-export default function List({ searchData }) {
+export default function List() {
   return (
     <>
-      <SettingsList searchData={searchData} />
+      <SettingsList />
 
       <section className="relative mb-10 overflow-y-scroll lg:container">
         <CardList />

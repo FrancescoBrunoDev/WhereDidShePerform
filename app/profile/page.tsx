@@ -60,7 +60,7 @@ const ProfilePage = async () => {
           )}
           <div>
             <h2 className="text-3xl font-black">Your contributions</h2>
-            <TableEvents userRole={user?.role} events={user?.event} />
+            <TableEvents profileId={user?.id} userRole={user?.role} events={user?.event} />
           </div>
         </div>
       </div>
