@@ -38,8 +38,6 @@ export default function CardList({}) {
     }
   }, [])
 
-  console.log("locationsWithFilterCategory", locationsWithFilterCategory)
-
   if (locationsWithFilterCategory.length === 0) {
     return (
       <div className="container -z-10 mx-auto">

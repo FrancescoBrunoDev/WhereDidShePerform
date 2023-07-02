@@ -75,6 +75,7 @@ export default function Dashboard({ params }) {
 
   useEffect(() => {
     async function fetchData() {
+      setLocationsData([])
       const res = await fetch(
         `/api/getMergedLocations?${searchKind}=${searchId}`
       )
