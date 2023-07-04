@@ -10,6 +10,7 @@ import { LayoutGroup, motion as m } from "framer-motion"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Toaster } from "@/components/ui/toaster"
 import List from "@/components/list/list"
+import { Loading } from "@/components/loading"
 import MapVisualizer from "@/components/maps/mapVisualizer"
 import { GetInfoPerson } from "@/app/api/musiconn"
 
@@ -181,7 +182,7 @@ export default function Dashboard({ params }) {
 
         <LayoutGroup>
           <TabsContent value="map">
-            {locationsData.length > 0 && <MapVisualizer />}
+            {locationsData.length > 0 ? <MapVisualizer /> : <Loading />}
           </TabsContent>
           <TabsContent value="list">
             <List />

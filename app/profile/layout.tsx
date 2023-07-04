@@ -14,7 +14,7 @@ export default function RootLayout({
       {children}
       {eventInfoModal}
       {tableEventUserModal}
-      <div className="fixed bottom-3 flex w-full justify-center container">
+      <div className="container fixed bottom-3 flex w-full justify-center">
         <Badge variant={"secondary"} className="text-sm">
           <span>this profile section is in technical preview</span>
         </Badge>

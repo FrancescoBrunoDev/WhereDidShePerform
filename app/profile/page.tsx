@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth"
 
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { UserAvatar } from "@/components/UserAvatar"
 import TableEvents from "@/components/tables/TableEvents"
 import TableUsers from "@/components/tables/TableUsers"
