@@ -7,7 +7,6 @@ export default function MapVisualizer() {
   return (
     <section>
       <ScrollAreaMap />
-
       <div>
         <MapCamp />
       </div>

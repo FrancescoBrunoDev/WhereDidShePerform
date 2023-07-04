@@ -2,6 +2,7 @@
 
 import { useEffect } from "react"
 import { useStoreFiltersMap } from "@/store/useStoreFiltersMap"
+import { useStoreSearchByDate } from "@/store/useStoreSearchByDate"
 import { useViewportSize } from "@mantine/hooks"
 import { format, parseISO } from "date-fns"
 import { LayoutGroup, motion as m } from "framer-motion"
@@ -47,6 +48,7 @@ export default function Dashboard({ params }) {
     state.setSearchData,
   ])
 
+  const date = useStoreSearchByDate((state) => state.date)
   let startDate, endDate, formattedStartDate, formattedEndDate
   const { timeFrame } = params
 
@@ -63,8 +65,8 @@ export default function Dashboard({ params }) {
   // fetch data
 
   const { performerId } = params
-  const { eventIds } = params
   const { userId } = params
+  const eventIds = date.filteredEvents
 
   const searchId = performerId ? performerId : eventIds ? eventIds : userId
   const searchKind = performerId
@@ -76,6 +78,7 @@ export default function Dashboard({ params }) {
   useEffect(() => {
     async function fetchData() {
       setLocationsData([])
+      setId(null)
       const res = await fetch(
         `/api/getMergedLocations?${searchKind}=${searchId}`
       )
@@ -178,7 +181,7 @@ export default function Dashboard({ params }) {
 
         <LayoutGroup>
           <TabsContent value="map">
-            <MapVisualizer />
+            {locationsData.length > 0 && <MapVisualizer />}
           </TabsContent>
           <TabsContent value="list">
             <List />

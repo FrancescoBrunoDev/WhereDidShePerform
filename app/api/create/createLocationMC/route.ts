@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       },
     })
 
-    if (!locationMC) {
+    if (locationMC.length === 0) {
       await db.locationMC.create({
         data: {
           uid: uid,
@@ -40,6 +40,8 @@ export async function POST(req: Request) {
         },
       },
     })
+
+    console.log(coordinateCandidateExists, "coordinate")
 
     if (!coordinateCandidateExists) {
       await db.coordinateCandidate.create({
@@ -90,15 +92,16 @@ export async function POST(req: Request) {
           coordinateCandidateId: coordinateCandidateId,
         },
       })
+    } else {
+      // se l'utente non ha ancora votato per questa coordinateCandidateId, creo il suo voto
+      await db.usersVotesACandidate.create({
+        data: {
+          userId: session.user.id,
+          coordinateCandidateId: coordinateCandidateId,
+          locationMCId: uid,
+        },
+      })
     }
-    // se l'utente non ha ancora votato per questa coordinateCandidateId, creo il suo voto
-    await db.usersVotesACandidate.create({
-      data: {
-        userId: session.user.id,
-        coordinateCandidateId: coordinateCandidateId,
-        locationMCId: uid,
-      },
-    })
 
     return new Response("success", { status: 200 })
   } catch (error) {

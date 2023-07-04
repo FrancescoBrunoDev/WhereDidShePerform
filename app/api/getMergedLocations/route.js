@@ -14,8 +14,6 @@ export async function GET(request) {
     userId: userId,
   }
 
-  console.log("idsCandidate", idsCandidate)
-
   const data = await GetLocationsWithEventsAndTitle(idsCandidate)
   const responseBody = JSON.stringify(data)
 

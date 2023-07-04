@@ -11,6 +11,7 @@ import { LocationM, PersonM, WorkM } from "@/types/database"
 import { CoordinatesGeo } from "@/types/locationGeo"
 import { NewEventPayload } from "@/lib/validators/newEvent"
 import { newLocationMCPayload } from "@/lib/validators/newLocationMC"
+import { useToast } from "@/hooks/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -58,6 +59,7 @@ const EventInfoCardModifier = ({
     comment: "",
     stateVerification: "",
   })
+  const { toast } = useToast()
 
   useEffect(() => {
     if (type === "modify") {
@@ -124,11 +126,11 @@ const EventInfoCardModifier = ({
       const result = data as string
 
       if (result === "success") {
-        if (coordinateCandidate?.place_id) {
-          const place_id = coordinateCandidate?.place_id
-          const lat = coordinateCandidate?.geometries?.lat
-          const lon = coordinateCandidate?.geometries?.lon
-          const locationName = coordinateCandidate?.name
+        if (coordinateCandidate) {
+          const place_id = coordinateCandidate.place_id
+          const lat = coordinateCandidate.geometries.lat
+          const lon = coordinateCandidate.geometries.lon
+          const locationName = coordinateCandidate.name
           const request: newLocationMCPayload = {
             locationName: locationName,
             uid: formData.locationsM[0].mUid,
@@ -136,20 +138,32 @@ const EventInfoCardModifier = ({
             lat: lat,
             lon: lon,
           }
-
+          console.log(request, "request")
           const { data } = await axios.post(
             "/api/create/createLocationMC",
             request
           )
+          const result = data as string
+          console.log(result, "result")
+          
         }
+        toast({
+          title: "Event added!",
+          /*           description: "There was a problem with your request.", */
+        })
         router.back()
         router.refresh()
+        
       } else {
-        //make the error message as a toast
+        toast({
+          title: "Uh oh! Something went wrong.",
+          description: "There was a problem with your request.",
+        })
       }
       return data as string
     },
   })
+  console.log(coordinateCandidate, "coordinateCandidate")
 
   const handleAddPerson = (value: [string, string, string]) => {
     const newMUid = value[2]

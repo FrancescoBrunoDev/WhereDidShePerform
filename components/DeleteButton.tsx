@@ -42,7 +42,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = (uid, setEventList) => {
     onSuccess: () => {
       // Remove the deleted event from the event list
       console.log("Event deleted")
-      fetchData(userId)
+      router.refresh()
     },
   })
   return (

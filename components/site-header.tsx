@@ -28,7 +28,7 @@ export function SiteHeader() {
               variant: "ghost",
             })}
           >
-            <Icons.home className="h-5 w-5" />
+            <Icons.home className="h-5 w-5 stroke-primary dark:hover:stroke-secondary" />
             <span className="sr-only">Home</span>
           </div>
         </Link>
@@ -45,7 +45,7 @@ export function SiteHeader() {
                   variant: "ghost",
                 })}
               >
-                <Icons.gitHub className="h-5 w-5" />
+                <Icons.gitHub className="h-5 w-5 stroke-primary dark:hover:stroke-secondary" />
                 <span className="sr-only">GitHub</span>
               </div>
             </Link>

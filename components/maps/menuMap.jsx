@@ -90,7 +90,7 @@ export default function MenuMap() {
               variant: "ghost",
             })}
           >
-            <Icons.settings className="h-5 w-5" />
+            <Icons.settings className="h-5 w-5 stroke-primary dark:hover:stroke-secondary" />
             <span className="sr-only">settings</span>
           </div>
         </PopoverTrigger>

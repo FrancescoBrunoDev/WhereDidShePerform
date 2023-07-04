@@ -49,7 +49,6 @@ export default function SearchDates({
           }
             `}
       >
-        <CardDescription></CardDescription>
         <div className="mt-0 grid grid-cols-2 gap-1">
           <div className="col-span-1 grid grid-cols-1 space-y-1">
             <CardDescription className="flex items-center justify-start">
