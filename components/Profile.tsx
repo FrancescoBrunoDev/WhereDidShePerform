@@ -1,27 +1,34 @@
 import Link from "next/link"
-import { authOptions } from '@/lib/auth'
-import { getServerSession } from 'next-auth'
+import { getServerSession } from "next-auth"
+
+import { authOptions } from "@/lib/auth"
 import { buttonVariants } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
 import { UserAccountNav } from "@/components/UserAccountNav"
+import { Icons } from "@/components/icons"
 
 const Profile = async (): Promise<JSX.Element> => {
   const session = await getServerSession(authOptions)
   return (
     <>
       {!session?.user ? (
-        <Link href="/sign-in">
+        <Link href="/sign-in" className="group/item">
           <div
-            className={buttonVariants({
-              size: "sm",
-              variant: "ghost",
-            })}
+            className={
+              buttonVariants({
+                size: "sm",
+                variant: "ghost",
+              }) +
+              "group/edit flex items-center gap-2 text-sm text-primary dark:text-primary group-hover/item:dark:hover:text-background"
+            }
           >
-            <Icons.login className="h-5 w-5" />
+            <span className="">Login</span>
+            <div className="h-5 w-5 rounded-full bg-primary dark:hover:bg-background" />
             <span className="sr-only">Login</span>
           </div>
         </Link>
-      ) : <UserAccountNav user={session.user} />}
+      ) : (
+        <UserAccountNav user={session.user} />
+      )}
     </>
   )
 }
