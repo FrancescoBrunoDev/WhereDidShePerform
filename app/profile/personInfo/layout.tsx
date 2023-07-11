@@ -1,4 +1,4 @@
-export default function LayoutPersonInfo({
+export default function LayoutEventInfo({
   children,
 }: {
   children: React.ReactNode

@@ -19,7 +19,7 @@ import {
 import ModifierVerificationEventAdmin from "@/components/ModifierVerificationEventAdmin"
 import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader"
 
-import DeleteButton from "../DeleteButton"
+import DeleteButton from "../../DeleteButton"
 
 export const columns: ColumnDef<EventTable>[] = [
   {

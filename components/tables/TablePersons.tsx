@@ -7,7 +7,7 @@ import { Role } from "@prisma/client"
 import { columns } from "@/components/tables/events/ColumsTableEvents"
 import { DataTable } from "@/components/tables/DataTableEvents"
 
-export default function TableEvents({
+export default function TablePersons({
   events,
   userId,
   userRole,
@@ -32,7 +32,7 @@ export default function TableEvents({
 
   return (
     <div className="mx-auto">
-      <DataTable userRole={role} columns={columns} data={data} type="events" />
+      <DataTable userRole={role} columns={columns} data={data} type="persons" />
     </div>
   )
 }

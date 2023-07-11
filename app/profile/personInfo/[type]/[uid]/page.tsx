@@ -2,8 +2,9 @@
 
 import { Suspense } from "react"
 
-import EventInfoCardModifier from "@/components/create/EventInfoCardModifier"
-import EventInfoCardVisualiser from "@/components/create/EventInfoCardVisualiser"
+import PersonInfoCardModifier from "@/components/create/PersonInfoCardModifier"
+
+/* import PersonInfoCardVisualiser from "@/components/create/PersonInfoCardVisualiser" */
 
 type PageParams = {
   type: string | undefined
@@ -21,9 +22,9 @@ const Page = async ({ params }: { params: PageParams }) => {
 
   return (
     <Suspense>
-      {type === "modify" && <EventInfoCardModifier uid={uid} type={type} />}
-      {type === "new" && <EventInfoCardModifier uid={uid} type={type} />}
-      {type === "visualise" && <EventInfoCardVisualiser uid={uid} />}
+      {type === "modify" && <PersonInfoCardModifier uid={uid} type={type} />}
+      {type === "new" && <PersonInfoCardModifier uid={uid} type={type} />}
+      {/*{type === "visualise" && <PersonInfoCardVisualiser uid={uid} />} */}
     </Suspense>
   )
 }

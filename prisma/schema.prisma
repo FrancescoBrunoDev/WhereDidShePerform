@@ -62,15 +62,18 @@ model Event {
   comment               String?
   date                  DateTime?
   category              Category
-  personsM              Json?
   stateVerification     StateVerification?      @default(NONE)
   worksM                Json?
+  works                 Work[]
   createdAt             DateTime                @default(now())
   updatedAt             DateTime                @updatedAt
-  Creator               User?                   @relation(fields: [creatorId], references: [id])
+  creator               User?                   @relation(fields: [creatorId], references: [id])
   creatorId             String
-  UserEventVerification UserEventVerification[]
+  userEventVerification UserEventVerification[]
   link                  String?
+  personsM              Json?
+  persons               Person?                 @relation(fields: [personUid], references: [uid])
+  personUid             String?
 
   @@index([title])
   @@index([creatorId])
@@ -87,42 +90,62 @@ model UserEventVerification {
 }
 
 model Person {
-  uid       String   @id @unique @default(cuid())
-  mUid      String?
-  title     String
-  biography Json?
-  works     Work?    @relation(fields: [workUid], references: [uid])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User?    @relation(fields: [userId], references: [id])
-  workUid   String   @unique
-  userId    String
+  uid         String                @id @unique @default(cuid())
+  mUid        String?               @unique
+  biography   Biography?
+  title       String
+  occupations Occupations[]
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  creator     User?                 @relation(fields: [creatorId], references: [id])
+  creatorId   String
+  link        String?
+  events      Event[]
+  composerOf  PersonWorkReleation[] @relation("ComposerOf")
+  performerOf PersonWorkReleation[] @relation("PerformerOf")
+  arrangerOf  PersonWorkReleation[] @relation("ArrangerOf")
+
+  @@index([creatorId])
 }
 
-model Location {
-  uid        String  @id @unique @default(cuid())
-  mUid       String? @unique
-  title      String
-  slug       String?
-  geometries Json?
-  works      Work?   @relation(fields: [workUid], references: [uid])
-  workUid    String? @unique
+model Occupations {
+  id             Int        @id @default(autoincrement())
+  occupation     Occupation
+  OccupationList Person     @relation(fields: [personUid], references: [uid])
+  personUid      String
+
+  @@index([personUid])
+}
+
+model Biography {
+  person    Person    @relation(fields: [personUid], references: [uid])
+  personUid String    @id @unique
+  birth     DateTime?
+  death     DateTime?
+}
+
+model PersonWorkReleation {
+  work      Work     @relation(fields: [workUid], references: [uid])
+  workUid   String   @id @unique
+  composer  Person[] @relation("ComposerOf")
+  arranger  Person[] @relation("ArrangerOf")
+  performer Person[] @relation("PerformerOf")
 }
 
 model Work {
-  uid         String    @id @unique @default(cuid())
-  mUid        String?
-  title       String
-  slug        String?
-  category    Json?
-  dates       String?
-  description String?
-  persons     Person?
-  locations   Location?
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
-  author      User      @relation(fields: [userId], references: [id])
-  userId      String
+  uid                 String               @id @unique @default(cuid())
+  mUid                String?              @unique
+  title               String
+  dates               String?
+  description         String?
+  createdAt           DateTime?            @default(now())
+  updatedAt           DateTime?            @updatedAt
+  creator             User                 @relation(fields: [creatorId], references: [id])
+  creatorId           String
+  Events              Event[]
+  PersonWorkReleation PersonWorkReleation?
+
+  @@index([creatorId])
 }
 
 enum Category {
@@ -144,7 +167,23 @@ enum StateVerification {
   NONE
 }
 
+enum Occupation {
+  Composer
+  Arranger
+  Performer
+  Librettist
+  Poet
+}
+
 // modelli per la gestione di locationM senza coordinate
+
+model Location {
+  uid        String  @id @unique @default(cuid())
+  mUid       String? @unique
+  title      String
+  slug       String?
+  geometries Json?
+}
 
 model LocationMC {
   uid                  String                @id @unique // this is the same as the locationM

@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react"
 
 import { User } from "@/types/database"
-import { columns } from "@/components/tables/ColumsTableUsers"
-import { DataTable } from "@/components/tables/DataTableUsers"
+import { columns } from "@/components/tables/users/ColumsTableUsers"
+import { DataTable } from "@/components/tables/users/DataTableUsers"
 
 const TableEvents = () => {
   const [users, setUsers] = useState<User[]>([])

@@ -34,12 +34,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   userRole?: Role
+  type: string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   userRole,
+  type,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -136,7 +138,7 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="pt-4">
         <DataTablePagination table={table} />
-        <OperationOnSelectedRows userRole={userRole} table={table} />
+        <OperationOnSelectedRows userRole={userRole} table={table} type={type} />
       </div>
     </>
   )

@@ -38,6 +38,7 @@ const EventInfoCardModifier = ({
   uid: string
   type: string
 }) => {
+  console.log(type, uid)
   const router = useRouter()
   const [dataFormat, setDataFormat] = useState<boolean>()
   const [isLinkVisible, setIsLinkVisible] = useState<boolean>(false)
@@ -138,22 +139,18 @@ const EventInfoCardModifier = ({
             lat: lat,
             lon: lon,
           }
-          console.log(request, "request")
           const { data } = await axios.post(
             "/api/create/createLocationMC",
             request
           )
           const result = data as string
-          console.log(result, "result")
-          
         }
         toast({
           title: "Event added!",
-          /*           description: "There was a problem with your request.", */
+          description: "Congratulations! You have added a new event",
         })
         router.back()
         router.refresh()
-        
       } else {
         toast({
           title: "Uh oh! Something went wrong.",
@@ -163,7 +160,6 @@ const EventInfoCardModifier = ({
       return data as string
     },
   })
-  console.log(coordinateCandidate, "coordinateCandidate")
 
   const handleAddPerson = (value: [string, string, string]) => {
     const newMUid = value[2]

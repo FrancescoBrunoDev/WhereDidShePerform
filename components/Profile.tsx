@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { buttonVariants } from "@/components/ui/button"
 import { UserAccountNav } from "@/components/UserAccountNav"
-import { Icons } from "@/components/icons"
 
 const Profile = async (): Promise<JSX.Element> => {
   const session = await getServerSession(authOptions)

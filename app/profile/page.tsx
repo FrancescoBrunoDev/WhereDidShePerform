@@ -7,9 +7,11 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { UserAvatar } from "@/components/UserAvatar"
 import TableEvents from "@/components/tables/TableEvents"
 import TableUsers from "@/components/tables/TableUsers"
+import TablePersons from "@/components/tables/TablePersons"
 
 const ProfilePage = async () => {
   const session = await getServerSession(authOptions)
@@ -60,7 +62,35 @@ const ProfilePage = async () => {
           )}
           <div>
             <h2 className="text-3xl font-black">Your contributions</h2>
-            <TableEvents profileId={user?.id} userRole={user?.role} events={user?.event} />
+            <Tabs defaultValue="events" className="pt-5">
+              <TabsList>
+                <TabsTrigger value="events">Events</TabsTrigger>
+                <TabsTrigger value="persons">Persons</TabsTrigger>
+                <TabsTrigger value="works">Works</TabsTrigger>
+              </TabsList>
+              <TabsContent value="events">
+                <TableEvents
+                  profileId={user?.id}
+                  userRole={user?.role}
+                  events={user?.event}
+                />
+              </TabsContent>
+              <TabsContent value="persons">
+                <TablePersons
+                  profileId={user?.id}
+                  userRole={user?.role}
+                  events={user?.event}
+                />
+              </TabsContent>
+              <TabsContent value="works">
+                <TablePersons
+                  profileId={user?.id}
+                  userRole={user?.role}
+                  events={user?.event}
+                />
+              </TabsContent>
+              
+            </Tabs>
           </div>
         </div>
       </div>
