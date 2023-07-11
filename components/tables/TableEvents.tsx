@@ -5,7 +5,7 @@ import { useStoreProfile } from "@/store/useStoreProfile"
 import { Role } from "@prisma/client"
 
 import { columns } from "@/components/tables/events/ColumsTableEvents"
-import { DataTable } from "@/components/tables/DataTableEvents"
+import { DataTable } from "@/components/tables/events/DataTableEvents"
 
 export default function TableEvents({
   events,

@@ -3,7 +3,12 @@
 import { useState } from "react"
 import router from "next/router"
 import { useStorePersonCreate } from "@/store/useStorePersonCreate"
-import { Biography, Occupation, Person } from "@prisma/client"
+import {
+  Biography,
+  Occupation,
+  Person,
+  StateVerification,
+} from "@prisma/client"
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { isValid } from "date-fns"
@@ -56,6 +61,7 @@ const PersonInfoCardModifier = ({
     updatedAt: new Date(),
     creatorId: "",
     uid: "",
+    stateVerification: StateVerification.NONE,
     mUid: "",
     link: "",
   })

@@ -15,13 +15,15 @@ import {
 import { Badge } from "./ui/badge"
 
 interface ModifierVerificationEventProps {
-  eventId: number | string
+  uid: number | string
   verificationStatus: StateVerification
+  category: string
 }
 
-const ModifierVerificationEventAdmin = ({
-  eventId,
+const ModifierVerificationAdmin = ({
+  uid,
   verificationStatus,
+  category,
 }: ModifierVerificationEventProps) => {
   const [role, setRole] = useState<Role>("" as Role)
   const [stateVerification, setStateVerification] = useState<StateVerification>(
@@ -39,17 +41,17 @@ const ModifierVerificationEventAdmin = ({
 
   const handleStateChange = async (
     value: StateVerification,
-    eventId: ModifierVerificationEventProps
+    uid: ModifierVerificationEventProps
   ) => {
     try {
       const payload = [
         {
-          uid: eventId,
+          uid: uid,
           stateVerification: value as StateVerification,
         },
       ]
       const response = await axios.post(
-        `/api/create/updateVerificationEvent`,
+        `/api/create/updateVerification${category}`,
         payload
       )
 
@@ -73,7 +75,7 @@ const ModifierVerificationEventAdmin = ({
       onValueChange={(value) => {
         handleStateChange(
           value as unknown as StateVerification,
-          eventId as unknown as ModifierVerificationEventProps
+          uid as unknown as ModifierVerificationEventProps
         )
       }}
       defaultValue={stateVerification as StateVerification}
@@ -119,4 +121,4 @@ const ModifierVerificationEventAdmin = ({
   )
 }
 
-export default ModifierVerificationEventAdmin
+export default ModifierVerificationAdmin

@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { MoreHorizontal } from "lucide-react"
 
-import { EventTable } from "@/types/database"
+import { PersonTable } from "@/types/database"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -21,7 +21,7 @@ import { DataTableColumnHeader } from "@/components/tables/DataTableColumnHeader
 
 import DeleteButton from "../../DeleteButton"
 
-export const columns: ColumnDef<EventTable>[] = [
+export const columns: ColumnDef<PersonTable>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -45,13 +45,27 @@ export const columns: ColumnDef<EventTable>[] = [
     accessorKey: "title",
     header: "Title",
     cell: ({ row }) => {
-      const event = row.original
+      const person = row.original
       return (
-        <Link href={`/profile/eventInfo/visualise/${event.uid}`}>
+        <Link href={`/profile/eventInfo/visualise/${person.uid}`}>
           <p className="rounded-lg p-1 font-bold hover:bg-secondary">
-            {event.title}
+            {person.title}
           </p>
         </Link>
+      )
+    },
+  },
+  {
+    accessorKey: "biography",
+    header: "born - died",
+    cell: ({ row }) => {
+      const person = row.original
+      const birth = person.biography?.birth?.toISOString().slice(0, 4)
+      const death = person.biography?.death?.toISOString().slice(0, 4)
+      return (
+        <>
+          {birth} - {death}
+        </>
       )
     },
   },
@@ -70,12 +84,12 @@ export const columns: ColumnDef<EventTable>[] = [
       <DataTableColumnHeader column={column} title="State" />
     ),
     cell: ({ row }) => {
-      const event = row.original
+      const person = row.original
       return (
         <ModifierVerificationAdmin
-          uid={event.uid}
-          verificationStatus={event.stateVerification}
-          category="Event"
+          uid={person.uid}
+          verificationStatus={person.stateVerification}
+          category="Person"
         />
       )
     },
@@ -83,7 +97,7 @@ export const columns: ColumnDef<EventTable>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const event = row.original
+      const person = row.original
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -97,11 +111,11 @@ export const columns: ColumnDef<EventTable>[] = [
 
             <div className="grid grid-cols-1 gap-2">
               <DropdownMenuItem asChild>
-                <DeleteButton uid={event.uid} />
+                <DeleteButton uid={person.uid} />
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  href={`/profile/eventInfo/modify/${event.uid}`}
+                  href={`/profile/eventInfo/modify/${person.uid}`}
                   className={buttonVariants({
                     className: "w-full",
                     size: "xs",

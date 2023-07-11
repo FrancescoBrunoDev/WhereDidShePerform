@@ -1,4 +1,4 @@
-import { StateVerification, Category } from '@prisma/client'
+import { StateVerification, Category, Occupation, Biography } from '@prisma/client'
 
 export interface PersonM {
   title: string
@@ -39,4 +39,16 @@ export interface User {
   role: string
   email: string
   eventVerifications: [{ stateVerification: StateVerification; eventId: number }]
+}
+
+export interface PersonTable {
+  uid: string
+  title: string
+  link?: string | null
+  createdAt: Date
+  updatedAt: Date
+  creatorId?: string | null
+  biography?: Biography | null
+  stateVerification: StateVerification
+  occupations?: [{ occupation: Occupation }]
 }

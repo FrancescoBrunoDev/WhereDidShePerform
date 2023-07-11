@@ -4,8 +4,8 @@ import { useEffect } from "react"
 import { useStoreProfile } from "@/store/useStoreProfile"
 import { Role } from "@prisma/client"
 
-import { columns } from "@/components/tables/events/ColumsTableEvents"
-import { DataTable } from "@/components/tables/DataTableEvents"
+import { columns } from "@/components/tables/persons/ColumsTablePersons"
+import { DataTable } from "@/components/tables/persons/DataTablePersons"
 
 export default function TablePersons({
   events,

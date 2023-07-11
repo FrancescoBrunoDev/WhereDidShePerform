@@ -4,7 +4,7 @@ import { z } from "zod"
 import { getAuthSession } from "@/lib/auth"
 import { db } from "@/lib/db"
 
-interface EventVerification {
+interface PersonVerification {
   uid: string
   stateVerification: StateVerification
 }
@@ -25,55 +25,55 @@ export async function POST(req: Request) {
     const body = await req.json()
 
     await Promise.all(
-      body.map(async (event: EventVerification) => {
+      body.map(async (person: PersonVerification) => {
         
          if (user?.role === Role.USER) {
           if (
-            event.stateVerification === StateVerification.VERIFIED ||
-            event.stateVerification === StateVerification.REJECTED
+            person.stateVerification === StateVerification.VERIFIED ||
+            person.stateVerification === StateVerification.REJECTED
           ) {
             return new Response(
-              "Forbidden. You can accept or reject an event only if you are an admin",
+              "Forbidden. You can accept or reject a person only if you are an admin",
               { status: 403 }
             )
           }
 
-          await db.event.updateMany({
+          await db.person.updateMany({
             where: {
-              uid: event.uid,
+              uid: person.uid,
               creatorId: session.user.id,
             },
             data: {
-              stateVerification: event.stateVerification as StateVerification,
+              stateVerification: person.stateVerification as StateVerification,
             },
           })
 
           await db.userEventVerification.updateMany({
             where: {
-              eventId: event.uid,
+              eventId: person.uid,
               userId: session.user.id,
             },
             data: {
-              stateVerification: event.stateVerification as StateVerification,
+              stateVerification: person.stateVerification as StateVerification,
             },
           })
         }
 
-        await db.event.update({
+        await db.person.update({
           where: {
-            uid: event.uid,
+            uid: person.uid,
           },
           data: {
-            stateVerification: event.stateVerification as StateVerification,
+            stateVerification: person.stateVerification as StateVerification,
           },
         })
 
-        await db.userEventVerification.updateMany({
+        await db.userPersonVerification.updateMany({
           where: {
-            eventId: event.uid,
+            personId: person.uid,
           },
           data: {
-            stateVerification: event.stateVerification as StateVerification,
+            stateVerification: person.stateVerification as StateVerification,
           },
         }) 
       })
@@ -84,6 +84,6 @@ export async function POST(req: Request) {
     if (error instanceof z.ZodError) {
       return new Response(error.message, { status: 422 })
     }
-    return new Response("cannot update validation event", { status: 500 })
+    return new Response("cannot update validation person", { status: 500 })
   }
 }

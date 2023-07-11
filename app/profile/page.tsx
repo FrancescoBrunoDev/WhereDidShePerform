@@ -32,8 +32,19 @@ const ProfilePage = async () => {
             stateVerification: true,
           },
         },
+        person: {
+          select: {
+            uid: true,
+            title: true,
+            createdAt: true,
+            biography: true,
+            stateVerification: true,
+          },
+        },
       },
     })
+
+    console.log(user)
 
     return (
       <div className="flex h-fit w-full flex-col gap-8 lg:flex-row lg:gap-0">
@@ -79,7 +90,7 @@ const ProfilePage = async () => {
                 <TablePersons
                   profileId={user?.id}
                   userRole={user?.role}
-                  events={user?.event}
+                  events={user?.person}
                 />
               </TabsContent>
               <TabsContent value="works">

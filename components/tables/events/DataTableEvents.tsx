@@ -28,7 +28,7 @@ import {
 import { DataTablePagination } from "@/components/tables/DataTablePagination"
 import { DataTableViewOptions } from "@/components/tables/DataTableViewOption"
 
-import { OperationOnSelectedRows } from "./OperationOnSelectedRows"
+import { OperationOnSelectedRows } from "../OperationOnSelectedRows"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

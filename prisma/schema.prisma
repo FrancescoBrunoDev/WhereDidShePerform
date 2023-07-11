@@ -39,20 +39,21 @@ model Session {
 }
 
 model User {
-  id                   String                  @id @default(cuid())
-  name                 String?
-  email                String?                 @unique
-  emailVerified        DateTime?
-  username             String?                 @unique
-  role                 Role                    @default(USER)
-  image                String?
-  accounts             Account[]
-  sessions             Session[]
-  eventVerifications   UserEventVerification[]
-  event                Event[]
-  person               Person[]
-  work                 Work[]
-  usersVotesACandidate UsersVotesACandidate[]
+  id                     String                   @id @default(cuid())
+  name                   String?
+  email                  String?                  @unique
+  emailVerified          DateTime?
+  username               String?                  @unique
+  role                   Role                     @default(USER)
+  image                  String?
+  accounts               Account[]
+  sessions               Session[]
+  eventVerifications     UserEventVerification[]
+  event                  Event[]
+  person                 Person[]
+  work                   Work[]
+  usersVotesACandidate   UsersVotesACandidate[]
+  userPersonVerification UserPersonVerification[]
 }
 
 model Event {
@@ -80,32 +81,45 @@ model Event {
 }
 
 model UserEventVerification {
-  event             Event              @relation(fields: [eventId], references: [uid])
-  eventId           String             @id @unique
-  user              User               @relation(fields: [userId], references: [id])
+  event             Event             @relation(fields: [eventId], references: [uid])
+  eventId           String            @id @unique
+  user              User              @relation(fields: [userId], references: [id])
   userId            String
-  stateVerification StateVerification?
+  stateVerification StateVerification @default(NONE)
 
   @@index([userId, eventId])
 }
 
 model Person {
-  uid         String                @id @unique @default(cuid())
-  mUid        String?               @unique
-  biography   Biography?
-  title       String
-  occupations Occupations[]
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime              @updatedAt
-  creator     User?                 @relation(fields: [creatorId], references: [id])
-  creatorId   String
-  link        String?
-  events      Event[]
-  composerOf  PersonWorkReleation[] @relation("ComposerOf")
-  performerOf PersonWorkReleation[] @relation("PerformerOf")
-  arrangerOf  PersonWorkReleation[] @relation("ArrangerOf")
+  uid               String             @id @unique @default(cuid())
+  mUid              String?            @unique
+  biography         Biography?
+  title             String
+  stateVerification StateVerification? @default(NONE)
+  occupations       Occupations[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  creator           User?              @relation(fields: [creatorId], references: [id])
+  creatorId         String
+  link              String?
+  events            Event[]
+
+  composerOf             PersonWorkReleation[]    @relation("ComposerOf")
+  performerOf            PersonWorkReleation[]    @relation("PerformerOf")
+  arrangerOf             PersonWorkReleation[]    @relation("ArrangerOf")
+  userPersonVerification UserPersonVerification[]
 
   @@index([creatorId])
+}
+
+model UserPersonVerification {
+  person            Person            @relation(fields: [personId], references: [uid])
+  personId          String            @id @unique
+  user              User              @relation(fields: [userId], references: [id])
+  userId            String
+  stateVerification StateVerification @default(NONE)
+
+  @@index([userId, personId])
 }
 
 model Occupations {
