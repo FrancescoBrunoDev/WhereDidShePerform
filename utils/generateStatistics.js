@@ -222,7 +222,7 @@ async function main() {
     }
   }
 
-  await printTopPersons(topPersons, "./components/suggestions/statistic.json")
+  await printTopPersons(topPersons, "../components/suggestions/statistic.json")
 }
 
 main()

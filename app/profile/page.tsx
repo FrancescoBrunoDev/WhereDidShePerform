@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { UserAvatar } from "@/components/UserAvatar"
 import TableEvents from "@/components/tables/TableEvents"
-import TableUsers from "@/components/tables/TableUsers"
 import TablePersons from "@/components/tables/TablePersons"
+import TableUsers from "@/components/tables/TableUsers"
 
 const ProfilePage = async () => {
   const session = await getServerSession(authOptions)
@@ -44,8 +44,6 @@ const ProfilePage = async () => {
       },
     })
 
-    console.log(user)
-
     return (
       <div className="flex h-fit w-full flex-col gap-8 lg:flex-row lg:gap-0">
         <div className="flex w-full flex-col lg:w-1/3">
@@ -57,7 +55,9 @@ const ProfilePage = async () => {
             className="hidden lg:block lg:h-20 lg:w-20"
           />
           <h1 className="text-5xl font-black">{session?.user?.name}</h1>
-          <h3 className="text-xl font-black">role: {user?.role}</h3>
+          {user?.role === Role.ADMIN && (
+            <h3 className="text-xl font-black">role: {user?.role}</h3>
+          )}
           <Link href={`/query/userMap/${user?.id}`}>
             <Button>mappa</Button>
           </Link>
@@ -100,7 +100,6 @@ const ProfilePage = async () => {
                   events={user?.event}
                 />
               </TabsContent>
-              
             </Tabs>
           </div>
         </div>
