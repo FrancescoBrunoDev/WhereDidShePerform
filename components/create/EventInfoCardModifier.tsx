@@ -28,7 +28,7 @@ import InputAutosuggest from "@/components/create/inputAutosuggest"
 import { Icons } from "@/components/icons"
 import { GetCoordinates } from "@/app/api/musiconn"
 
-import { Label } from "../ui/label"
+import { Label } from "@/components/ui/label"
 import SearchGeoLocation from "./SearchGeoLocation"
 
 const EventInfoCardModifier = ({

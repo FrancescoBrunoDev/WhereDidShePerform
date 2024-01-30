@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { Category, StateVerification } from "@prisma/client"
 import axios from "axios"
 

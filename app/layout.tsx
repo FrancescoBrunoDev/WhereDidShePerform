@@ -37,27 +37,24 @@ export default function RootLayout({
   authModal: React.ReactNode
 }) {
   return (
-    <>
-      <html lang="en" suppressHydrationWarning>
-        <head />
-        <body
-          suppressHydrationWarning={true}
-          className={cn(
-            "static bg-background text-foreground antialiased",
-            fontSans.variable
-          )}
-        >
-          <Providers>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              <SiteHeader />
-              {children}
-              {authModal}
-
-            </ThemeProvider>
-            <Toaster />
-          </Providers>
-        </body>
-      </html>
-    </>
+    <html lang="en" suppressHydrationWarning>
+      <head />
+      <body
+        suppressHydrationWarning={true}
+        className={cn(
+          "static bg-background text-foreground antialiased",
+          fontSans.variable
+        )}
+      >
+        <Providers>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <SiteHeader />
+            {children}
+            {authModal}
+          </ThemeProvider>
+          <Toaster />
+        </Providers>
+      </body>
+    </html>
   )
 }

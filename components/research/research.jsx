@@ -7,7 +7,7 @@ import Loading from "@/components/ui/loading"
 import PerformanceSearchResults from "@/components/research/PerformanceSearchResults"
 import Suggestions from "@/components/suggestions/suggestions"
 
-import { queryData } from "../../app/api/musiconn"
+import { queryData } from "@/app/api/musiconn"
 import PerformanceSearchForm from "./PerformanceSearchForm"
 
 export default function PerformanceSearch() {
