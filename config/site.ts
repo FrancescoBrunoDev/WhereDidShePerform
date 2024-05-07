@@ -11,6 +11,6 @@ export const siteConfig = {
     }, */
   ],
   links: {
-    github: "https://github.com/franzbruno95/WhereDidShePerformed",
+    github: "https://github.com/FrancescoBrunoDev/WhereDidShePerform",
   },
 }
