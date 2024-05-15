@@ -6,19 +6,69 @@
       "count": 15346
     },
     {
+      "composerId": "70",
+      "composerName": "Beethoven, Ludwig van (1770–1827)",
+      "count": 9741
+    },
+    {
+      "composerId": "120",
+      "composerName": "Mendelssohn Bartholdy, Felix (1809–1847)",
+      "count": 5777
+    },
+    {
+      "composerId": "153",
+      "composerName": "Hauptmann, Moritz (1792–1868)",
+      "count": 991
+    },
+    {
+      "composerId": "209",
+      "composerName": "Brahms, Johannes (1833–1897)",
+      "count": 7537
+    },
+    {
+      "composerId": "2999",
+      "composerName": "Schicht, Johann Gottfried (1753–1823)",
+      "count": 1047
+    },
+    {
+      "composerId": "325",
+      "composerName": "Schein, Johann Hermann (1586–1630)",
+      "count": 1233
+    },
+    {
+      "composerId": "298",
+      "composerName": "Eccard, Johannes (1553–1611)",
+      "count": 1286
+    },
+    {
+      "composerId": "139",
+      "composerName": "Reger, Max (1873–1916)",
+      "count": 2944
+    },
+    {
+      "composerId": "324",
+      "composerName": "Richter, Ernst Friedrich Eduard (1808–1879)",
+      "count": 1170
+    },
+    {
+      "composerId": "118",
+      "composerName": "Liszt, Franz (1811–1886)",
+      "count": 1844
+    },
+    {
+      "composerId": "177",
+      "composerName": "Tschaikowski, Peter I. (1840–1893)",
+      "count": 2343
+    },
+    {
+      "composerId": "29",
+      "composerName": "Wagner, Richard (1813–1883)",
+      "count": 4423
+    },
+    {
       "composerId": "1001",
       "composerName": "Dvořák, Antonín (1841–1904)",
-      "count": 1611
-    },
-    {
-      "composerId": "154",
-      "composerName": "Händel, Georg Friedrich (1685–1759)",
-      "count": 1417
-    },
-    {
-      "composerId": "232",
-      "composerName": "Schubert, Franz (1797–1828)",
-      "count": 4282
+      "count": 1612
     },
     {
       "composerId": "254",
@@ -31,9 +81,9 @@
       "count": 2934
     },
     {
-      "composerId": "1096",
-      "composerName": "Bruckner, Anton (1824–1896)",
-      "count": 2586
+      "composerId": "13082",
+      "composerName": "Sander, Werner (1902–1972)",
+      "count": 1580
     },
     {
       "composerId": "85",
@@ -41,24 +91,14 @@
       "count": 3744
     },
     {
-      "composerId": "324",
-      "composerName": "Richter, Ernst Friedrich Eduard (1808–1879)",
-      "count": 1170
-    },
-    {
-      "composerId": "1648",
-      "composerName": "Distler, Hugo (1908–1942)",
-      "count": 1088
-    },
-    {
       "composerId": "10",
       "composerName": "Weber, Carl Maria von (1786–1826)",
-      "count": 2970
+      "count": 2969
     },
     {
-      "composerId": "70",
-      "composerName": "Beethoven, Ludwig van (1770–1827)",
-      "count": 9739
+      "composerId": "232",
+      "composerName": "Schubert, Franz (1797–1828)",
+      "count": 4285
     },
     {
       "composerId": "301",
@@ -66,49 +106,19 @@
       "count": 4239
     },
     {
-      "composerId": "13082",
-      "composerName": "Sander, Werner (1902–1972)",
-      "count": 1569
+      "composerId": "154",
+      "composerName": "Händel, Georg Friedrich (1685–1759)",
+      "count": 1420
     },
     {
-      "composerId": "118",
-      "composerName": "Liszt, Franz (1811–1886)",
-      "count": 1844
+      "composerId": "1648",
+      "composerName": "Distler, Hugo (1908–1942)",
+      "count": 1088
     },
     {
-      "composerId": "298",
-      "composerName": "Eccard, Johannes (1553–1611)",
-      "count": 1286
-    },
-    {
-      "composerId": "325",
-      "composerName": "Schein, Johann Hermann (1586–1630)",
-      "count": 1233
-    },
-    {
-      "composerId": "622",
-      "composerName": "Chopin, Frédéric (1810–1849)",
-      "count": 1228
-    },
-    {
-      "composerId": "72",
-      "composerName": "Strauss, Johann (1825–1899)",
-      "count": 2149
-    },
-    {
-      "composerId": "177",
-      "composerName": "Tschaikowski, Peter I. (1840–1893)",
-      "count": 2343
-    },
-    {
-      "composerId": "2999",
-      "composerName": "Schicht, Johann Gottfried (1753–1823)",
-      "count": 1047
-    },
-    {
-      "composerId": "153",
-      "composerName": "Hauptmann, Moritz (1792–1868)",
-      "count": 991
+      "composerId": "13121",
+      "composerName": "Groß, Friedbert (1937–)",
+      "count": 1420
     },
     {
       "composerId": "79",
@@ -116,42 +126,82 @@
       "count": 2396
     },
     {
-      "composerId": "209",
-      "composerName": "Brahms, Johannes (1833–1897)",
-      "count": 7531
+      "composerId": "78",
+      "composerName": "Mozart, Wolfgang Amadeus (1756–1791)",
+      "count": 7895
     },
     {
-      "composerId": "139",
-      "composerName": "Reger, Max (1873–1916)",
-      "count": 2944
+      "composerId": "72",
+      "composerName": "Strauss, Johann (1825–1899)",
+      "count": 2149
     },
     {
-      "composerId": "120",
-      "composerName": "Mendelssohn Bartholdy, Felix (1809–1847)",
-      "count": 5777
+      "composerId": "1096",
+      "composerName": "Bruckner, Anton (1824–1896)",
+      "count": 2586
+    },
+    {
+      "composerId": "622",
+      "composerName": "Chopin, Frédéric (1810–1849)",
+      "count": 1229
     },
     {
       "composerId": "163",
       "composerName": "[anonym]",
-      "count": 2294
-    },
-    {
-      "composerId": "29",
-      "composerName": "Wagner, Richard (1813–1883)",
-      "count": 4423
-    },
-    {
-      "composerId": "78",
-      "composerName": "Mozart, Wolfgang Amadeus (1756–1791)",
-      "count": 7894
-    },
-    {
-      "composerId": "13121",
-      "composerName": "Groß, Friedbert (1937–)",
-      "count": 1420
+      "count": 2291
     }
   ],
   "topPerformers": [
+    {
+      "performerId": "3329",
+      "performerName": "Rotzsch, Hans-Joachim (1929–2013)",
+      "count": 9064
+    },
+    {
+      "performerId": "1346",
+      "performerName": "Mauersberger, Rudolf (1889–1971)",
+      "count": 2570
+    },
+    {
+      "performerId": "1600",
+      "performerName": "Weinlig, Christian Theodor (1780–1842)",
+      "count": 1361
+    },
+    {
+      "performerId": "4239",
+      "performerName": "Straube, Karl (1873–1950)",
+      "count": 4751
+    },
+    {
+      "performerId": "265",
+      "performerName": "Reinecke, Carl (1824–1910)",
+      "count": 2453
+    },
+    {
+      "performerId": "6833",
+      "performerName": "Bongartz, Heinz (1894–1978)",
+      "count": 3827
+    },
+    {
+      "performerId": "602",
+      "performerName": "Müller, Karl (1818–1894)",
+      "count": 1531
+    },
+    {
+      "performerId": "3296",
+      "performerName": "Masur, Kurt (1927–2015)",
+      "count": 1588
+    },
+    {
+      "performerId": "2261",
+      "performerName": "Stahl, Ernst",
+      "count": 1338
+    },
+    {
+      "performerId": "4175",
+      "performerName": "Nikisch, Arthur (1855–1922)",
+      "count": 2149
+    },
     {
       "performerId": "20060",
       "performerName": "Wauer, Carl (1783–1857)",
@@ -163,34 +213,9 @@
       "count": 6721
     },
     {
-      "performerId": "4175",
-      "performerName": "Nikisch, Arthur (1855–1922)",
-      "count": 2149
-    },
-    {
-      "performerId": "1968",
-      "performerName": "Kempen, Paul van (1893–1955)",
-      "count": 1119
-    },
-    {
-      "performerId": "20096",
-      "performerName": "Leist, Wilhelmine (1783–)",
-      "count": 1074
-    },
-    {
-      "performerId": "1432",
-      "performerName": "Mauersberger, Erhard (1903–1982)",
-      "count": 6463
-    },
-    {
       "performerId": "20126",
       "performerName": "Eunicke, Therese (1774–1849)",
       "count": 1181
-    },
-    {
-      "performerId": "2776",
-      "performerName": "Biller, Georg Christoph (1955–)",
-      "count": 8634
     },
     {
       "performerId": "1486",
@@ -198,29 +223,9 @@
       "count": 1149
     },
     {
-      "performerId": "4239",
-      "performerName": "Straube, Karl (1873–1950)",
-      "count": 4751
-    },
-    {
-      "performerId": "15082",
-      "performerName": "Papst, Eugen (1886–1956)",
-      "count": 1940
-    },
-    {
-      "performerId": "760",
-      "performerName": "Grimm, Julius Otto (1827–1903)",
-      "count": 2164
-    },
-    {
-      "performerId": "20053",
-      "performerName": "Valentini, Henriette (1795–1857)",
-      "count": 1282
-    },
-    {
-      "performerId": "3296",
-      "performerName": "Masur, Kurt (1927–2015)",
-      "count": 1588
+      "performerId": "20082",
+      "performerName": "Gern, Johann Georg (1757–1830)",
+      "count": 1442
     },
     {
       "performerId": "7191",
@@ -228,44 +233,9 @@
       "count": 1141
     },
     {
-      "performerId": "1600",
-      "performerName": "Weinlig, Christian Theodor (1780–1842)",
-      "count": 1361
-    },
-    {
-      "performerId": "20082",
-      "performerName": "Gern, Johann Georg (1757–1830)",
-      "count": 1442
-    },
-    {
-      "performerId": "602",
-      "performerName": "Müller, Karl (1818–1894)",
-      "count": 1531
-    },
-    {
-      "performerId": "2261",
-      "performerName": "Stahl, Ernst",
-      "count": 1338
-    },
-    {
-      "performerId": "265",
-      "performerName": "Reinecke, Carl (1824–1910)",
-      "count": 2442
-    },
-    {
-      "performerId": "20059",
-      "performerName": "Weitzmann, Gotthold",
-      "count": 1711
-    },
-    {
-      "performerId": "6833",
-      "performerName": "Bongartz, Heinz (1894–1978)",
-      "count": 3827
-    },
-    {
-      "performerId": "1346",
-      "performerName": "Mauersberger, Rudolf (1889–1971)",
-      "count": 2570
+      "performerId": "163",
+      "performerName": "[anonym]",
+      "count": 1609
     },
     {
       "performerId": "20095",
@@ -273,19 +243,9 @@
       "count": 1432
     },
     {
-      "performerId": "3329",
-      "performerName": "Rotzsch, Hans-Joachim (1929–2013)",
-      "count": 9064
-    },
-    {
-      "performerId": "153",
-      "performerName": "Hauptmann, Moritz (1792–1868)",
-      "count": 2620
-    },
-    {
-      "performerId": "1355",
-      "performerName": "Thomas, Kurt (1904–1973)",
-      "count": 1520
+      "performerId": "760",
+      "performerName": "Grimm, Julius Otto (1827–1903)",
+      "count": 2171
     },
     {
       "performerId": "324",
@@ -293,30 +253,105 @@
       "count": 1191
     },
     {
-      "performerId": "163",
-      "performerName": "[anonym]",
-      "count": 1605
+      "performerId": "20096",
+      "performerName": "Leist, Wilhelmine (1783–)",
+      "count": 1074
+    },
+    {
+      "performerId": "1355",
+      "performerName": "Thomas, Kurt (1904–1973)",
+      "count": 1520
+    },
+    {
+      "performerId": "1432",
+      "performerName": "Mauersberger, Erhard (1903–1982)",
+      "count": 6463
+    },
+    {
+      "performerId": "20059",
+      "performerName": "Weitzmann, Gotthold",
+      "count": 1711
+    },
+    {
+      "performerId": "15082",
+      "performerName": "Papst, Eugen (1886–1956)",
+      "count": 1940
+    },
+    {
+      "performerId": "2776",
+      "performerName": "Biller, Georg Christoph (1955–)",
+      "count": 8634
     },
     {
       "performerId": "20056",
       "performerName": "Blume, Heinrich (1788–1856)",
       "count": 1805
+    },
+    {
+      "performerId": "153",
+      "performerName": "Hauptmann, Moritz (1792–1868)",
+      "count": 2620
+    },
+    {
+      "performerId": "20053",
+      "performerName": "Valentini, Henriette (1795–1857)",
+      "count": 1282
+    },
+    {
+      "performerId": "1968",
+      "performerName": "Kempen, Paul van (1893–1955)",
+      "count": 1119
     }
   ],
   "performersByComposer": [
     {
-      "composerId": "1096",
-      "composerName": "Bruckner, Anton (1824–1896)",
-      "performerId": "3329",
-      "performerName": "Rotzsch, Hans-Joachim (1929–2013)",
-      "count": 283
+      "composerId": "135",
+      "composerName": "Haydn, Joseph (1732–1809)",
+      "performerId": "675",
+      "performerName": "Heermann, Hugo (1844–1935)",
+      "count": 96
     },
     {
-      "composerId": "153",
-      "composerName": "Hauptmann, Moritz (1792–1868)",
-      "performerId": "153",
-      "performerName": "Hauptmann, Moritz (1792–1868)",
-      "count": 331
+      "composerId": "177",
+      "composerName": "Tschaikowski, Peter I. (1840–1893)",
+      "performerId": "6833",
+      "performerName": "Bongartz, Heinz (1894–1978)",
+      "count": 289
+    },
+    {
+      "composerId": "13121",
+      "composerName": "Groß, Friedbert (1937–)",
+      "performerId": "5462",
+      "performerName": "Böhme, Ludwig (1979–)",
+      "count": 4
+    },
+    {
+      "composerId": "72",
+      "composerName": "Strauss, Johann (1825–1899)",
+      "performerId": "7619",
+      "performerName": "Hentrich, Wolfgang (1966–)",
+      "count": 152
+    },
+    {
+      "composerId": "325",
+      "composerName": "Schein, Johann Hermann (1586–1630)",
+      "performerId": "4239",
+      "performerName": "Straube, Karl (1873–1950)",
+      "count": 232
+    },
+    {
+      "composerId": "1648",
+      "composerName": "Distler, Hugo (1908–1942)",
+      "performerId": "3329",
+      "performerName": "Rotzsch, Hans-Joachim (1929–2013)",
+      "count": 354
+    },
+    {
+      "composerId": "324",
+      "composerName": "Richter, Ernst Friedrich Eduard (1808–1879)",
+      "performerId": "324",
+      "performerName": "Richter, Ernst Friedrich Eduard (1808–1879)",
+      "count": 202
     },
     {
       "composerId": "163",
@@ -326,39 +361,18 @@
       "count": 210
     },
     {
+      "composerId": "301",
+      "composerName": "Schumann, Robert (1810–1856)",
+      "performerId": "163",
+      "performerName": "[anonym]",
+      "count": 243
+    },
+    {
       "composerId": "85",
       "composerName": "Schütz, Heinrich (1585–1672)",
       "performerId": "3329",
       "performerName": "Rotzsch, Hans-Joachim (1929–2013)",
       "count": 700
-    },
-    {
-      "composerId": "120",
-      "composerName": "Mendelssohn Bartholdy, Felix (1809–1847)",
-      "performerId": "2776",
-      "performerName": "Biller, Georg Christoph (1955–)",
-      "count": 671
-    },
-    {
-      "composerId": "10",
-      "composerName": "Weber, Carl Maria von (1786–1826)",
-      "performerId": "20089",
-      "performerName": "Michaelis, C. G. H.",
-      "count": 148
-    },
-    {
-      "composerId": "622",
-      "composerName": "Chopin, Frédéric (1810–1849)",
-      "performerId": "10488",
-      "performerName": "Kolessa, Ljubovʹ O. (1902–1997)",
-      "count": 47
-    },
-    {
-      "composerId": "79",
-      "composerName": "Strauss, Richard (1864–1949)",
-      "performerId": "6833",
-      "performerName": "Bongartz, Heinz (1894–1978)",
-      "count": 194
     },
     {
       "composerId": "78",
@@ -375,67 +389,18 @@
       "count": 194
     },
     {
-      "composerId": "1001",
-      "composerName": "Dvořák, Antonín (1841–1904)",
-      "performerId": "342",
-      "performerName": "Ramin, Günther (1898–1956)",
-      "count": 89
+      "composerId": "298",
+      "composerName": "Eccard, Johannes (1553–1611)",
+      "performerId": "1432",
+      "performerName": "Mauersberger, Erhard (1903–1982)",
+      "count": 214
     },
     {
-      "composerId": "177",
-      "composerName": "Tschaikowski, Peter I. (1840–1893)",
-      "performerId": "6833",
-      "performerName": "Bongartz, Heinz (1894–1978)",
-      "count": 289
-    },
-    {
-      "composerId": "139",
-      "composerName": "Reger, Max (1873–1916)",
-      "performerId": "342",
-      "performerName": "Ramin, Günther (1898–1956)",
-      "count": 491
-    },
-    {
-      "composerId": "90",
-      "composerName": "Bach, Johann Sebastian (1685–1750)",
-      "performerId": "2776",
-      "performerName": "Biller, Georg Christoph (1955–)",
-      "count": 2520
-    },
-    {
-      "composerId": "325",
-      "composerName": "Schein, Johann Hermann (1586–1630)",
-      "performerId": "4239",
-      "performerName": "Straube, Karl (1873–1950)",
-      "count": 232
-    },
-    {
-      "composerId": "301",
-      "composerName": "Schumann, Robert (1810–1856)",
-      "performerId": "163",
-      "performerName": "[anonym]",
-      "count": 242
-    },
-    {
-      "composerId": "232",
-      "composerName": "Schubert, Franz (1797–1828)",
-      "performerId": "163",
-      "performerName": "[anonym]",
-      "count": 231
-    },
-    {
-      "composerId": "13082",
-      "composerName": "Sander, Werner (1902–1972)",
-      "performerId": "5462",
-      "performerName": "Böhme, Ludwig (1979–)",
-      "count": 3
-    },
-    {
-      "composerId": "1648",
-      "composerName": "Distler, Hugo (1908–1942)",
-      "performerId": "3329",
-      "performerName": "Rotzsch, Hans-Joachim (1929–2013)",
-      "count": 354
+      "composerId": "10",
+      "composerName": "Weber, Carl Maria von (1786–1826)",
+      "performerId": "20089",
+      "performerName": "Michaelis, C. G. H.",
+      "count": 148
     },
     {
       "composerId": "29",
@@ -445,39 +410,11 @@
       "count": 231
     },
     {
-      "composerId": "2999",
-      "composerName": "Schicht, Johann Gottfried (1753–1823)",
-      "performerId": "1600",
-      "performerName": "Weinlig, Christian Theodor (1780–1842)",
-      "count": 239
-    },
-    {
-      "composerId": "154",
-      "composerName": "Händel, Georg Friedrich (1685–1759)",
-      "performerId": "760",
-      "performerName": "Grimm, Julius Otto (1827–1903)",
-      "count": 83
-    },
-    {
-      "composerId": "298",
-      "composerName": "Eccard, Johannes (1553–1611)",
-      "performerId": "1432",
-      "performerName": "Mauersberger, Erhard (1903–1982)",
-      "count": 214
-    },
-    {
       "composerId": "209",
       "composerName": "Brahms, Johannes (1833–1897)",
       "performerId": "3329",
       "performerName": "Rotzsch, Hans-Joachim (1929–2013)",
       "count": 464
-    },
-    {
-      "composerId": "324",
-      "composerName": "Richter, Ernst Friedrich Eduard (1808–1879)",
-      "performerId": "324",
-      "performerName": "Richter, Ernst Friedrich Eduard (1808–1879)",
-      "count": 202
     },
     {
       "composerId": "118",
@@ -487,25 +424,18 @@
       "count": 115
     },
     {
-      "composerId": "135",
-      "composerName": "Haydn, Joseph (1732–1809)",
-      "performerId": "675",
-      "performerName": "Heermann, Hugo (1844–1935)",
-      "count": 96
+      "composerId": "79",
+      "composerName": "Strauss, Richard (1864–1949)",
+      "performerId": "6833",
+      "performerName": "Bongartz, Heinz (1894–1978)",
+      "count": 194
     },
     {
-      "composerId": "72",
-      "composerName": "Strauss, Johann (1825–1899)",
-      "performerId": "7619",
-      "performerName": "Hentrich, Wolfgang (1966–)",
-      "count": 152
-    },
-    {
-      "composerId": "13121",
-      "composerName": "Groß, Friedbert (1937–)",
-      "performerId": "5462",
-      "performerName": "Böhme, Ludwig (1979–)",
-      "count": 4
+      "composerId": "1096",
+      "composerName": "Bruckner, Anton (1824–1896)",
+      "performerId": "3329",
+      "performerName": "Rotzsch, Hans-Joachim (1929–2013)",
+      "count": 283
     },
     {
       "composerId": "70",
@@ -513,7 +443,77 @@
       "performerId": "6833",
       "performerName": "Bongartz, Heinz (1894–1978)",
       "count": 544
+    },
+    {
+      "composerId": "153",
+      "composerName": "Hauptmann, Moritz (1792–1868)",
+      "performerId": "153",
+      "performerName": "Hauptmann, Moritz (1792–1868)",
+      "count": 331
+    },
+    {
+      "composerId": "139",
+      "composerName": "Reger, Max (1873–1916)",
+      "performerId": "342",
+      "performerName": "Ramin, Günther (1898–1956)",
+      "count": 491
+    },
+    {
+      "composerId": "154",
+      "composerName": "Händel, Georg Friedrich (1685–1759)",
+      "performerId": "760",
+      "performerName": "Grimm, Julius Otto (1827–1903)",
+      "count": 85
+    },
+    {
+      "composerId": "13082",
+      "composerName": "Sander, Werner (1902–1972)",
+      "performerId": "988",
+      "performerName": "Schirmacher, Dora (1857–)",
+      "count": 5
+    },
+    {
+      "composerId": "232",
+      "composerName": "Schubert, Franz (1797–1828)",
+      "performerId": "163",
+      "performerName": "[anonym]",
+      "count": 234
+    },
+    {
+      "composerId": "2999",
+      "composerName": "Schicht, Johann Gottfried (1753–1823)",
+      "performerId": "1600",
+      "performerName": "Weinlig, Christian Theodor (1780–1842)",
+      "count": 239
+    },
+    {
+      "composerId": "622",
+      "composerName": "Chopin, Frédéric (1810–1849)",
+      "performerId": "10488",
+      "performerName": "Kolessa, Ljubovʹ O. (1902–1997)",
+      "count": 47
+    },
+    {
+      "composerId": "90",
+      "composerName": "Bach, Johann Sebastian (1685–1750)",
+      "performerId": "2776",
+      "performerName": "Biller, Georg Christoph (1955–)",
+      "count": 2520
+    },
+    {
+      "composerId": "1001",
+      "composerName": "Dvořák, Antonín (1841–1904)",
+      "performerId": "342",
+      "performerName": "Ramin, Günther (1898–1956)",
+      "count": 89
+    },
+    {
+      "composerId": "120",
+      "composerName": "Mendelssohn Bartholdy, Felix (1809–1847)",
+      "performerId": "2776",
+      "performerName": "Biller, Georg Christoph (1955–)",
+      "count": 671
     }
   ],
-  "date": "14/11/2023"
+  "date": "15/05/2024"
 }

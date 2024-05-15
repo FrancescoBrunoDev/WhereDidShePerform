@@ -1,16 +1,16 @@
 require = require("esm")(module)
 
-const fs = require('fs').promises;
+const fs = require("fs").promises
 
 async function getAPIResponse(eventIds) {
   const url = `https://performance.musiconn.de/api?action=get&event=${eventIds.join(
     "|"
   )}&props=performances|persons&format=json`
-  const response = await fetch(url);
+  const response = await fetch(url)
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`)
   }
-  return await response.json();
+  return await response.json()
 }
 
 async function getPersonName(id) {
@@ -73,7 +73,7 @@ async function printTopPersons(topPersons, filename) {
     topComposers: [],
     topPerformers: [],
     performersByComposer: [],
-    date: new Date().toLocaleDateString()
+    date: new Date().toLocaleDateString(),
   }
 
   const sortedComposers = Object.entries(topPersons.composers)
@@ -129,9 +129,9 @@ async function printTopPersons(topPersons, filename) {
     ...performersByComposerPromises,
   ])
 
-  result.date = new Date().toLocaleDateString();
+  result.date = new Date().toLocaleDateString()
 
-  await fs.writeFile(filename, JSON.stringify(result, null, 2), 'utf-8');
+  await fs.writeFile(filename, JSON.stringify(result, null, 2), "utf-8")
 }
 
 async function main() {
@@ -222,7 +222,7 @@ async function main() {
     }
   }
 
-  await printTopPersons(topPersons, "../components/suggestions/statistic.json")
+  await printTopPersons(topPersons, "components/suggestions/statistic.json")
 }
 
 main()
