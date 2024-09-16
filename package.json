@@ -64,7 +64,8 @@
     "tailwindcss-animate": "^1.0.5",
     "topojson-client": "^3.1.0",
     "world-atlas": "^2.0.2",
-    "worldcities": "^0.1.8"
+    "worldcities": "^0.1.8",
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^3.7.1",
